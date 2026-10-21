@@ -20,7 +20,7 @@ Do not rewrite public history. Keep license exceptions, attribution and data pro
 
 `wrangler.jsonc` declares Worker `kalender`, its Cloudflare account, static assets in `dist/`, and custom domain `kalender.rezaprama.com`.
 
-Cloudflare Workers Builds connects `rezaprama/kalender` to the existing Worker:
+Cloudflare Workers Builds is connected to `rezaprama/kalender` on the existing Worker:
 
 - Production branch: `main`.
 - Build command: `npm run build`.

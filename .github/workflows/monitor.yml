@@ -1,7 +1,7 @@
 name: Holiday source monitor
 
 # Deterministic, read-only check of government sources. It never edits data;
-# when something needs a curator it opens (or comments on) one issue.
+# When something needs a curator it opens or updates one issue.
 on:
   schedule:
     - cron: '0 1 * * *' # daily, 08:00 WIB (GitHub scheduling may be delayed)
