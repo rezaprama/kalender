@@ -150,8 +150,8 @@ describe('ICS export (RFC 5545)', () => {
 describe('CSV export', () => {
   test('BOM, header, quoting and localisation', () => {
     const csv = toCSV(sample([{ name: 'Libur "khusus", satu', nameEn: 'Special' }]), 'id');
-    assert.ok(csv.startsWith('﻿date,name,type,status,source_id\r\n'));
-    assert.match(csv, /"2026-01-01","Libur ""khusus"", satu","national","official","s"/);
+    assert.ok(csv.startsWith('﻿date,name,type,status,source_id,uncertainty_days,subject_to\r\n'));
+    assert.match(csv, /"2026-01-01","Libur ""khusus"", satu","national","official","s","",""/);
     assert.match(toCSV(sample([{ nameEn: 'Special' }]), 'en'), /"Special"/);
   });
 });

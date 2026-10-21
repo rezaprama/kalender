@@ -332,6 +332,13 @@ function setupEmbedBuilder(): void {
 
 function setupEmbedNavigation(): void {
   if (body.dataset.embed !== 'true') return;
+  // Report height to the embedding page (embed.js resizes the iframe). Only a number is shared.
+  if (window.parent !== window) {
+    // Content height, not scrollHeight: scrollHeight never drops below the iframe's own viewport, so frames could not shrink.
+    const report = () => window.parent.postMessage({ type: 'kalender:height', height: Math.ceil(document.body.getBoundingClientRect().height) }, '*');
+    new ResizeObserver(report).observe(document.body);
+    report();
+  }
   const params = new URLSearchParams(location.search);
   const go = (year: number, month: number) => {
     if (year < 1900 || year > 2100) return;

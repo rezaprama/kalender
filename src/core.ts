@@ -87,11 +87,11 @@ export function toICS(data: YearData, lang: Lang = 'id', holidays = data.holiday
   const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Reza Prama Arviandi//Kalender Indonesia//EN','CALSCALE:GREGORIAN','METHOD:PUBLISH',`X-WR-CALNAME:${lang === 'id' ? 'Libur Indonesia' : 'Indonesia holidays'} ${data.year}`,`X-WR-CALDESC:${icsEscape(`${data.note[lang]} ${AUTHOR.name} ${AUTHOR.url}`)}`];
   for (const h of holidays) {
     const next = new Date(civil(h.date).valueOf()+86400000);
-    lines.push('BEGIN:VEVENT',`UID:${h.date}-${h.type}-${encodeURIComponent(h.name)}@kalender.rezaprama.com`,`DTSTAMP:${data.updated.replaceAll('-','')}T000000Z`,`DTSTART;VALUE=DATE:${h.date.replaceAll('-','')}`,`DTEND;VALUE=DATE:${iso(next).replaceAll('-','')}`,`SUMMARY:${icsEscape(`${h.status === 'official' ? '' : '[Estimate] '}${lang === 'en' ? h.nameEn : h.name}${h.type === 'leave' ? (lang === 'id' ? ' (cuti bersama)' : ' (collective leave)') : ''}`)}`,`DESCRIPTION:${icsEscape(`${h.status}. ${data.sources.find(s=>s.id === h.sourceId)?.url ?? SITE}. ${AUTHOR.name} ${AUTHOR.url}`)}`,`URL:${SITE}${pathFor(data.year,lang)}`,'TRANSP:TRANSPARENT','END:VEVENT');
+    lines.push('BEGIN:VEVENT',`UID:${h.date}-${h.type}-${encodeURIComponent(h.name)}@kalender.rezaprama.com`,`DTSTAMP:${data.updated.replaceAll('-','')}T000000Z`,`DTSTART;VALUE=DATE:${h.date.replaceAll('-','')}`,`DTEND;VALUE=DATE:${iso(next).replaceAll('-','')}`,`SUMMARY:${icsEscape(`${h.status === 'official' ? '' : lang === 'id' ? '[Perkiraan] ' : '[Estimate] '}${lang === 'en' ? h.nameEn : h.name}${h.type === 'leave' ? (lang === 'id' ? ' (cuti bersama)' : ' (collective leave)') : ''}`)}`,`DESCRIPTION:${icsEscape([h.status, h.uncertaintyDays ? `±${h.uncertaintyDays} ${lang === 'id' ? 'hari' : 'day(s)'}` : '', h.subjectTo === 'isbat' ? (lang === 'id' ? 'menunggu sidang isbat' : 'subject to isbat') : '', data.sources.find(s=>s.id === h.sourceId)?.url ?? SITE, `${AUTHOR.name} ${AUTHOR.url}`].filter(Boolean).join('. '))}`,`URL:${SITE}${pathFor(data.year,lang)}`,'TRANSP:TRANSPARENT','END:VEVENT');
   }
   lines.push('END:VCALENDAR'); return lines.map(foldLine).join('\r\n')+'\r\n';
 }
 export function toCSV(holidays: Holiday[], lang: Lang = 'id'): string {
   const quote=(value:string)=>`"${value.replaceAll('"','""')}"`;
-  return '\uFEFFdate,name,type,status,source_id\r\n'+holidays.map(h=>[h.date,lang === 'en' ? h.nameEn : h.name,h.type,h.status,h.sourceId].map(quote).join(',')).join('\r\n')+'\r\n';
+  return '\uFEFFdate,name,type,status,source_id,uncertainty_days,subject_to\r\n'+holidays.map(h=>[h.date,lang === 'en' ? h.nameEn : h.name,h.type,h.status,h.sourceId,String(h.uncertaintyDays ?? ''),h.subjectTo ?? ''].map(quote).join(',')).join('\r\n')+'\r\n';
 }

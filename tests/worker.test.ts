@@ -209,3 +209,51 @@ test('every handled API endpoint is documented in openapi.json', async () => {
   const spec = JSON.parse(await readFile('dist/openapi.json', 'utf8')) as { paths: Record<string, unknown> };
   assert.deepEqual(Object.keys(spec.paths).sort(), handled);
 });
+
+describe('exports', () => {
+  /** Minimal RFC 5545 structural validator: line length, CRLF, balanced components, required properties. */
+  function validateIcs(text: string): string[] {
+    const problems: string[] = [];
+    if (!text.endsWith('\r\n') || /[^\r]\n/.test(text)) problems.push('line endings');
+    const lines = text.split('\r\n').slice(0, -1);
+    for (const line of lines) if (new TextEncoder().encode(line).length > 75) problems.push(`long line: ${line.slice(0, 30)}`);
+    const unfolded = text.replace(/\r\n[ \t]/g, '').split('\r\n').filter(Boolean);
+    const stack: string[] = [];
+    let event: Set<string> | undefined;
+    const uids = new Set<string>();
+    for (const line of unfolded) {
+      const [name] = line.split(/[:;]/);
+      if (name === 'BEGIN') { stack.push(line.slice(6)); if (line === 'BEGIN:VEVENT') event = new Set(); }
+      else if (name === 'END') {
+        if (stack.pop() !== line.slice(4)) problems.push(`unbalanced ${line}`);
+        if (line === 'END:VEVENT') { for (const p of ['UID', 'DTSTAMP', 'DTSTART', 'SUMMARY']) if (!event!.has(p)) problems.push(`VEVENT missing ${p}`); event = undefined; }
+      } else if (event) {
+        event.add(name);
+        if (name === 'UID') { if (uids.has(line)) problems.push(`duplicate ${line}`); uids.add(line); }
+      }
+    }
+    if (stack.length) problems.push('unclosed components');
+    if (!unfolded.includes('VERSION:2.0') || !unfolded.some((l) => l.startsWith('PRODID:'))) problems.push('missing VERSION/PRODID');
+    return problems;
+  }
+
+  test('ICS for official, estimated and empty years is structurally valid', async () => {
+    for (const year of [1950, 2024, 2027, 2028, 2100]) {
+      for (const lang of ['id', 'en']) assert.deepEqual(validateIcs(await get(`/api/v1/holidays?year=${year}&format=ics&lang=${lang}`).text()), [], `${year} ${lang}`);
+    }
+  });
+
+  test('estimates are labelled in ICS and CSV; official events are not', async () => {
+    const ics = (await get('/api/v1/holidays?year=2028&format=ics').text()).replace(/\r\n /g, '');
+    const summaries = ics.split('\r\n').filter((l) => l.startsWith('SUMMARY:'));
+    assert.ok(summaries.length > 0 && summaries.every((l) => l.startsWith('SUMMARY:[Perkiraan] ')));
+    assert.match(ics, /±1 hari/);
+    const official = (await get('/api/v1/holidays?year=2026&format=ics&lang=en').text()).replace(/\r\n /g, '');
+    assert.ok(!/\[Estimate\]/.test(official));
+    const csv = await get('/api/v1/holidays?year=2028&format=csv').text();
+    const rows = csv.trim().split('\r\n').slice(1);
+    assert.ok(rows.every((r) => r.includes('"estimated"')));
+    assert.ok(rows.some((r) => r.endsWith('"1",""')));
+    assert.match(await get('/api/v1/holidays?year=2027&format=csv').text(), /"isbat"/);
+  });
+});

@@ -4,7 +4,7 @@ Authoritative checkpoint. Update at every milestone. States: NOT_STARTED · IN_P
 
 ## Current
 - Branch: `feat/kalender-completion` (from `main` @ 6927e9e "chore: preserve initial Codex implementation"). No remote configured. Nothing pushed or deployed.
-- Phase: 5 — API docs page, embed, open-source docs. Next action: API page covers new endpoints; README.md/README.id.md, LICENSE (Apache-2.0 + CC BY 4.0 data), CONTRIBUTING, CHANGELOG; embed web component or improved iframe builder.
+- Phase: 6 — SEO, performance, security, CI, monitoring. Next action: scripts/monitor.ts + audit.ts (quarterly workflow), GitHub Actions CI, security headers review, Lighthouse measurement, og.png, sitemap review.
 
 ## Milestones
 | Phase | State | Evidence |
@@ -13,8 +13,8 @@ Authoritative checkpoint. Update at every milestone. States: NOT_STARTED · IN_P
 | 2 Holiday data correctness | VERIFIED | 2022–2027 re-read from setkab/setneg/kemenkopmk/kemenag pages, all dates match; validator with declared counts + plausibility; HKO Chinese table; 53 tests |
 | 3 Frontend, UX, a11y | VERIFIED | `npm run e2e` 28/28: axe-core WCAG 2.2 AA on 9 pages × light/dark = 0 violations; keyboard grid, shared date URL, tools, theme, embed, phone overflow, 24px targets. Screenshots reviewed (desktop/mobile/print) |
 | 4 Multi-calendar | VERIFIED | Javanese (weton/neptu, Asapon/Aboge, windu table + Kraton 1960 Be), Hijri civil (own arithmetic vs ICU every day), Umm al-Qura (self-checked), Chinese (HKO), observances; /api/v1/date|convert|observances|calendars; UI mode overlay; check 67/67, e2e 35/35 |
-| 5 API, embed, OSS docs | IN_PROGRESS | |
-| 6 SEO, perf, security, CI, monitoring | NOT_STARTED | |
+| 5 API, embed, OSS docs | VERIFIED | ICS structural validator on official/estimated/empty years; estimates labelled in ICS/CSV; `<kalender-indonesia>` web component tested cross-origin with auto-height; docs examples executed by tests/docs.test.ts; LICENSE (canonical Apache-2.0), LICENSE-DATA (CC BY 4.0), NOTICE (Phosphor MIT, HKO, gov sources); check 72/72, e2e 36/36 |
+| 6 SEO, perf, security, CI, monitoring | IN_PROGRESS | |
 | 7 Final integration | NOT_STARTED | |
 
 ## Decisions
@@ -42,6 +42,7 @@ Authoritative checkpoint. Update at every milestone. States: NOT_STARTED · IN_P
 - `/og.png` referenced but missing.
 
 ## Verification log
+- 2026-10-21 Phase 5: check 72/72 (incl. docs examples), e2e 36/36.
 - 2026-10-21 Phase 4: check 67/67, e2e 35/35 (axe incl. overlay pages). workerd runtime still unverified (local crash) — ICU-dependent paths guarded.
 - 2026-10-21 Phase 3: check 53/53, e2e 28/28. Automated a11y covers only machine-checkable WCAG criteria; no manual screen-reader pass yet.
 - 2026-10-21 Phase 2: `npm run check` exit 0, 53 tests. Evidence ledger: docs/DATA_SOURCES.md.

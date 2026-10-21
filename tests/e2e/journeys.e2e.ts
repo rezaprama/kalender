@@ -181,6 +181,28 @@ describe('journeys', () => {
     await page.close();
   });
 
+  test('web component embeds the calendar on a third-party page and resizes it', async () => {
+    // A different origin (another port) stands in for a third-party site.
+    const { createServer } = await import('node:http');
+    const host = createServer((_, res) => {
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(`<!doctype html><title>Host</title><body><kalender-indonesia year="2026" month="8" lang="en" mode="jawa"><a href="https://rezaprama.com">Calendar by Reza Prama Arviandi</a></kalender-indonesia><script src="${BASE}/embed.js"></script></body>`);
+    });
+    await new Promise<void>((resolve) => host.listen(PORT + 100, resolve));
+    after(() => host.close());
+    const page = await browser.newPage();
+    await page.goto(`http://localhost:${PORT + 100}/`);
+    const frame = page.locator('kalender-indonesia iframe[data-kalender]');
+    await frame.waitFor();
+    assert.match((await frame.getAttribute('src'))!, /\/embed\?year=2026&month=8&lang=en&mode=jawa$/);
+    await page.waitForFunction(() => document.querySelector<HTMLIFrameElement>('kalender-indonesia iframe')!.style.height !== '620px');
+    const inner = page.frameLocator('kalender-indonesia iframe');
+    assert.equal(await inner.locator('.day[data-date="2026-08-17"]').getAttribute('data-alt'), 'Lgi');
+    await page.evaluate(() => document.querySelector('kalender-indonesia')!.setAttribute('month', '9'));
+    assert.match((await frame.getAttribute('src'))!, /month=9/);
+    await page.close();
+  });
+
   test('no horizontal overflow on a phone', async () => {
     for (const path of ['/2026', '/2026/08', '/libur', '/alat', '/api', '/sumber', '/embed']) {
       const { page } = await open(path, { mobile: true });

@@ -9,3 +9,5 @@
   Cache-Control: public, max-age=3600
 /theme.js
   Cache-Control: public, max-age=86400
+/embed.js
+  Cache-Control: public, max-age=86400
