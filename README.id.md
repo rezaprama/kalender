@@ -83,7 +83,8 @@ Struktur kode dan alur deploy dijelaskan di [README.md](README.md#layout).
 ## Lisensi dan atribusi
 
 - Kode: [Apache-2.0](LICENSE)
-- Data kurasi: [CC BY 4.0](LICENSE-DATA.md)
+- Data kurasi orisinal: [CC BY 4.0](LICENSE-DATA.md)
+- Tabel kalender Tionghoa: data Hong Kong Observatory, © Pemerintah Hong Kong SAR, **hanya untuk penggunaan non-komersial** sesuai [syarat HKO](third_party/hko/NOTICE.md). Tidak termasuk Apache-2.0 maupun CC BY 4.0.
 - Pemberitahuan pihak ketiga: [NOTICE](NOTICE)
 
 Jika memakai data atau embed di situs web, cantumkan [Reza Prama Arviandi](https://rezaprama.com) dengan tautan biasa.

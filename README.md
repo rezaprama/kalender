@@ -108,7 +108,8 @@ Connecting the GitHub repository in Cloudflare Workers Builds works with build c
 ## License and attribution
 
 - Code: [Apache-2.0](LICENSE)
-- Curated data: [CC BY 4.0](LICENSE-DATA.md)
+- Original curated data: [CC BY 4.0](LICENSE-DATA.md)
+- Chinese calendar table: Hong Kong Observatory data, © Government of the Hong Kong SAR, **non-commercial use only** under [HKO conditions](third_party/hko/NOTICE.md). It is not covered by Apache-2.0 or CC BY 4.0.
 - Third-party notices: [NOTICE](NOTICE)
 
 If you use the data or the embed on a website, please credit [Reza Prama Arviandi](https://rezaprama.com) with a normal link.

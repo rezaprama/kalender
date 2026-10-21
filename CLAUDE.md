@@ -2,7 +2,7 @@
 
 Indonesian multi-calendar site, holiday dataset, public API and embed. Owner: Reza Prama Arviandi (https://rezaprama.com). Gregorian range 1900–2100 inclusive. Default language Bahasa Indonesia, secondary English.
 
-**Start every session** by reading `docs/AGENT_HANDOFF.md` (current phase, decisions, next action) and `git status`. Full product spec: `docs/PROJECT_CONTEXT.md` — read only the section you need.
+**Start every session** by reading `docs/AGENT_HANDOFF.md` (current phase, decisions, next action) and `git status`. Product spec: `docs/PRODUCT_SPEC.md` (read only the section you need). Original owner brief, kept local and unpublished: `internal/PROJECT_CONTEXT.md`.
 
 ## Stack and commands
 - Cloudflare Workers + Static Assets (`wrangler.jsonc`). No framework: TypeScript string-template SSR.

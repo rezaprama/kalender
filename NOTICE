@@ -2,7 +2,8 @@ Kalender Indonesia
 Copyright 2026 Reza Prama Arviandi (https://rezaprama.com)
 
 This product is licensed under the Apache License, Version 2.0 (see LICENSE).
-The curated holiday dataset is licensed under CC BY 4.0 (see LICENSE-DATA.md).
+The original curated dataset is licensed under CC BY 4.0. LICENSE-DATA.md lists
+which parts of the repository are under which terms.
 
 -------------------------------------------------------------------------------
 Third-party material distributed with this product
@@ -37,10 +38,15 @@ https://github.com/phosphor-icons/core
 Data and references
 -------------------------------------------------------------------------------
 
-Chinese lunisolar month boundaries 1901-2100 were derived from the Hong Kong
-Observatory "Gregorian-Lunar Calendar Conversion Tables", one text file per year
-(e.g. https://www.hko.gov.hk/en/gts/time/calendar/text/files/T2027e.txt). Calendar dates are facts;
-the HKO is credited as the source. The tables themselves are not redistributed.
+Hong Kong Observatory material (src/calendars/chinese-hko-data.ts)
+  Chinese lunisolar month boundaries 1901-2100 derived from the Hong Kong
+  Observatory "Gregorian-Lunar Calendar Conversion Tables". Intellectual property
+  rights: Government of the Hong Kong Special Administrative Region. The Materials
+  are part of the website https://www.hko.gov.hk, published by the Hong Kong
+  Observatory. Used for non-commercial purposes free of charge under the HKO
+  conditions; NOT covered by Apache-2.0 or CC BY 4.0. The HKO Intellectual
+  Property Rights Notice, Conditions and Disclaimer are reproduced in
+  third_party/hko/NOTICE.md. Commercial use requires HKO's written authorisation.
 
 Official holiday dates are taken from decrees published by the Government of the
 Republic of Indonesia (setkab.go.id, setneg.go.id, kemenkopmk.go.id,

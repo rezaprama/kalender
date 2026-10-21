@@ -38,6 +38,8 @@ Conversions for 1900-12-22 to 2100-12-31 come from the Hong Kong Observatory Gre
 
 ICU's own astronomical `chinese` calendar was rejected. It disagrees with HKO on 447 days in 13 lunar years between 1900 and 2100, when a new moon falls close to midnight Beijing time. Four of those disagreements move Chinese New Year (1954, 1955, 2027, 2030). For 2027, HKO and the Indonesian SKB both give 6 February, while ICU gives 7 February.
 
+Rights in the HKO data belong to the Government of the Hong Kong SAR. The table lives in `src/calendars/chinese-hko-data.ts` and is used non-commercially under the HKO conditions; see [third_party/hko/NOTICE.md](../third_party/hko/NOTICE.md).
+
 The Indonesian Kongzili year is the lunar year plus 551 (SKB 2026: "Tahun Baru Imlek 2577 Kongzili"). Cultural festivals derived from this calendar are observances, not public holidays.
 
 ## Javanese calendar

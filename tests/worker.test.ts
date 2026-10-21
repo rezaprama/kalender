@@ -277,3 +277,13 @@ describe('search indexing and headers', () => {
     assert.equal(get('/api/v1/holidays?year=2026&format=ics').headers.get('x-content-type-options'), 'nosniff');
   });
 });
+
+test('HKO attribution and disclaimer accompany Chinese calendar data', async () => {
+  const date = await get('/api/v1/date?date=2026-02-17').json() as { chinese: { attribution: { owner: string; disclaimer: string } } };
+  assert.match(date.chinese.attribution.owner, /Hong Kong Special Administrative Region/);
+  assert.match(date.chinese.attribution.disclaimer, /no liability/);
+  const cal = await get('/api/v1/calendars').json() as { calendars: { id: string; attribution?: { notice: string } }[] };
+  assert.match(cal.calendars.find((c) => c.id === 'chinese')!.attribution!.notice, /third_party\/hko\/NOTICE\.md/);
+  const sources = await get('/sumber').text();
+  assert.match(sources, /shall not be constituted as any form of co-operation or affiliation by the Observatory/);
+});

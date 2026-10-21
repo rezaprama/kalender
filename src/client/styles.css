@@ -360,3 +360,5 @@ dialog::backdrop { background: rgb(10 10 12 / .45); }
 .detail-list dd small { display: block; margin-top: .1rem; color: var(--muted); font-size: .8rem; font-weight: 400; }
 .detail-observances { margin: 1rem 0 0; font-size: .92rem; }
 .mode-note { margin: -.4rem 0 1rem; font-size: .82rem; color: var(--muted); }
+blockquote { margin: 1rem 0; padding: .75rem 1rem; border-left: 3px solid var(--line-strong); background: var(--surface); font-size: .85rem; color: var(--muted); }
+.prose-section h3 { margin-top: 1.5rem; }

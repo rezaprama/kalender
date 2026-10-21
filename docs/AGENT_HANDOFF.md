@@ -37,10 +37,10 @@ Authoritative checkpoint. Update at every milestone. States: NOT_STARTED · IN_P
 - Monitoring: deterministic, stateless, read-only (expectations, Setkab search RSS + Kemenko PMK RSS candidates, per-date source coverage, isbat reminders). Runs quarterly + 20 Sept; opens/comments one issue labelled `monitor`. No AI calls.
 - Indexing: month pages and archive holiday lists are `noindex` unless official or within current −1..+3 years; sitemap lists official + near years only.
 - CI actions pinned to major tags (@v5); Dependabot keeps them updated. Pin to SHAs if org policy requires.
+- Licensing: HKO-derived Chinese table isolated in src/calendars/chinese-hko-data.ts, excluded from Apache-2.0/CC BY, non-commercial under HKO conditions (third_party/hko/NOTICE.md); disclaimer on /sumber and in API. Public spec docs/PRODUCT_SPEC.md; original brief kept in gitignored internal/.
 - Historical: 1900–1944 `pre-independence`; 1945–2021 archive not curated (DEFERRED: needs per-year decree evidence).
 
 ## Known defects / blockers
-- **Owner decision:** `docs/PROJECT_CONTEXT.md` is the original brief and mentions studying competitor sites; decide whether it should be public before pushing.
 - Workers runtime itself never executed here (workerd crash); bundle verified in Node. Check Umm al-Qura/ICU on production (RELEASE.md §3).
 - GitHub Actions workflows parsed but never run (no remote).
 - Historical holidays 1945–2021 not curated (DEFERRED); Nyepi/Waisak not projected; MABIMS predictor DEFERRED.

@@ -44,7 +44,7 @@ function calendarRows(date: string): [string, string, string?][] {
     [lang === 'id' ? 'Jawa' : 'Javanese', jv(kraton), [`${lang === 'id' ? 'kurup' : 'kurup'} ${kraton.kurup === 'asapon' ? 'Asapon' : 'Aboge'}`, kraton.projected ? (lang === 'id' ? 'proyeksi' : 'projected') : '', kraton.kurup === 'asapon' && jv(aboge) !== jv(kraton) ? `Aboge: ${jv(aboge)}` : ''].filter(Boolean).join(' · ')],
     [lang === 'id' ? 'Hijriah' : 'Hijri', d.islamic.civil.formatted, [lang === 'id' ? 'tabular, bukan keputusan isbat' : 'tabular, not an isbat decision', d.islamic.umalqura && d.islamic.umalqura.formatted !== d.islamic.civil.formatted ? `Umm al-Qura: ${d.islamic.umalqura.formatted}` : ''].filter(Boolean).join(' · ')],
   ];
-  if (d.chinese) rows.push([lang === 'id' ? 'Tionghoa' : 'Chinese', formatChinese(d.chinese, lang), 'HKO']);
+  if (d.chinese) rows.push([lang === 'id' ? 'Tionghoa' : 'Chinese', formatChinese(d.chinese, lang), lang === 'id' ? 'Data: Hong Kong Observatory (© Pemerintah Hong Kong SAR), bukan afiliasi' : 'Data: Hong Kong Observatory (© Government of the Hong Kong SAR), no affiliation']);
   return rows;
 }
 
@@ -284,7 +284,7 @@ function setupCalendarMode(): void {
     const notes: Record<Mode, string> = {
       masehi: '',
       hijriah: lang === 'id' ? 'Hijriah tabular (perhitungan). Tanggal resmi ditetapkan Kemenag melalui sidang isbat dan dapat berbeda ±1 hari.' : 'Tabular Hijri (calculated). Official dates are set by the Kemenag isbat and may differ by ±1 day.',
-      tionghoa: lang === 'id' ? 'Kalender Tionghoa dari tabel Hong Kong Observatory; bulan kabisat ditandai +.' : 'Chinese calendar from Hong Kong Observatory tables; leap months are marked +.',
+      tionghoa: lang === 'id' ? 'Kalender Tionghoa dari data Hong Kong Observatory (© Pemerintah Hong Kong SAR; penggunaan non-komersial, tanpa afiliasi atau dukungan HKO). Bulan kabisat ditandai +.' : 'Chinese calendar from Hong Kong Observatory data (© Government of the Hong Kong SAR; non-commercial use, no affiliation with or endorsement by the HKO). Leap months are marked +.',
       jawa: lang === 'id' ? 'Pasaran dan tanggal Jawa (kurup Asapon). Hari Jawa berganti saat magrib; di sini memakai tengah malam.' : 'Pasaran and Javanese date (Asapon kurup). The Javanese day begins at sunset; this view uses midnight.',
     };
     let modeNote = $('.mode-note');
