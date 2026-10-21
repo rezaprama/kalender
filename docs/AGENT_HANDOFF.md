@@ -34,3 +34,11 @@ Daily source monitoring was dispatched successfully in GitHub Actions. Two Setka
 - Source monitoring runs daily around 08:00 WIB. Unchanged action findings do not repeatedly notify. Curators verify decrees before changing official data.
 - `wrangler dev` works locally after the official Windows VC++ x64 runtime installation. No runtime credentials are stored in the project.
 - Public history is preserved. The original brief still exists in the first commit and was checked before publication.
+
+## Documentation and attribution policy
+
+- Both READMEs have a visual introduction, desktop/mobile calendar captures, routes for visitors and developers, runnable API examples, embed instructions, and explicit data/license boundaries.
+- Owner requested no further Claude contributor attribution. `.claude/settings.json` disables commit/PR/session-link attribution. `AGENTS.md`, `CLAUDE.md`, and `CONTRIBUTING.md` require human authorship and preserve legal notices.
+- `npm run hooks:install` enables the checked-in commit-message hook in each clone; already installed in this checkout. The required CI job checks every new commit's author, committer, and attribution trailers, including intermediate PR commits. Existing history and `v1.0.0` remain intact.
+- GitHub's contributors API returned only `rezaprama` during this change. Eleven old commits still contain Claude co-author trailers; removing them would rewrite published history and is outside the chosen prevention approach.
+- Local `npm run check` passes with 83 tests, including attribution policy and executable documentation examples. The pull request CI remains the authority for the merged version.

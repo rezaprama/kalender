@@ -1,0 +1,2 @@
+#!/bin/sh
+node --import tsx scripts/check-attribution.ts --message "$1"

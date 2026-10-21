@@ -21,11 +21,17 @@ jobs:
       - uses: actions/checkout@v5
         with:
           persist-credentials: false
+          fetch-depth: 0
       - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Check new commit attribution
+        run: npm run check:attribution
+        env:
+          ATTRIBUTION_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          ATTRIBUTION_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
       # Build, typecheck, Biome lint, dataset validation, unit/integration/docs tests.
       - run: npm run check
       # Bundle exactly what Cloudflare would deploy (no credentials needed) and smoke-test it.

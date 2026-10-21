@@ -11,3 +11,4 @@ worker-configuration.d.ts
 .DS_Store
 src/generated/
 internal/
+.claude/settings.local.json

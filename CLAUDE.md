@@ -17,6 +17,7 @@ Indonesian multi-calendar site, holiday dataset, public API and embed. Owner: Re
 - `data/official/YYYY.json` curated government-sourced years. `scripts/data.ts` loads + validates all years.
 
 ## Non-negotiable rules
+- Follow the human-only authorship policy in `AGENTS.md`. Do not add assistant co-author trailers or promotional commit/PR credits. Shared `.claude/settings.json` disables automatic attribution.
 - Never mark a holiday `official` without a government source (`*.go.id`) that lists that date; record decree numbers and amendments.
 - Calculated dates (Hijri, Chinese, estimates) are never presented as official decisions. Label method and uncertainty.
 - Do not apply modern holiday law to years before it existed. Missing data ≠ no holidays.
