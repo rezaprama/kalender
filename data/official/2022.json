@@ -1,0 +1,37 @@
+{
+  "year": 2022,
+  "status": "official",
+  "updated": "2026-10-21",
+  "version": "2026.10.21",
+  "holidays": [
+    { "date": "2022-01-01", "name": "Tahun Baru 2022 Masehi", "nameEn": "New Year's Day", "type": "national", "status": "official", "sourceId": "skb-2022-final" },
+    { "date": "2022-02-01", "name": "Tahun Baru Imlek 2573 Kongzili", "nameEn": "Chinese New Year 2573", "type": "national", "status": "official", "sourceId": "skb-2022-final" },
+    { "date": "2022-02-28", "name": "Isra Mikraj Nabi Muhammad SAW", "nameEn": "Isra and Mi'raj", "type": "national", "status": "official", "sourceId": "skb-2022-final" },
+    { "date": "2022-03-03", "name": "Hari Suci Nyepi Tahun Baru Saka 1944", "nameEn": "Nyepi, Saka New Year 1944", "type": "national", "status": "official", "sourceId": "skb-2022-final" },
+    { "date": "2022-04-15", "name": "Wafat Isa Al Masih/Wafat Yesus Kristus", "nameEn": "Good Friday", "type": "national", "status": "official", "sourceId": "skb-2022-final" },
+    { "date": "2022-04-29", "name": "Hari Raya Idul Fitri 1443 Hijriah", "nameEn": "Eid al-Fitr 1443 AH", "type": "leave", "status": "official", "sourceId": "skb-2022-final" },
+    { "date": "2022-05-01", "name": "Hari Buruh Internasional", "nameEn": "International Labour Day", "type": "national", "status": "official", "sourceId": "skb-2022-final" },
+    { "date": "2022-05-02", "name": "Hari Raya Idul Fitri 1443 Hijriah", "nameEn": "Eid al-Fitr 1443 AH", "type": "national", "status": "official", "sourceId": "skb-2022-final" },
+    { "date": "2022-05-03", "name": "Hari Raya Idul Fitri 1443 Hijriah", "nameEn": "Eid al-Fitr 1443 AH", "type": "national", "status": "official", "sourceId": "skb-2022-final" },
+    { "date": "2022-05-04", "name": "Hari Raya Idul Fitri 1443 Hijriah", "nameEn": "Eid al-Fitr 1443 AH", "type": "leave", "status": "official", "sourceId": "skb-2022-final" },
+    { "date": "2022-05-05", "name": "Hari Raya Idul Fitri 1443 Hijriah", "nameEn": "Eid al-Fitr 1443 AH", "type": "leave", "status": "official", "sourceId": "skb-2022-final" },
+    { "date": "2022-05-06", "name": "Hari Raya Idul Fitri 1443 Hijriah", "nameEn": "Eid al-Fitr 1443 AH", "type": "leave", "status": "official", "sourceId": "skb-2022-final" },
+    { "date": "2022-05-16", "name": "Hari Raya Waisak 2566 BE", "nameEn": "Vesak 2566 BE", "type": "national", "status": "official", "sourceId": "skb-2022-final" },
+    { "date": "2022-05-26", "name": "Kenaikan Isa Al Masih/Kenaikan Yesus Kristus", "nameEn": "Ascension of Jesus Christ", "type": "national", "status": "official", "sourceId": "skb-2022-final" },
+    { "date": "2022-06-01", "name": "Hari Lahir Pancasila", "nameEn": "Pancasila Day", "type": "national", "status": "official", "sourceId": "skb-2022-final" },
+    { "date": "2022-07-10", "name": "Hari Raya Idul Adha 1443 Hijriah", "nameEn": "Eid al-Adha 1443 AH", "type": "national", "status": "official", "sourceId": "skb-2022-final" },
+    { "date": "2022-07-30", "name": "Tahun Baru Islam 1444 Hijriah", "nameEn": "Islamic New Year 1444 AH", "type": "national", "status": "official", "sourceId": "skb-2022-final" },
+    { "date": "2022-08-17", "name": "Hari Kemerdekaan Republik Indonesia", "nameEn": "Independence Day", "type": "national", "status": "official", "sourceId": "skb-2022-final" },
+    { "date": "2022-10-08", "name": "Maulid Nabi Muhammad SAW", "nameEn": "Prophet Muhammad's Birthday", "type": "national", "status": "official", "sourceId": "skb-2022-final" },
+    { "date": "2022-12-25", "name": "Hari Raya Natal", "nameEn": "Christmas Day", "type": "national", "status": "official", "sourceId": "skb-2022-final" }
+  ],
+  "sources": [
+    { "id": "skb-2022-final", "title": "SKB perubahan kedua hari libur nasional dan cuti bersama 2022", "url": "https://jdih.kemnaker.go.id/asset/data_puu/2022SKB_Libnas.pdf", "published": "2022-07-07", "checked": "2026-10-21", "decree": "SKB Menteri Agama 678/2022, Menteri Ketenagakerjaan 2/2022, Menteri PANRB 2/2022" },
+    { "id": "skb-2022-leave", "title": "Setkab: perubahan libur nasional dan cuti bersama 2022", "url": "https://setkab.go.id/inilah-skb-3-menteri-perubahan-hari-libur-nasional-dan-cuti-bersama-tahun-2022/", "published": "2022-04-07", "checked": "2026-10-21", "decree": "SKB Menteri Agama 375/2022, Menteri Ketenagakerjaan 1/2022, Menteri PANRB 1/2022" }
+  ],
+  "missing": [],
+  "note": {
+    "id": "16 hari libur nasional dan 4 hari cuti bersama sesuai SKB perubahan kedua. Iduladha dipindahkan dari 9 ke 10 Juli 2022. Cuti bersama mengikuti ketentuan instansi atau perusahaan.",
+    "en": "16 national holidays and 4 collective leave days from the second amended joint decree. Eid al-Adha moved from 9 to 10 July 2022. Collective leave follows employer or agency rules."
+  }
+}

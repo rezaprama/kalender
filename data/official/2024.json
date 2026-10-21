@@ -1,0 +1,47 @@
+{
+  "year": 2024,
+  "status": "official",
+  "updated": "2026-10-21",
+  "version": "2026.10.21",
+  "holidays": [
+    { "date": "2024-01-01", "name": "Tahun Baru 2024 Masehi", "nameEn": "New Year's Day", "type": "national", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-02-08", "name": "Isra Mikraj Nabi Muhammad SAW", "nameEn": "Isra and Mi'raj", "type": "national", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-02-09", "name": "Tahun Baru Imlek 2575 Kongzili", "nameEn": "Chinese New Year 2575", "type": "leave", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-02-10", "name": "Tahun Baru Imlek 2575 Kongzili", "nameEn": "Chinese New Year 2575", "type": "national", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-02-14", "name": "Pemungutan Suara Pemilihan Umum 2024", "nameEn": "2024 General Election Polling Day", "type": "national", "status": "official", "sourceId": "keppres-10-2024" },
+    { "date": "2024-03-11", "name": "Hari Suci Nyepi (Tahun Baru Saka 1946)", "nameEn": "Nyepi, Saka New Year 1946", "type": "national", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-03-12", "name": "Hari Suci Nyepi (Tahun Baru Saka 1946)", "nameEn": "Nyepi, Saka New Year 1946", "type": "leave", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-03-29", "name": "Wafat Yesus Kristus", "nameEn": "Good Friday", "type": "national", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-03-31", "name": "Kebangkitan Yesus Kristus (Paskah)", "nameEn": "Easter Sunday", "type": "national", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-04-08", "name": "Hari Raya Idul Fitri 1445 Hijriah", "nameEn": "Eid al-Fitr 1445 AH", "type": "leave", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-04-09", "name": "Hari Raya Idul Fitri 1445 Hijriah", "nameEn": "Eid al-Fitr 1445 AH", "type": "leave", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-04-10", "name": "Hari Raya Idul Fitri 1445 Hijriah", "nameEn": "Eid al-Fitr 1445 AH", "type": "national", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-04-11", "name": "Hari Raya Idul Fitri 1445 Hijriah", "nameEn": "Eid al-Fitr 1445 AH", "type": "national", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-04-12", "name": "Hari Raya Idul Fitri 1445 Hijriah", "nameEn": "Eid al-Fitr 1445 AH", "type": "leave", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-04-15", "name": "Hari Raya Idul Fitri 1445 Hijriah", "nameEn": "Eid al-Fitr 1445 AH", "type": "leave", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-05-01", "name": "Hari Buruh Internasional", "nameEn": "International Labour Day", "type": "national", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-05-09", "name": "Kenaikan Yesus Kristus", "nameEn": "Ascension of Jesus Christ", "type": "national", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-05-10", "name": "Kenaikan Yesus Kristus", "nameEn": "Ascension of Jesus Christ", "type": "leave", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-05-23", "name": "Hari Raya Waisak 2568 BE", "nameEn": "Vesak 2568 BE", "type": "national", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-05-24", "name": "Hari Raya Waisak 2568 BE", "nameEn": "Vesak 2568 BE", "type": "leave", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-06-01", "name": "Hari Lahir Pancasila", "nameEn": "Pancasila Day", "type": "national", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-06-17", "name": "Hari Raya Idul Adha 1445 Hijriah", "nameEn": "Eid al-Adha 1445 AH", "type": "national", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-06-18", "name": "Hari Raya Idul Adha 1445 Hijriah", "nameEn": "Eid al-Adha 1445 AH", "type": "leave", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-07-07", "name": "1 Muharam Tahun Baru Islam 1446 Hijriah", "nameEn": "Islamic New Year 1446 AH", "type": "national", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-08-17", "name": "Proklamasi Kemerdekaan", "nameEn": "Independence Day", "type": "national", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-09-16", "name": "Maulid Nabi Muhammad SAW", "nameEn": "Prophet Muhammad's Birthday", "type": "national", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-11-27", "name": "Pemungutan Suara Pilkada 2024", "nameEn": "2024 Regional Elections Polling Day", "type": "national", "status": "official", "sourceId": "keppres-33-2024" },
+    { "date": "2024-12-25", "name": "Kelahiran Yesus Kristus", "nameEn": "Christmas Day", "type": "national", "status": "official", "sourceId": "skb-2024-amended" },
+    { "date": "2024-12-26", "name": "Kelahiran Yesus Kristus", "nameEn": "Christmas Day", "type": "leave", "status": "official", "sourceId": "skb-2024-amended" }
+  ],
+  "sources": [
+    { "id": "skb-2024-amended", "title": "SKB perubahan hari libur nasional dan cuti bersama 2024", "url": "https://jdih.kemenkopmk.go.id/download/document/SKB%20Perubahan%20tentang%20Hari%20Libur%20Nasional%20dan%20Cuti%20Bersama%202024", "published": "2024-02-26", "checked": "2026-10-21", "decree": "SKB Menteri Agama 236/2024, Menteri Ketenagakerjaan 1/2024, Menteri PANRB 2/2024" },
+    { "id": "keppres-10-2024", "title": "Keppres 10/2024: hari pemungutan suara Pemilu 2024 sebagai hari libur nasional", "url": "https://peraturan.bpk.go.id/Details/277337/keppres-no-10-tahun-2024", "published": "2024-02-06", "checked": "2026-10-21", "decree": "Keputusan Presiden Nomor 10 Tahun 2024" },
+    { "id": "keppres-33-2024", "title": "Keppres 33/2024: hari pemungutan suara Pilkada 2024 sebagai hari libur nasional", "url": "https://peraturan.bpk.go.id/Details/308159/keppres-no-33-tahun-2024", "published": "2024-11-21", "checked": "2026-10-21", "decree": "Keputusan Presiden Nomor 33 Tahun 2024" }
+  ],
+  "missing": [],
+  "note": {
+    "id": "19 hari libur nasional dan 10 hari cuti bersama. Mencakup 17 hari dalam SKB, perubahan nama hari raya Kristen, serta libur Pemilu 14 Februari dan Pilkada 27 November berdasarkan Keppres. Cuti bersama mengikuti ketentuan instansi atau perusahaan.",
+    "en": "19 national holidays and 10 collective leave days. Includes the 17 days in the joint decree, revised Christian holiday names, and election holidays on 14 February and 27 November set by presidential decrees. Collective leave follows employer or agency rules."
+  }
+}

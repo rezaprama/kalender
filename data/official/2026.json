@@ -1,0 +1,223 @@
+{
+  "year": 2026,
+  "status": "official",
+  "updated": "2026-10-21",
+  "version": "2026.10.21",
+  "holidays": [
+    {
+      "date": "2026-01-01",
+      "name": "Tahun Baru Masehi",
+      "nameEn": "New Year's Day",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-01-16",
+      "name": "Isra Mikraj Nabi Muhammad SAW",
+      "nameEn": "Isra and Mi'raj",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-02-16",
+      "name": "Tahun Baru Imlek",
+      "nameEn": "Chinese New Year",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-02-17",
+      "name": "Tahun Baru Imlek",
+      "nameEn": "Chinese New Year",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-03-18",
+      "name": "Hari Suci Nyepi",
+      "nameEn": "Day of Silence (Nyepi)",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-03-19",
+      "name": "Hari Suci Nyepi",
+      "nameEn": "Day of Silence (Nyepi)",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-03-20",
+      "name": "Hari Raya Idulfitri",
+      "nameEn": "Eid al-Fitr",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-03-21",
+      "name": "Hari Raya Idulfitri",
+      "nameEn": "Eid al-Fitr",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-03-22",
+      "name": "Hari Raya Idulfitri",
+      "nameEn": "Eid al-Fitr",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-03-23",
+      "name": "Hari Raya Idulfitri",
+      "nameEn": "Eid al-Fitr",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-03-24",
+      "name": "Hari Raya Idulfitri",
+      "nameEn": "Eid al-Fitr",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-04-03",
+      "name": "Wafat Yesus Kristus",
+      "nameEn": "Good Friday",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-04-05",
+      "name": "Kebangkitan Yesus Kristus (Paskah)",
+      "nameEn": "Easter Sunday",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-05-01",
+      "name": "Hari Buruh Internasional",
+      "nameEn": "Labour Day",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-05-14",
+      "name": "Kenaikan Yesus Kristus",
+      "nameEn": "Ascension Day",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-05-15",
+      "name": "Kenaikan Yesus Kristus",
+      "nameEn": "Ascension Day",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-05-27",
+      "name": "Hari Raya Iduladha",
+      "nameEn": "Eid al-Adha",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-05-28",
+      "name": "Hari Raya Iduladha",
+      "nameEn": "Eid al-Adha",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-05-31",
+      "name": "Hari Raya Waisak",
+      "nameEn": "Vesak Day",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-06-01",
+      "name": "Hari Lahir Pancasila",
+      "nameEn": "Pancasila Day",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-06-16",
+      "name": "Tahun Baru Islam",
+      "nameEn": "Islamic New Year",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-08-17",
+      "name": "Hari Proklamasi Kemerdekaan",
+      "nameEn": "Independence Day",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-08-25",
+      "name": "Maulid Nabi Muhammad SAW",
+      "nameEn": "Prophet Muhammad's Birthday",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-12-24",
+      "name": "Kelahiran Yesus Kristus (Natal)",
+      "nameEn": "Christmas Day",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2026"
+    },
+    {
+      "date": "2026-12-25",
+      "name": "Kelahiran Yesus Kristus (Natal)",
+      "nameEn": "Christmas Day",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2026"
+    }
+  ],
+  "sources": [
+    {
+      "id": "skb-2026",
+      "title": "SKB 3 Menteri: 17 libur nasional dan 8 cuti bersama 2026",
+      "url": "https://www.kemenkopmk.go.id/pemerintah-tetapkan-17-hari-libur-nasional-dan-8-hari-cuti-bersama-tahun-2026",
+      "published": "2025-09-19",
+      "decree": "1497/2025, 2/2025, 5/2025",
+      "checked": "2026-10-21"
+    }
+  ],
+  "missing": [],
+  "note": {
+    "id": "Sesuai SKB dan perubahan yang dirujuk. Tanggal hari raya Islam mengikuti keputusan Menteri Agama. Cuti bersama swasta mengikuti kebijakan pemberi kerja.",
+    "en": "Based on the cited government decrees and amendments. Islamic observances remain subject to the Minister of Religious Affairs. Private-sector collective leave follows employer policy."
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "@rezaprama/kalender",
+  "version": "1.0.0",
+  "description": "Indonesian calendar, sourced public holidays, open API and embeddable calendar. 1900-2100.",
+  "type": "module",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Reza Prama Arviandi <https://rezaprama.com>",
+  "repository": "https://github.com/rezaprama/kalender",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "dev": "tsx scripts/dev.ts",
+    "data": "tsx scripts/data.ts",
+    "build": "tsx scripts/build.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts",
+    "check": "npm run typecheck && npm test && npm run build",
+    "preview": "wrangler dev --port 8787",
+    "deploy": "npm run build && wrangler deploy",
+    "cf:types": "wrangler types",
+    "monitor": "tsx scripts/monitor.ts",
+    "audit": "tsx scripts/audit.ts"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "latest",
+    "@phosphor-icons/core": "^2.1.1",
+    "@types/node": "^24.0.0",
+    "date-holidays": "^3.37.0",
+    "esbuild": "^0.25.0",
+    "lighthouse": "^13.0.0",
+    "playwright": "^1.56.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0",
+    "wrangler": "^4.151.3"
+  }
+}

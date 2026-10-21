@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "kalender",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-10-21",
+  "compatibility_flags": ["nodejs_compat"],
+  "account_id": "8c6e301847c1759dfb870b149faa05be",
+  "workers_dev": true,
+  "routes": [{ "pattern": "kalender.rezaprama.com", "custom_domain": true }],
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*", "/", "/en", "/en/", "/embed", "/embed/", "/embed/*"],
+    "not_found_handling": "404-page",
+    "html_handling": "drop-trailing-slash"
+  },
+  "observability": { "enabled": true, "head_sampling_rate": 0.1 }
+}

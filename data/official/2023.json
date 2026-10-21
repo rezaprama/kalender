@@ -1,0 +1,44 @@
+{
+  "year": 2023,
+  "status": "official",
+  "updated": "2026-10-21",
+  "version": "2026.10.21",
+  "holidays": [
+    { "date": "2023-01-01", "name": "Tahun Baru 2023 Masehi", "nameEn": "New Year's Day", "type": "national", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-01-22", "name": "Tahun Baru Imlek 2574 Kongzili", "nameEn": "Chinese New Year 2574", "type": "national", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-01-23", "name": "Tahun Baru Imlek 2574 Kongzili", "nameEn": "Chinese New Year 2574", "type": "leave", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-02-18", "name": "Isra Mikraj Nabi Muhammad SAW", "nameEn": "Isra and Mi'raj", "type": "national", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-03-22", "name": "Hari Suci Nyepi Tahun Baru Saka 1945", "nameEn": "Nyepi, Saka New Year 1945", "type": "national", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-03-23", "name": "Hari Suci Nyepi Tahun Baru Saka 1945", "nameEn": "Nyepi, Saka New Year 1945", "type": "leave", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-04-07", "name": "Wafat Isa Almasih", "nameEn": "Good Friday", "type": "national", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-04-19", "name": "Hari Raya Idulfitri 1444 Hijriah", "nameEn": "Eid al-Fitr 1444 AH", "type": "leave", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-04-20", "name": "Hari Raya Idulfitri 1444 Hijriah", "nameEn": "Eid al-Fitr 1444 AH", "type": "leave", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-04-21", "name": "Hari Raya Idulfitri 1444 Hijriah", "nameEn": "Eid al-Fitr 1444 AH", "type": "leave", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-04-22", "name": "Hari Raya Idulfitri 1444 Hijriah", "nameEn": "Eid al-Fitr 1444 AH", "type": "national", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-04-23", "name": "Hari Raya Idulfitri 1444 Hijriah", "nameEn": "Eid al-Fitr 1444 AH", "type": "national", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-04-24", "name": "Hari Raya Idulfitri 1444 Hijriah", "nameEn": "Eid al-Fitr 1444 AH", "type": "leave", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-04-25", "name": "Hari Raya Idulfitri 1444 Hijriah", "nameEn": "Eid al-Fitr 1444 AH", "type": "leave", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-05-01", "name": "Hari Buruh Internasional", "nameEn": "International Labour Day", "type": "national", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-05-18", "name": "Kenaikan Isa Almasih", "nameEn": "Ascension of Jesus Christ", "type": "national", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-06-01", "name": "Hari Lahir Pancasila", "nameEn": "Pancasila Day", "type": "national", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-06-02", "name": "Hari Raya Waisak 2567 BE", "nameEn": "Vesak 2567 BE", "type": "leave", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-06-04", "name": "Hari Raya Waisak 2567 BE", "nameEn": "Vesak 2567 BE", "type": "national", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-06-28", "name": "Hari Raya Iduladha 1444 Hijriah", "nameEn": "Eid al-Adha 1444 AH", "type": "leave", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-06-29", "name": "Hari Raya Iduladha 1444 Hijriah", "nameEn": "Eid al-Adha 1444 AH", "type": "national", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-06-30", "name": "Hari Raya Iduladha 1444 Hijriah", "nameEn": "Eid al-Adha 1444 AH", "type": "leave", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-07-19", "name": "Tahun Baru Islam 1445 Hijriah", "nameEn": "Islamic New Year 1445 AH", "type": "national", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-08-17", "name": "Hari Kemerdekaan Republik Indonesia", "nameEn": "Independence Day", "type": "national", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-09-28", "name": "Maulid Nabi Muhammad SAW", "nameEn": "Prophet Muhammad's Birthday", "type": "national", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-12-25", "name": "Hari Raya Natal", "nameEn": "Christmas Day", "type": "national", "status": "official", "sourceId": "skb-2023-final" },
+    { "date": "2023-12-26", "name": "Hari Raya Natal", "nameEn": "Christmas Day", "type": "leave", "status": "official", "sourceId": "skb-2023-final" }
+  ],
+  "sources": [
+    { "id": "skb-2023-final", "title": "Setkab: perubahan kedua libur nasional dan cuti bersama 2023", "url": "https://setkab.go.id/pemerintah-terbitkan-skb-perubahan-libur-nasional-dan-cuti-bersama-2023-2/", "published": "2023-06-21", "checked": "2026-10-21", "decree": "SKB Menteri Agama 624/2023, Menteri Ketenagakerjaan 2/2023, Menteri PANRB 2/2023, ditetapkan 16 Juni 2023" },
+    { "id": "skb-2023-eid-leave", "title": "Setkab: perubahan cuti bersama Idulfitri 2023", "url": "https://setkab.go.id/pemerintah-terbitkan-skb-perubahan-libur-nasional-dan-cuti-bersama-2023/", "published": "2023-03-29", "checked": "2026-10-21", "decree": "SKB Menteri Agama 327/2023, Menteri Ketenagakerjaan 1/2023, Menteri PANRB 1/2023" }
+  ],
+  "missing": [],
+  "note": {
+    "id": "16 hari libur nasional dan 11 hari cuti bersama sesuai SKB perubahan kedua. Memuat perubahan cuti Idulfitri serta tambahan cuti Iduladha 28 dan 30 Juni. Cuti bersama mengikuti ketentuan instansi atau perusahaan.",
+    "en": "16 national holidays and 11 collective leave days from the second amended joint decree. Includes revised Eid al-Fitr leave and additional Eid al-Adha leave on 28 and 30 June. Collective leave follows employer or agency rules."
+  }
+}

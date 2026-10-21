@@ -1,0 +1,254 @@
+{
+  "year": 2025,
+  "status": "official",
+  "updated": "2026-10-21",
+  "version": "2026.10.21",
+  "holidays": [
+    {
+      "date": "2025-01-01",
+      "name": "Tahun Baru Masehi",
+      "nameEn": "New Year's Day",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-01-27",
+      "name": "Isra Mikraj Nabi Muhammad SAW",
+      "nameEn": "Isra and Mi'raj",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-01-28",
+      "name": "Tahun Baru Imlek",
+      "nameEn": "Chinese New Year",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-01-29",
+      "name": "Tahun Baru Imlek",
+      "nameEn": "Chinese New Year",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-03-28",
+      "name": "Hari Suci Nyepi",
+      "nameEn": "Day of Silence (Nyepi)",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-03-29",
+      "name": "Hari Suci Nyepi",
+      "nameEn": "Day of Silence (Nyepi)",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-03-31",
+      "name": "Hari Raya Idulfitri",
+      "nameEn": "Eid al-Fitr",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-04-01",
+      "name": "Hari Raya Idulfitri",
+      "nameEn": "Eid al-Fitr",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-04-02",
+      "name": "Hari Raya Idulfitri",
+      "nameEn": "Eid al-Fitr",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-04-03",
+      "name": "Hari Raya Idulfitri",
+      "nameEn": "Eid al-Fitr",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-04-04",
+      "name": "Hari Raya Idulfitri",
+      "nameEn": "Eid al-Fitr",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-04-07",
+      "name": "Hari Raya Idulfitri",
+      "nameEn": "Eid al-Fitr",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-04-18",
+      "name": "Wafat Yesus Kristus",
+      "nameEn": "Good Friday",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-04-20",
+      "name": "Kebangkitan Yesus Kristus (Paskah)",
+      "nameEn": "Easter Sunday",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-05-01",
+      "name": "Hari Buruh Internasional",
+      "nameEn": "Labour Day",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-05-12",
+      "name": "Hari Raya Waisak",
+      "nameEn": "Vesak Day",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-05-13",
+      "name": "Hari Raya Waisak",
+      "nameEn": "Vesak Day",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-05-29",
+      "name": "Kenaikan Yesus Kristus",
+      "nameEn": "Ascension Day",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-05-30",
+      "name": "Kenaikan Yesus Kristus",
+      "nameEn": "Ascension Day",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-06-01",
+      "name": "Hari Lahir Pancasila",
+      "nameEn": "Pancasila Day",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-06-06",
+      "name": "Hari Raya Iduladha",
+      "nameEn": "Eid al-Adha",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-06-09",
+      "name": "Hari Raya Iduladha",
+      "nameEn": "Eid al-Adha",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-06-27",
+      "name": "Tahun Baru Islam",
+      "nameEn": "Islamic New Year",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-08-17",
+      "name": "Hari Proklamasi Kemerdekaan",
+      "nameEn": "Independence Day",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-08-18",
+      "name": "Hari Proklamasi Kemerdekaan",
+      "nameEn": "Independence Day",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2025-amendment"
+    },
+    {
+      "date": "2025-09-05",
+      "name": "Maulid Nabi Muhammad SAW",
+      "nameEn": "Prophet Muhammad's Birthday",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-12-25",
+      "name": "Kelahiran Yesus Kristus (Natal)",
+      "nameEn": "Christmas Day",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2025"
+    },
+    {
+      "date": "2025-12-26",
+      "name": "Kelahiran Yesus Kristus (Natal)",
+      "nameEn": "Christmas Day",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2025"
+    }
+  ],
+  "sources": [
+    {
+      "id": "skb-2025",
+      "title": "SKB 3 Menteri: libur nasional dan cuti bersama 2025",
+      "url": "https://www.kemenkopmk.go.id/index.php/pemerintah-tetapkan-hari-libur-nasional-dan-cuti-bersama-tahun-2025",
+      "published": "2024-10-15",
+      "decree": "1017/2024, 2/2024, 2/2024",
+      "checked": "2026-10-21"
+    },
+    {
+      "id": "skb-2025-amendment",
+      "title": "Perubahan SKB: tambahan cuti bersama 18 Agustus 2025",
+      "url": "https://setneg.go.id/baca/index/sambut_hut_ke_80_kemerdekaan_ri_pemerintah_tetapkan_18_agustus_2025_sebagai_cuti_bersama",
+      "published": "2025-08-07",
+      "checked": "2026-10-21"
+    }
+  ],
+  "missing": [],
+  "note": {
+    "id": "Sesuai SKB dan perubahan yang dirujuk. Tanggal hari raya Islam mengikuti keputusan Menteri Agama. Cuti bersama swasta mengikuti kebijakan pemberi kerja.",
+    "en": "Based on the cited government decrees and amendments. Islamic observances remain subject to the Minister of Religious Affairs. Private-sector collective leave follows employer policy."
+  }
+}

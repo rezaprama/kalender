@@ -1,0 +1,231 @@
+{
+  "year": 2027,
+  "status": "official",
+  "updated": "2026-10-21",
+  "version": "2026.10.21",
+  "holidays": [
+    {
+      "date": "2027-01-01",
+      "name": "Tahun Baru Masehi",
+      "nameEn": "New Year's Day",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-01-05",
+      "name": "Isra Mikraj Nabi Muhammad SAW",
+      "nameEn": "Isra and Mi'raj",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-02-05",
+      "name": "Tahun Baru Imlek",
+      "nameEn": "Chinese New Year",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-02-06",
+      "name": "Tahun Baru Imlek",
+      "nameEn": "Chinese New Year",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-03-08",
+      "name": "Hari Suci Nyepi",
+      "nameEn": "Day of Silence (Nyepi)",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-03-09",
+      "name": "Hari Raya Idulfitri",
+      "nameEn": "Eid al-Fitr",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-03-10",
+      "name": "Hari Raya Idulfitri",
+      "nameEn": "Eid al-Fitr",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-03-11",
+      "name": "Hari Raya Idulfitri",
+      "nameEn": "Eid al-Fitr",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-03-12",
+      "name": "Hari Raya Idulfitri",
+      "nameEn": "Eid al-Fitr",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-03-15",
+      "name": "Hari Raya Idulfitri",
+      "nameEn": "Eid al-Fitr",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-03-25",
+      "name": "Wafat Yesus Kristus",
+      "nameEn": "Good Friday",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-03-26",
+      "name": "Wafat Yesus Kristus",
+      "nameEn": "Good Friday",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-03-28",
+      "name": "Kebangkitan Yesus Kristus (Paskah)",
+      "nameEn": "Easter Sunday",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-05-01",
+      "name": "Hari Buruh Internasional",
+      "nameEn": "Labour Day",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-05-06",
+      "name": "Kenaikan Yesus Kristus",
+      "nameEn": "Ascension Day",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-05-17",
+      "name": "Hari Raya Iduladha",
+      "nameEn": "Eid al-Adha",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-05-18",
+      "name": "Hari Raya Iduladha",
+      "nameEn": "Eid al-Adha",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-05-19",
+      "name": "Hari Raya Waisak",
+      "nameEn": "Vesak Day",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-05-20",
+      "name": "Hari Raya Waisak",
+      "nameEn": "Vesak Day",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-06-01",
+      "name": "Hari Lahir Pancasila",
+      "nameEn": "Pancasila Day",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-06-06",
+      "name": "Tahun Baru Islam",
+      "nameEn": "Islamic New Year",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-08-15",
+      "name": "Maulid Nabi Muhammad SAW",
+      "nameEn": "Prophet Muhammad's Birthday",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-08-17",
+      "name": "Hari Proklamasi Kemerdekaan",
+      "nameEn": "Independence Day",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-12-24",
+      "name": "Kelahiran Yesus Kristus (Natal)",
+      "nameEn": "Christmas Day",
+      "type": "leave",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-12-25",
+      "name": "Kelahiran Yesus Kristus (Natal)",
+      "nameEn": "Christmas Day",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2027"
+    },
+    {
+      "date": "2027-12-26",
+      "name": "Isra Mikraj Nabi Muhammad SAW",
+      "nameEn": "Isra and Mi'raj",
+      "type": "national",
+      "status": "official",
+      "sourceId": "skb-2027"
+    }
+  ],
+  "sources": [
+    {
+      "id": "skb-2027",
+      "title": "SKB 3 Menteri: 18 libur nasional dan 8 cuti bersama 2027",
+      "url": "https://setneg.go.id/baca/index/inilah_skb_3_menteri_libur_nasional_dan_cuti_bersama_2027",
+      "published": "2026-09-15",
+      "decree": "1205/2026, 3/2026, 2/2026",
+      "checked": "2026-10-21"
+    }
+  ],
+  "missing": [],
+  "note": {
+    "id": "Sesuai SKB dan perubahan yang dirujuk. Tanggal hari raya Islam mengikuti keputusan Menteri Agama. Cuti bersama swasta mengikuti kebijakan pemberi kerja.",
+    "en": "Based on the cited government decrees and amendments. Islamic observances remain subject to the Minister of Religious Affairs. Private-sector collective leave follows employer policy."
+  }
+}
