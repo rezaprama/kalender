@@ -36,7 +36,7 @@ Neither reproduces Indonesian practice. Kemenag fixes 1 Ramadan, 1 Syawal and 1 
 
 Conversions for 1900-12-22 to 2100-12-31 come from the Hong Kong Observatory Gregorian-Lunar Calendar Conversion Tables for 1901-2100 (one text file per year, e.g. [T2027e.txt](https://www.hko.gov.hk/en/gts/time/calendar/text/files/T2027e.txt)), retrieved on 2026-10-21. They are stored as 2,475 month starts: one 29/30-day bit per month plus the indices of the 73 leap months. A checksum test (FNV-1a `f468db94`) ties the embedded table to the extraction. Dates from 1900-01-01 to 1900-12-21 fall outside the HKO tables and are not supported: the API returns `chinese: null` for them.
 
-ICU's own astronomical `chinese` calendar was rejected. It disagrees with HKO on 447 days in 13 lunar years between 1900 and 2100, when a new moon falls close to midnight Beijing time. Four of those disagreements move Chinese New Year (1954, 1955, 2027, 2030). For 2027, HKO and the Indonesian SKB both give 6 February, while ICU gives 7 February.
+ICU's own astronomical `chinese` calendar was rejected. It disagrees with HKO on 447 days in 13 lunar years between 1900 and 2100, when a new moon falls close to midnight Beijing time. With Node 22's ICU 77.1, three of those disagreements move Chinese New Year (1954, 2027, 2030); HKO's own 1954 and 2030 tables were rechecked on 2026-10-21. For 2027, HKO and the Indonesian SKB both give 6 February, while ICU gives 7 February.
 
 Rights in the HKO data belong to the Government of the Hong Kong SAR. The table lives in `src/calendars/chinese-hko-data.ts` and is used non-commercially under the HKO conditions; see [third_party/hko/NOTICE.md](../third_party/hko/NOTICE.md).
 

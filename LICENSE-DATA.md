@@ -20,7 +20,7 @@ On the web, use a normal HTML link: `<a href="https://rezaprama.com">Reza Prama 
 
 ## Chinese calendar data
 
-API responses and pages that show Chinese lunisolar dates contain information derived from Hong Kong Observatory data. The HKO Disclaimer is displayed on the site's Sources page, is returned by `/api/v1/calendars`, and is reproduced in [third_party/hko/NOTICE.md](third_party/hko/NOTICE.md). Selling or exchanging that information for any benefit is prohibited by HKO's conditions. Commercial users must obtain HKO's written authorisation or use another source.
+API responses and pages that show Chinese lunisolar dates contain information derived from Hong Kong Observatory data. The HKO Disclaimer is displayed on the site's Sources page, is returned in `attribution.license.exceptions` of every JSON API body that contains such data, and is reproduced in [third_party/hko/NOTICE.md](third_party/hko/NOTICE.md). Projected Tahun Baru Imlek dates (2028 onward) cite the `calc-chinese` source, whose `rights` field states the same terms. Selling or exchanging that information for any benefit is prohibited by HKO's conditions. Commercial users must obtain HKO's written authorisation or use another source.
 
 ## No warranty
 

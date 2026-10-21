@@ -18,6 +18,19 @@ describe('commit attribution policy', () => {
     assert.ok(attributionIssues('fix: calendar\n\n🤖 Generated with [Claude Code](https://claude.ai)').length);
   });
 
+  test('covers newer model names, other assistants, alternative trailers and session links', () => {
+    for (const identity of ['Claude Fable 5.1 <bot@example.org>', 'Claude Mythos 5.1 <bot@example.org>', 'Cursor Agent <cursoragent@cursor.com>', 'Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>', 'Helper <x@anthropic.com>']) {
+      assert.equal(isAssistant(identity), true, identity);
+    }
+    assert.ok(attributionIssues('fix: x\n\nAssisted-by: Claude <bot@example.org>').length);
+    assert.ok(attributionIssues('fix: x\n\nClaude-Session: https://claude.ai/code/session_01ABC').length);
+    assert.ok(attributionIssues('fix: x\n\nhttps://claude.ai/code/session_01ABC').length);
+    // Humans and ordinary prose stay allowed.
+    for (const ok of ['fix: x\n\nCo-authored-by: Claude Martin <claude@example.org>', 'fix: x\n\nCo-authored-by: Jules Verne <jules@example.org>', 'docs: compare Cursor and Copilot behaviour', 'fix: x\n\nSigned-off-by: Reza Prama Arviandi <48824676+rezaprama@users.noreply.github.com>']) {
+      assert.deepEqual(attributionIssues(ok), [], ok);
+    }
+  });
+
   test('checks every new commit, including a credit hidden behind a clean final commit', () => {
     const dir = mkdtempSync(join(tmpdir(), 'kalender-attribution-'));
     const original = process.cwd();

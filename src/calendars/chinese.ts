@@ -1,7 +1,7 @@
 import { civil, iso, type Lang } from '../core.ts';
 import { LEAP_MONTH_INDICES, MONTH_LENGTHS_HEX } from './chinese-hko-data.ts';
 
-export { HKO_ATTRIBUTION, LEAP_MONTH_INDICES, MONTH_LENGTHS_HEX } from './chinese-hko-data.ts';
+export { HKO_ATTRIBUTION, HKO_RIGHTS, LEAP_MONTH_INDICES, MONTH_LENGTHS_HEX } from './chinese-hko-data.ts';
 
 /**
  * Chinese lunisolar calendar, table-driven from the Hong Kong Observatory

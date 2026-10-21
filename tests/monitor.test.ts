@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, test } from 'node:test';
 import { loadOfficial } from '../scripts/data.ts';
-import { candidates, dateCoverage, expectations, fingerprint, parseRss, run, type Finding } from '../scripts/monitor.ts';
+import { FEEDS, candidates, dateCoverage, expectations, feedUnreachable, fingerprint, parseRss, run, type Finding } from '../scripts/monitor.ts';
 
 const RSS = `<?xml version="1.0"?><rss><channel>
 <item><title><![CDATA[Pemerintah Tetapkan Hari Libur Nasional dan Cuti Bersama Tahun 2028]]></title><link>https://setkab.go.id/libur-2028/</link><pubDate>Tue, 12 Sep 2027 08:00:00 +0000</pubDate></item>
@@ -51,6 +51,16 @@ describe('monitor', () => {
     assert.ok(late.some((f) => f.kind === 'isbat' && f.severity === 'action' && f.message.startsWith('2027-03-10')));
     const soon = expectations(official, '2027-02-20');
     assert.ok(soon.some((f) => f.kind === 'isbat' && f.severity === 'info'));
+  });
+
+  test('only required feed outages need a curator', () => {
+    assert.ok(FEEDS.some((f) => f.required && f.url === 'https://setkab.go.id/feed/'));
+    assert.ok(FEEDS.filter((f) => /[?&]s=/.test(f.url)).every((f) => !f.required));
+    const required = feedUnreachable({ url: 'https://example.go.id/feed/', required: true }, '500');
+    const optional = feedUnreachable({ url: 'https://example.go.id/?s=x&feed=rss2', required: false }, 'timeout');
+    assert.equal(required.severity, 'action');
+    assert.equal(optional.severity, 'info');
+    assert.equal(fingerprint([required, optional]), fingerprint([required]));
   });
 
   test('offline run produces a report without touching the network', async () => {

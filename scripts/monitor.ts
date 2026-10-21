@@ -10,10 +10,16 @@ import { jakartaToday, type YearData } from '../src/core.ts';
 import { loadOfficial } from './data.ts';
 
 const UA = 'KalenderIndonesiaMonitor/1.0 (+https://github.com/rezaprama/kalender)';
-const FEEDS = [
-  'https://setkab.go.id/?s=libur+nasional&feed=rss2',
-  'https://setkab.go.id/?s=cuti+bersama&feed=rss2',
-  'https://www.kemenkopmk.go.id/rss.xml',
+/**
+ * Required feeds must answer; an outage is an action item. Setkab's search-result feeds
+ * (`?s=…&feed=rss2`) time out or return 500 on the server side (issue #6), so they are
+ * optional extras: the main Setkab feed already carries the same articles.
+ */
+export const FEEDS: { url: string; required: boolean }[] = [
+  { url: 'https://setkab.go.id/feed/', required: true },
+  { url: 'https://www.kemenkopmk.go.id/rss.xml', required: true },
+  { url: 'https://setkab.go.id/?s=libur+nasional&feed=rss2', required: false },
+  { url: 'https://setkab.go.id/?s=cuti+bersama&feed=rss2', required: false },
 ];
 const MONTHS_ID = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 const RELEVANT = /libur nasional|cuti bersama|hari libur/i;
@@ -55,6 +61,13 @@ export function dateCoverage(pageText: string, data: YearData, sourceId: string)
   return { found: dates.length - missing.length, total: dates.length, missing };
 }
 
+/** An unreachable required feed needs a curator; an optional one is only reported. */
+export function feedUnreachable(feed: { url: string; required: boolean }, reason: string): Finding {
+  return feed.required
+    ? { kind: 'source', severity: 'action', message: `Feed unreachable (${reason}): ${feed.url}. Not treated as "no change".` }
+    : { kind: 'source', severity: 'info', message: `Optional feed unreachable (${reason}): ${feed.url}. Covered by the required feeds.` };
+}
+
 /** Time-based expectations that need no network. */
 export function expectations(official: Map<number, YearData>, today: string): Finding[] {
   const year = Number(today.slice(0, 4)), month = Number(today.slice(5, 7));
@@ -87,8 +100,8 @@ export async function run(options: { offline?: boolean; today?: string } = {}): 
   if (!options.offline) {
     const known = new Set([...official.values()].flatMap((d) => d.sources.map((s) => s.url)));
     for (const feed of FEEDS) {
-      const res = await get(feed);
-      if ('error' in res || res.status !== 200) { findings.push({ kind: 'source', severity: 'action', message: `Feed unreachable (${'error' in res ? res.error : res.status}): ${feed}. Not treated as "no change".` }); continue; }
+      const res = await get(feed.url);
+      if ('error' in res || res.status !== 200) { findings.push(feedUnreachable(feed, 'error' in res ? res.error : String(res.status))); continue; }
       for (const item of candidates(parseRss(res.body), known, Number(today.slice(0, 4)))) {
         findings.push({ kind: 'candidate', severity: 'action', message: `New article: [${item.title}](${item.link})${item.date ? ` (${item.date})` : ''}. Read the decree; add or amend data only with verified dates.` });
       }
@@ -115,7 +128,7 @@ export async function run(options: { offline?: boolean; today?: string } = {}): 
       const list = findings.filter((f) => f.kind === kind);
       return list.length ? [`## ${kind}`, '', ...list.map((f) => `- ${f.severity === 'action' ? '**action**' : 'info'}: ${f.message}`), ''] : [];
     }),
-    `Checked: ${FEEDS.length} feeds, official sources for ${[...official.keys()].filter((y) => y >= Number(today.slice(0, 4)) - 1).join(', ')}.`,
+    `Checked: ${FEEDS.filter((f) => f.required).length} required and ${FEEDS.filter((f) => !f.required).length} optional feeds, official sources for ${[...official.keys()].filter((y) => y >= Number(today.slice(0, 4)) - 1).join(', ')}.`,
     `<!-- kalender-monitor:${fingerprint(findings)} -->`,
   ].join('\n');
   return { findings, report };

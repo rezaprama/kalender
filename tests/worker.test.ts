@@ -90,6 +90,27 @@ describe('API', () => {
     assert.equal(body.attribution.url, 'https://rezaprama.com');
   });
 
+  test('HKO-derived data carries its non-commercial terms in sources and the license block', async () => {
+    type Body = { sources: { id: string; title: string; rights?: string }[]; attribution: { license: { data: string; exceptions?: { terms: string }[] } } };
+    const projected = await get('/api/v1/holidays?year=2030').json() as Body;
+    const chinese = projected.sources.find((s) => s.id === 'calc-chinese')!;
+    assert.match(chinese.title, /Hong Kong Observatory/);
+    assert.doesNotMatch(chinese.title, /ICU/);
+    assert.match(chinese.rights!, /non-commercial/);
+    assert.match(projected.attribution.license.exceptions![0].terms, /non-commercial/);
+    const official = await get('/api/v1/holidays?year=2026').json() as Body;
+    assert.equal(official.attribution.license.exceptions, undefined);
+    const date = await get('/api/v1/date?date=2026-02-17').json() as Body;
+    assert.match(date.attribution.license.exceptions![0].terms, /Hong Kong Observatory/);
+    const before = await get('/api/v1/date?date=1900-06-01').json() as Body & { chinese: unknown };
+    assert.equal(before.chinese, null);
+    assert.equal(before.attribution.license.exceptions, undefined);
+    const workdays2026 = await get('/api/v1/workdays?start=2026-01-01&end=2026-12-31').json() as Body;
+    assert.equal(workdays2026.attribution.license.exceptions, undefined);
+    const workdays2030 = await get('/api/v1/workdays?start=2030-01-01&end=2030-03-01').json() as Body;
+    assert.equal(workdays2030.attribution.license.exceptions!.length, 1);
+  });
+
   test('filters, localisation and formats', async () => {
     const en = await get('/api/v1/holidays?year=2026&month=8&type=national&lang=en').json() as { holidays: { date: string; nameLocalized: string }[] };
     assert.deepEqual(en.holidays.map((h) => h.date), ['2026-08-17', '2026-08-25']);

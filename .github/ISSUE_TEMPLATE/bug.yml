@@ -1,0 +1,15 @@
+name: Bug or accessibility problem / Bug atau masalah aksesibilitas
+description: Something on the site, API, embed or exports does not work as documented.
+labels: [bug]
+body:
+  - type: input
+    id: url
+    attributes: { label: Page or API URL, placeholder: "https://kalender.rezaprama.com/…" }
+    validations: { required: true }
+  - type: textarea
+    id: what
+    attributes: { label: What happened and what did you expect? / Apa yang terjadi dan apa yang diharapkan? }
+    validations: { required: true }
+  - type: input
+    id: env
+    attributes: { label: Browser, device or assistive technology / Peramban, perangkat, atau teknologi bantu }
