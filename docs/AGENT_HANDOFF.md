@@ -7,7 +7,7 @@ Date: 21 October 2026 (WIB).
 - Initial release merged to `main` as `8e2ba41`; both the release-branch and main CI runs passed.
 - Production Worker: `kalender`, <https://kalender.rezaprama.com>.
 - Cloudflare Workers Builds is connected to `rezaprama/kalender`, production branch `main`, build `npm run build`, deploy `npx wrangler deploy`.
-- Non-production builds use `npx wrangler versions upload`. The dashboard initially selected beta `wrangler preview`, which requires a `previews` block; the version-upload workflow matches this Worker's configuration.
+- Non-production Git builds use Cloudflare's beta `npx wrangler preview`. `wrangler.jsonc` explicitly includes `previews: {}`; assets and production routes remain at the top level. The Worker has no stateful data bindings or secrets to duplicate.
 - Release notes: [CHANGELOG.md](../CHANGELOG.md). Deployment and maintenance: [RELEASE.md](RELEASE.md).
 
 ## Verified baseline

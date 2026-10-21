@@ -107,7 +107,7 @@ npm run deploy
 
 Cloudflare Workers Builds is connected to this repository: pushes to `main` build with `npm run build` and deploy with `npx wrangler deploy`. The custom domain `kalender.rezaprama.com` is declared in `wrangler.jsonc`.
 
-Other branches use `npx wrangler versions upload` for preview versions.
+Other branches use Cloudflare's preview builds (`npx wrangler preview`, currently an open beta). The required `previews` configuration is included in `wrangler.jsonc`.
 
 Government sources are checked daily around 08:00 WIB through GitHub Actions. New findings update one review issue; identical findings stay quiet. Official data changes require source verification and a passing pull request. See [release and maintenance](docs/RELEASE.md).
 
