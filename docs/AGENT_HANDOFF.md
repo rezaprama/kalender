@@ -4,15 +4,15 @@ Authoritative checkpoint. Update at every milestone. States: NOT_STARTED · IN_P
 
 ## Current
 - Branch: `feat/kalender-completion` (from `main` @ 6927e9e "chore: preserve initial Codex implementation"). No remote configured. Nothing pushed or deployed.
-- Phase: 3 — frontend, UX, accessibility. Next action: full-page Playwright screenshots (desktop/mobile, light/dark), fix layout defects, keyboard/a11y audit.
+- Phase: 4 — multi-calendar. Next action: `src/calendars/javanese.ts` (weton, neptu, Javanese month/year with Asapon/Aboge), MABIMS evaluation, conversion API + UI calendar mode.
 
 ## Milestones
 | Phase | State | Evidence |
 | --- | --- | --- |
 | 1 Foundation and recovery | VERIFIED (wrangler dev BLOCKED by environment) | `npm run check` exit 0; Node preview renders `/`, `/en/2026/08`, `/alat`; dialog works, no console errors |
 | 2 Holiday data correctness | VERIFIED | 2022–2027 re-read from setkab/setneg/kemenkopmk/kemenag pages, all dates match; validator with declared counts + plausibility; HKO Chinese table; 53 tests |
-| 3 Frontend, UX, a11y | IN_PROGRESS | |
-| 4 Multi-calendar | NOT_STARTED | |
+| 3 Frontend, UX, a11y | VERIFIED | `npm run e2e` 28/28: axe-core WCAG 2.2 AA on 9 pages × light/dark = 0 violations; keyboard grid, shared date URL, tools, theme, embed, phone overflow, 24px targets. Screenshots reviewed (desktop/mobile/print) |
+| 4 Multi-calendar | IN_PROGRESS | |
 | 5 API, embed, OSS docs | NOT_STARTED | |
 | 6 SEO, perf, security, CI, monitoring | NOT_STARTED | |
 | 7 Final integration | NOT_STARTED | |
@@ -27,6 +27,8 @@ Authoritative checkpoint. Update at every milestone. States: NOT_STARTED · IN_P
 - Chinese calendar is table-driven from HKO 1901–2100 (checksum-tested). ICU `chinese` rejected: 447 days / 13 lunar years differ, incl. Imlek 2027 (ICU 7 Feb vs HKO+SKB 6 Feb).
 - Hijri: tabular `civil` for display (21/31 exact vs decrees), never presented as isbat. MABIMS predictor = Phase 4 candidate.
 - `subjectTo: "isbat"` on decreed Idulfitri/Iduladha of years whose isbat has not happened (2027). Remove after the isbat confirms the date.
+- UI: roving tabindex (one tab stop per month, arrows/Home/End), date URLs `#YYYY-MM-DD` open the detail dialog, next-holiday card lists national holidays only, leave summarised in mini months.
+- Browser tests: `scripts/browser.ts` falls back to any installed Playwright Chromium (pinned build 1248 missing locally). axe runs with `bypassCSP` (CSP blocks injected scripts, as intended).
 - Historical: 1900–1944 `pre-independence`; 1945–2021 archive not curated (DEFERRED: needs per-year decree evidence).
 
 ## Known defects / blockers
@@ -36,5 +38,6 @@ Authoritative checkpoint. Update at every milestone. States: NOT_STARTED · IN_P
 - `/og.png` referenced but missing.
 
 ## Verification log
+- 2026-10-21 Phase 3: check 53/53, e2e 28/28. Automated a11y covers only machine-checkable WCAG criteria; no manual screen-reader pass yet.
 - 2026-10-21 Phase 2: `npm run check` exit 0, 53 tests. Evidence ledger: docs/DATA_SOURCES.md.
 - 2026-10-21 Phase 1: build OK (201 years, 6 official), typecheck OK (worker + client), Biome 0 diagnostics, 34 tests pass (weekday of every date 1900–2100 vs Sakamoto, leap years, pasaran cycle, workdays, breaks, ICS folding/escaping, CSV, dataset validation, routing, API errors/ETag/CORS).

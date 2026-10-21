@@ -1,4 +1,4 @@
-import { MONTHS, addDays, breaks, dayOfWeek, escapeHtml as e, formatDate, hijri, jakartaToday, pasaran, pathFor, type Lang, type YearData } from '../core.ts';
+import { MONTHS, addDays, civil, breaks, dayOfWeek, escapeHtml as e, formatDate, hijri, jakartaToday, pasaran, pathFor, type Lang, type YearData } from '../core.ts';
 import { eventQualifiers, statusLabel, words } from '../i18n.ts';
 
 const body = document.body;
@@ -59,23 +59,46 @@ function setupDialog(): void {
   const content = $('#dialog-content');
   if (!dialog || !content) return;
   let opener: HTMLElement | null = null;
-  document.addEventListener('click', async (event) => {
+  let current = '';
+  const open = async (date: string) => {
+    current = date;
+    content.innerHTML = `<h2 id="dialog-title">${e(formatDate(date, lang, true))}</h2><p class="quiet">…</p>`;
+    if (!dialog.open) dialog.showModal();
+    history.replaceState(null, '', `#${date}`);
+    const details = await dateDetails(date);
+    if (current === date) content.innerHTML = `<h2 id="dialog-title">${e(formatDate(date, lang, true))}</h2>${details}`;
+  };
+  document.addEventListener('click', (event) => {
     const target = (event.target as Element).closest<HTMLElement>('[data-date]');
     if (!target || target.closest('#date-dialog')) return;
     opener = target;
-    const date = target.dataset.date!;
-    content.innerHTML = `<h2 id="dialog-title">${e(formatDate(date, lang, true))}</h2><p class="quiet">…</p>`;
-    if (!dialog.open) dialog.showModal();
-    content.innerHTML = `<h2 id="dialog-title">${e(formatDate(date, lang, true))}</h2>${await dateDetails(date)}`;
+    void open(target.dataset.date!);
   });
   $('#dialog-close')?.addEventListener('click', () => dialog.close());
+  $('#dialog-share')?.addEventListener('click', async () => {
+    const url = `${location.origin}${pathFor(Number(current.slice(0, 4)), lang, body.dataset.embed === 'true' ? undefined : Number(current.slice(5, 7)))}#${current}`;
+    try { await navigator.clipboard.writeText(url); toast(t.copied); } catch { toast(url); }
+  });
   dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
-  dialog.addEventListener('close', () => opener?.focus());
+  dialog.addEventListener('close', () => {
+    history.replaceState(null, '', location.pathname + location.search);
+    opener?.focus();
+  });
+  const hash = location.hash.slice(1);
+  if (/^\d{4}-\d{2}-\d{2}$/.test(hash)) {
+    try { civil(hash); opener = document.querySelector<HTMLElement>(`.day[data-date="${hash}"]`); void open(hash); } catch { /* invalid or out-of-range date in the URL: ignore */ }
+  }
 }
 
 function setupToday(): void {
   const today = jakartaToday();
-  document.querySelectorAll(`.day[data-date="${today}"]`).forEach((node) => { node.classList.add('today'); node.setAttribute('aria-current', 'date'); });
+  document.querySelectorAll(`.day[data-date="${today}"]`).forEach((node) => {
+    node.classList.add('today');
+    node.setAttribute('aria-current', 'date');
+    // Today becomes its month's tab stop instead of day 1.
+    node.closest('.days')?.querySelector('[tabindex="0"]')?.setAttribute('tabindex', '-1');
+    node.setAttribute('tabindex', '0');
+  });
   const day = $('[data-today-day]'), month = $('[data-today-month]');
   if (day) day.textContent = String(Number(today.slice(8)));
   if (month) month.textContent = `${WEEKDAY_LONG[lang][dayOfWeek(today)]}, ${MONTHS[lang][Number(today.slice(5, 7)) - 1]} ${today.slice(0, 4)}`;
@@ -92,8 +115,9 @@ async function setupNextHoliday(): Promise<void> {
   const today = jakartaToday();
   try {
     const data = await loadYear(shownYear);
-    const upcoming = Number(today.slice(0, 4)) === shownYear ? data.holidays.find((h) => h.date >= today) : data.holidays[0];
-    if (!upcoming) { node.innerHTML = `<p class="quiet">${data.holidays.length ? t.noNext : e(data.note[lang])}</p>`; return; }
+    const national = data.holidays.filter((h) => h.type === 'national');
+    const upcoming = Number(today.slice(0, 4)) === shownYear ? national.find((h) => h.date >= today) : national[0];
+    if (!upcoming) { node.innerHTML = `<p class="quiet">${national.length ? t.noNext : e(data.note[lang])}</p>`; return; }
     const days = Math.round((Date.parse(upcoming.date) - Date.parse(today)) / 86400000);
     const when = Number(today.slice(0, 4)) !== shownYear ? '' : days === 0 ? t.today : lang === 'id' ? `${days} hari lagi` : `in ${days} day${days === 1 ? '' : 's'}`;
     node.innerHTML = `<button class="next-card" data-date="${upcoming.date}"><strong>${e(lang === 'en' ? upcoming.nameEn : upcoming.name)}</strong><span>${e(formatDate(upcoming.date, lang, true))}</span>${when ? `<span class="quiet">${when}</span>` : ''}${eventQualifiers(upcoming, lang).map((q) => `<small class="estimate-label">${e(q)}</small>`).join('')}</button>`;
@@ -155,6 +179,29 @@ function setupTools(): void {
   });
 }
 
+function setupDateCalculator(): void {
+  const diffForm = $<HTMLFormElement>('#diff-form'), diffResult = $('#diff-result');
+  diffForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const form = new FormData(diffForm);
+    try {
+      const start = civil(String(form.get('start'))).valueOf(), end = civil(String(form.get('end'))).valueOf();
+      const days = Math.round((end - start) / 86400000), abs = Math.abs(days);
+      const weeks = `${Math.floor(abs / 7)} ${lang === 'id' ? 'minggu' : 'weeks'} ${abs % 7} ${t.days}`;
+      diffResult!.innerHTML = `<p class="result-number"><strong>${days.toLocaleString(lang)}</strong> ${t.days}</p><p class="quiet">${weeks}. ${lang === 'id' ? 'Jika kedua tanggal dihitung: ' : 'Counting both dates: '}${(abs + 1).toLocaleString(lang)} ${t.days}.</p>`;
+    } catch { diffResult!.innerHTML = `<p class="error">${lang === 'id' ? 'Tanggal harus antara 1900 dan 2100.' : 'Dates must be between 1900 and 2100.'}</p>`; }
+  });
+  const addForm = $<HTMLFormElement>('#add-form'), addResult = $('#add-result');
+  addForm?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const form = new FormData(addForm);
+    try {
+      const date = addDays(String(form.get('start')), Number(form.get('days')));
+      addResult!.innerHTML = `<p class="result-number"><button class="link-button" data-date="${date}">${e(formatDate(date, lang, true))}</button></p>${await dateDetails(date)}`;
+    } catch { addResult!.innerHTML = `<p class="error">${lang === 'id' ? 'Hasil di luar rentang 1900-2100.' : 'Result is outside 1900-2100.'}</p>`; }
+  });
+}
+
 function setupEmbedBuilder(): void {
   const form = $<HTMLFormElement>('#embed-form'), preview = $<HTMLIFrameElement>('#embed-preview'), code = $<HTMLTextAreaElement>('#embed-code');
   if (!form || !preview || !code) return;
@@ -202,17 +249,24 @@ function setupTheme(): void {
   });
 }
 
-/** Arrow-key navigation inside a month grid (WAI-ARIA grid pattern, simplified). */
+/** Calendar grid keys: arrows move by day/week, Home/End to week start/end; roving tabindex keeps one tab stop per month. */
 function setupGridKeys(): void {
   document.addEventListener('keydown', (event) => {
     const current = (event.target as Element).closest<HTMLElement>('.day[data-date]');
     if (!current) return;
-    const step = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 }[event.key];
-    if (!step) return;
+    const date = current.dataset.date!;
+    const weekday = (dayOfWeek(date) + 6) % 7; // Monday = 0
+    const step = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7, Home: -weekday, End: 6 - weekday }[event.key];
+    if (step === undefined) return;
     let target: string;
-    try { target = addDays(current.dataset.date!, step); } catch { return; }
+    try { target = addDays(date, step); } catch { return; }
     const next = document.querySelector<HTMLElement>(`.day[data-date="${target}"]`);
-    if (next) { event.preventDefault(); next.focus(); }
+    if (!next) return;
+    event.preventDefault();
+    current.setAttribute('tabindex', '-1');
+    next.closest('.days')?.querySelector('[tabindex="0"]')?.setAttribute('tabindex', '-1');
+    next.setAttribute('tabindex', '0');
+    next.focus();
   });
 }
 
@@ -222,6 +276,7 @@ setupDialog();
 setupGridKeys();
 setupHolidayFilter();
 setupTools();
+setupDateCalculator();
 setupEmbedBuilder();
 setupEmbedNavigation();
 document.querySelector('[data-print]')?.addEventListener('click', () => window.print());

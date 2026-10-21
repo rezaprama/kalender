@@ -13,7 +13,7 @@
   "scripts": {
     "dev": "tsx scripts/dev.ts",
     "build": "tsx scripts/build.ts",
-    "typecheck": "tsc --noEmit && tsc --noEmit -p src/client",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p src/client && tsc --noEmit -p tests/e2e",
     "lint": "biome lint src scripts tests",
     "test": "tsx --test tests/*.test.ts",
     "check": "npm run build && npm run typecheck && npm run lint && npm test",
@@ -21,13 +21,15 @@
     "deploy": "npm run check && wrangler deploy",
     "cf:types": "wrangler types",
     "monitor": "tsx scripts/monitor.ts",
-    "audit": "tsx scripts/audit.ts"
+    "audit": "tsx scripts/audit.ts",
+    "e2e": "tsx --test --test-concurrency=1 tests/e2e/*.e2e.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",
     "@cloudflare/workers-types": "^5.20261019.1",
     "@phosphor-icons/core": "^2.1.1",
     "@types/node": "^24.0.0",
+    "axe-core": "^4.14.0",
     "esbuild": "^0.25.0",
     "lighthouse": "^13.0.0",
     "playwright": "^1.56.0",

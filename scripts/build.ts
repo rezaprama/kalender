@@ -9,7 +9,7 @@ import { MAX_YEAR, MIN_YEAR, SITE, jakartaToday, type YearData } from '../src/co
 import { openapi } from './openapi.ts';
 import { loadYears } from './data.ts';
 
-const ICONS = ['seal-check', 'info', 'arrow-up-right', 'arrow-right', 'caret-left', 'caret-right', 'squares-four', 'calendar-blank', 'printer', 'sun-horizon', 'calculator', 'download-simple', 'code', 'magnifying-glass', 'copy', 'plus', 'translate', 'moon', 'github-logo', 'x'];
+const ICONS = ['seal-check', 'info', 'arrow-up-right', 'arrow-right', 'caret-left', 'caret-right', 'squares-four', 'calendar-blank', 'printer', 'sun-horizon', 'calculator', 'download-simple', 'code', 'magnifying-glass', 'copy', 'plus', 'translate', 'moon', 'github-logo', 'x', 'link', 'plus-minus'];
 const hash = (content: string | Uint8Array) => createHash('sha256').update(content).digest('hex').slice(0, 10);
 
 async function bundle(entry: string, ext: 'js' | 'css'): Promise<string> {

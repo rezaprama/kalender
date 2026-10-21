@@ -24,6 +24,7 @@
     "worker-configuration.d.ts"
   ],
   "exclude": [
-    "src/client"
+    "src/client",
+    "tests/e2e"
   ]
 }
