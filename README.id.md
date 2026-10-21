@@ -1,5 +1,9 @@
 # Kalender Indonesia
 
+[![CI](https://github.com/rezaprama/kalender/actions/workflows/ci.yml/badge.svg)](https://github.com/rezaprama/kalender/actions/workflows/ci.yml)
+
+Sumber pemerintah diperiksa setiap hari sekitar pukul 08.00 WIB melalui GitHub Actions. Temuan baru masuk ke satu issue; temuan identik tidak mengirim pemberitahuan berulang. Perubahan data resmi harus melewati verifikasi sumber dan CI. Lihat [panduan rilis dan pemeliharaan](docs/RELEASE.md).
+
 **Kalender Indonesia yang bisa diperiksa.** Libur nasional dan cuti bersama yang ditelusuri ke keputusan pemerintah, kalender Masehi 1900–2100, konversi Jawa, Hijriah, dan Tionghoa, API JSON/ICS/CSV gratis, serta kalender yang bisa dipasang di situs lain.
 
 [English](README.md) · Situs: <https://kalender.rezaprama.com> · API: [`/openapi.json`](https://kalender.rezaprama.com/openapi.json)

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, test } from 'node:test';
 import { loadOfficial } from '../scripts/data.ts';
-import { candidates, dateCoverage, expectations, parseRss, run } from '../scripts/monitor.ts';
+import { candidates, dateCoverage, expectations, fingerprint, parseRss, run, type Finding } from '../scripts/monitor.ts';
 
 const RSS = `<?xml version="1.0"?><rss><channel>
 <item><title><![CDATA[Pemerintah Tetapkan Hari Libur Nasional dan Cuti Bersama Tahun 2028]]></title><link>https://setkab.go.id/libur-2028/</link><pubDate>Tue, 12 Sep 2027 08:00:00 +0000</pubDate></item>
@@ -17,6 +17,15 @@ const PAGE_2026 = `<ul><li>1 Januari: Tahun Baru 2026 Masehi</li><li>16 Januari:
 <p>Cuti bersama: 16 Februari; 18 Maret; 20, 23, dan 24 Maret; 15 Mei; 28 Mei; 24 Desember.</p>`;
 
 describe('monitor', () => {
+  test('notification fingerprint ignores order, duplicates and informational reminders', () => {
+    const a: Finding = { kind: 'source', severity: 'action', message: 'Government source changed' };
+    const b: Finding = { kind: 'candidate', severity: 'action', message: 'New decree' };
+    const info: Finding = { kind: 'isbat', severity: 'info', message: 'Isbat in 10 days' };
+    assert.equal(fingerprint([a, b]), fingerprint([b, info, a, a]));
+    assert.notEqual(fingerprint([a]), fingerprint([a, b]));
+    assert.notEqual(fingerprint([a]), fingerprint([{ ...a, message: 'A different amendment' }]));
+  });
+
   test('parses RSS and keeps only new, relevant, current articles', () => {
     const items = parseRss(RSS);
     assert.equal(items.length, 4);

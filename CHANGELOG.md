@@ -2,7 +2,7 @@
 
 All notable changes are listed here. Dates are in WIB. Data changes are listed separately from code changes because they affect what users rely on.
 
-## [Unreleased] — 1.0.0
+## [1.0.0] — 2026-10-21
 
 ### Data
 - Official national holidays and collective leave for 2022–2027, re-verified on 2026-10-21 against setkab.go.id, setneg.go.id, kemenkopmk.go.id, kemenag.go.id and JDIH sources. Adds the 2025 amendment (SKB 933/2025: collective leave 18 August 2025) and decree numbers.
@@ -17,3 +17,7 @@ All notable changes are listed here. Dates are in WIB. Data changes are listed s
 - Secondary calendar overlay, shareable date links, date calculator, long-weekend finder, working-day counter, print view.
 - `<kalender-indonesia>` web component and iframe embed with automatic height.
 - Validation: provenance, decree counts and holiday-category plausibility; 70+ unit and integration tests; Playwright journeys with an axe-core WCAG 2.2 AA audit.
+
+### Operations
+- Daily government-source checks at 08:00 WIB, with unchanged findings deduplicated and reports retained as workflow artifacts.
+- Public repository, pull-request CI and documented production deployment on Cloudflare Workers.

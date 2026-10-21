@@ -6,6 +6,8 @@
 
 Made and maintained by [Reza Prama Arviandi](https://rezaprama.com).
 
+[![CI](https://github.com/rezaprama/kalender/actions/workflows/ci.yml/badge.svg)](https://github.com/rezaprama/kalender/actions/workflows/ci.yml)
+
 ## What makes it different
 
 - **Every official date has a source.** Each holiday links to the SKB 3 Menteri, amendment or Keppres that declared it. The validator rejects official records that do not come from a `.go.id` source or that disagree with the counts stated in the decree. See [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md).
@@ -104,6 +106,8 @@ npm run deploy
 ```
 
 Connecting the GitHub repository in Cloudflare Workers Builds works with build command `npm run build` and deploy command `npx wrangler deploy`. The custom domain `kalender.rezaprama.com` is declared in `wrangler.jsonc`.
+
+Government sources are checked daily around 08:00 WIB through GitHub Actions. New findings update one review issue; identical findings stay quiet. Official data changes require source verification and a passing pull request. See [release and maintenance](docs/RELEASE.md).
 
 ## License and attribution
 

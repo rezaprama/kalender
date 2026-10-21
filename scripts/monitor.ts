@@ -2,9 +2,10 @@
  * Government-source monitor. Deterministic, read-only, no AI: it never edits data.
  * Usage: npx tsx scripts/monitor.ts [--report path.md] [--offline]
  * Exit code 0; prints a Markdown report and, in GitHub Actions, sets `changes=true|false`.
- * Scheduled quarterly and in mid-September (when next year's SKB is usually signed).
+ * Scheduled daily at 08:00 WIB. Identical action findings share a stable fingerprint.
  */
 import { appendFile, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { jakartaToday, type YearData } from '../src/core.ts';
 import { loadOfficial } from './data.ts';
 
@@ -19,6 +20,12 @@ const RELEVANT = /libur nasional|cuti bersama|hari libur/i;
 
 export interface FeedItem { title: string; link: string; date?: string }
 export interface Finding { kind: 'expectation' | 'candidate' | 'source' | 'isbat'; severity: 'action' | 'info'; message: string }
+
+/** Ignore report dates and ordering so unchanged findings do not notify maintainers daily. */
+export function fingerprint(findings: Finding[]): string {
+  const actions = [...new Set(findings.filter((f) => f.severity === 'action').map((f) => `${f.kind}:${f.message}`))].sort();
+  return createHash('sha256').update(JSON.stringify(actions)).digest('hex');
+}
 
 /** RSS 2.0 items (title, link, pubDate) without an XML dependency. */
 export function parseRss(xml: string): FeedItem[] {
@@ -109,6 +116,7 @@ export async function run(options: { offline?: boolean; today?: string } = {}): 
       return list.length ? [`## ${kind}`, '', ...list.map((f) => `- ${f.severity === 'action' ? '**action**' : 'info'}: ${f.message}`), ''] : [];
     }),
     `Checked: ${FEEDS.length} feeds, official sources for ${[...official.keys()].filter((y) => y >= Number(today.slice(0, 4)) - 1).join(', ')}.`,
+    `<!-- kalender-monitor:${fingerprint(findings)} -->`,
   ].join('\n');
   return { findings, report };
 }

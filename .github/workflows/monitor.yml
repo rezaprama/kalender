@@ -4,13 +4,16 @@ name: Holiday source monitor
 # when something needs a curator it opens (or comments on) one issue.
 on:
   schedule:
-    - cron: '0 1 1 1,4,7,10 *' # quarterly, 08:00 WIB
-    - cron: '0 1 20 9 *' # 20 September: next year's SKB is usually signed around now
+    - cron: '0 1 * * *' # daily, 08:00 WIB (GitHub scheduling may be delayed)
   workflow_dispatch:
 
 permissions:
   contents: read
   issues: write
+
+concurrency:
+  group: holiday-source-monitor
+  cancel-in-progress: false
 
 jobs:
   monitor:
@@ -41,7 +44,20 @@ jobs:
           gh label create monitor --color C0262D --description "Holiday source monitor" --force
           existing=$(gh issue list --state open --label monitor --json number --jq '.[0].number')
           if [ -n "$existing" ]; then
-            gh issue comment "$existing" --body-file monitor-report.md
+            fingerprint=$(sed -n 's/.*<!-- kalender-monitor:\([a-f0-9]*\) -->.*/\1/p' monitor-report.md)
+            current=$(gh issue view "$existing" --json body --jq '.body')
+            if [ -n "$fingerprint" ] && [[ "$current" == *"<!-- kalender-monitor:$fingerprint -->"* ]]; then
+              echo "Findings unchanged; no issue update."
+            else
+              gh issue edit "$existing" --body-file monitor-report.md
+            fi
           else
             gh issue create --title "Holiday sources need review" --label monitor --body-file monitor-report.md
           fi
+      - name: Retain monitor evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: holiday-source-report
+          path: monitor-report.md
+          retention-days: 30
