@@ -2,7 +2,7 @@
  * Government-source monitor. Deterministic, read-only, no AI: it never edits data.
  * Usage: npx tsx scripts/monitor.ts [--report path.md] [--offline]
  * Exit code 0; prints a Markdown report and, in GitHub Actions, sets `changes=true|false`.
- * Scheduled daily at 08:00 WIB. Identical action findings share a stable fingerprint.
+ * Scheduled quarterly (1 Jan, Apr, Jul, Oct, about 08:00 WIB) and run manually when a decree is expected. Identical action findings share a stable fingerprint.
  */
 import { appendFile, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
@@ -27,7 +27,7 @@ const RELEVANT = /libur nasional|cuti bersama|hari libur/i;
 export interface FeedItem { title: string; link: string; date?: string }
 export interface Finding { kind: 'expectation' | 'candidate' | 'source' | 'isbat'; severity: 'action' | 'info'; message: string }
 
-/** Ignore report dates and ordering so unchanged findings do not notify maintainers daily. */
+/** Ignore report dates and ordering so unchanged findings do not notify maintainers on every run. */
 export function fingerprint(findings: Finding[]): string {
   const actions = [...new Set(findings.filter((f) => f.severity === 'action').map((f) => `${f.kind}:${f.message}`))].sort();
   return createHash('sha256').update(JSON.stringify(actions)).digest('hex');

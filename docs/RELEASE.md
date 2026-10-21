@@ -62,7 +62,7 @@ After the pull request and production verification pass, create an annotated tag
 
 ## Maintain holiday data
 
-[Holiday source monitor](../.github/workflows/monitor.yml) runs daily around **08:00 WIB**. GitHub scheduling can be delayed. It can also be started manually from Actions. Reports are retained for 30 days; identical findings do not repeatedly update the monitor issue.
+[Holiday source monitor](../.github/workflows/monitor.yml) runs quarterly, on 1 January, April, July and October around **08:00 WIB**. The October run catches the next year's SKB; the April run catches the Idulfitri isbat. Start it manually when a decree or amendment is expected. GitHub scheduling can be delayed. It can also be started manually from Actions. Reports are retained for 30 days; identical findings do not repeatedly update the monitor issue.
 
 - When a decree or amendment appears, verify every date, update `data/official/YYYY.json`, and record the evidence in [DATA_SOURCES.md](DATA_SOURCES.md).
 - After each Idulfitri/Iduladha isbat, confirm the Kemenag decision before removing `subjectTo: "isbat"`.
