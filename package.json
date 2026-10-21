@@ -11,6 +11,8 @@
     "node": ">=22"
   },
   "scripts": {
+    "hooks:install": "git config --local core.hooksPath .githooks",
+    "check:attribution": "tsx scripts/check-attribution.ts",
     "dev": "tsx scripts/dev.ts",
     "build": "tsx scripts/build.ts",
     "typecheck": "tsc --noEmit && tsc --noEmit -p src/client && tsc --noEmit -p tests/e2e",

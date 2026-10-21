@@ -1,57 +1,108 @@
-# Kalender Indonesia
+<div align="center">
 
-**An Indonesian calendar you can check.** Public holidays and collective leave traced to government decrees, Gregorian dates for 1900–2100, Javanese, Hijri and Chinese conversions, a free JSON/ICS/CSV API and an embeddable calendar.
+<img src="public/favicon.svg" width="56" height="56" alt="Kalender logo">
 
-[Bahasa Indonesia](README.id.md) · Website: <https://kalender.rezaprama.com> · API: [`/openapi.json`](https://kalender.rezaprama.com/openapi.json)
+# kalender.
+
+**Know the date. Check the source. Plan your time.**
+
+An Indonesian calendar for 1900–2100, with sourced public holidays, collective leave, cultural calendars, an API, and a calendar for your own website.
+
+[Open calendar](https://kalender.rezaprama.com) · [Bahasa Indonesia](README.id.md) · [API docs](docs/API.md) · [Embed](#put-a-calendar-on-your-website)
+
+[![Checks](https://github.com/rezaprama/kalender/actions/workflows/ci.yml/badge.svg)](https://github.com/rezaprama/kalender/actions/workflows/ci.yml)
+[![API: v1](https://img.shields.io/badge/API-v1-16624f)](https://kalender.rezaprama.com/openapi.json)
+[![Code: Apache-2.0](https://img.shields.io/badge/code-Apache--2.0-242424)](LICENSE)
 
 Made and maintained by [Reza Prama Arviandi](https://rezaprama.com).
 
-[![CI](https://github.com/rezaprama/kalender/actions/workflows/ci.yml/badge.svg)](https://github.com/rezaprama/kalender/actions/workflows/ci.yml)
+</div>
 
-## What makes it different
+Look up a holiday. Find a longer break. Check a weton. Bring the calendar into your app.
 
-- **Every official date has a source.** Each holiday links to the SKB 3 Menteri, amendment or Keppres that declared it. The validator rejects official records that do not come from a `.go.id` source or that disagree with the counts stated in the decree. See [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md).
-- **It says what it does not know.** Each year is `official`, `estimated` or `unverified`. Projections for years without a decree are labelled, carry their uncertainty (Islamic dates ±1 day) and never claim to be government decisions. An empty historical year means "not yet curated", not "no holidays".
-- **Four calendars, one date model.** The Gregorian calendar is primary. Javanese (weton, neptu, Asapon and Aboge kurup), Hijri (tabular and Umm al-Qura) and Chinese (Hong Kong Observatory tables) are conversions with documented methods and ranges. See [docs/METHODOLOGY.md](docs/METHODOLOGY.md).
-- **Small and fast.** Server-rendered HTML on Cloudflare Workers, about 11 KB of gzipped JavaScript, no framework, no tracking, no cookies.
+**Use it now.** [2026 calendar](https://kalender.rezaprama.com/2026) · [2027 holidays](https://kalender.rezaprama.com/libur?year=2027) · [Working days and leave planner](https://kalender.rezaprama.com/alat)
 
-## Data coverage
+[![Monthly calendar with Indonesian holidays, Javanese dates, and a yearly holiday summary](docs/images/calendar-desktop.png)](https://kalender.rezaprama.com/2026/08?mode=jawa)
 
-| Years | Status | Contents |
+<details>
+<summary>See the mobile calendar with Chinese dates</summary>
+
+<img src="docs/images/calendar-mobile.png" width="390" alt="Mobile calendar with Chinese lunar dates, public holidays in red, and collective leave in amber">
+
+</details>
+
+## Choose your starting point
+
+| You want to… | Start here |
+| --- | --- |
+| Check dates and plan time off | [Open the calendar](https://kalender.rezaprama.com) or [use the planning tools](https://kalender.rezaprama.com/alat) |
+| Add holidays to a calendar app | [Download the 2026 ICS file](https://kalender.rezaprama.com/api/v1/holidays?year=2026&format=ics) |
+| Build an app or spreadsheet | [Try the API](#your-first-api-request), [read the reference](docs/API.md), or [download CSV](https://kalender.rezaprama.com/api/v1/holidays?year=2026&format=csv) |
+| Put a calendar on your website | [Copy the embed](#put-a-calendar-on-your-website) |
+| Verify a date or contribute a correction | [Check the sources](docs/DATA_SOURCES.md) and [contribution guide](CONTRIBUTING.md) |
+| Run your own copy | [Start locally](#run-it-locally), then [deploy to Cloudflare](#deploy-your-own-copy) |
+
+## What you can do
+
+- Browse a year or a month, switch between Indonesian and English, open date details, and print a calendar.
+- Separate national holidays from collective leave. Follow each official record back to its government decree or amendment.
+- Add Javanese dates, pasaran, weton and neptu; Hijri dates; or Chinese lunar dates to the Gregorian calendar.
+- Count working days, explore longer breaks, and export holidays as JSON, ICS, or CSV.
+- Use a public API without a key, or a calendar embed that resizes with its contents.
+- Read in light or dark mode, on a phone or desktop, with keyboard navigation.
+
+The site renders HTML on Cloudflare Workers. No browser framework, ads, tracking scripts, or cookies. Calendar methods, uncertainty, and source links travel with the data.
+
+## Which dates are official?
+
+**The calendar covers 1900–2100. Verified holiday records currently cover 2022–2027.** These are different things.
+
+| Years | API status | What is available |
 | --- | --- | --- |
-| 2022–2027 | `official` | National holidays and collective leave from verified decrees, including amendments and election-day Keppres |
-| 2028–2100 | `estimated` | Keppres 8/2024 categories with calculated dates. Nyepi, Waisak and collective leave are not guessed |
-| 1945–2021 | `unverified` | Gregorian calendar only. Holiday archive not yet curated |
-| 1900–1944 | `unverified` | Before the Republic of Indonesia. No national holidays apply |
+| 2022–2027 | `official` | National holidays and collective leave from verified government decisions, including amendments and election-day decrees |
+| 2028–2100 | `estimated` | Partial calculated dates using the categories in Keppres 8/2024; Nyepi, Waisak, and collective leave are not guessed |
+| 1945–2021 | `unverified` | Gregorian dates; the holiday archive has not yet been curated |
+| 1900–1944 | `unverified` | Gregorian dates before the Republic of Indonesia; no modern Indonesian holiday dataset is applied |
 
-Contributions of sourced historical years are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md).
+An empty holiday array for an unverified year means **missing research**, not a holiday-free year. Calculated Islamic dates can differ by a day; dates subject to isbat keep that label. Javanese dates after 2052 are projections. See the [methods and calendar ranges](docs/METHODOLOGY.md).
 
-## API in 30 seconds
+Government sources are checked daily around **08:00 WIB**. New findings go to a review issue. A curator verifies the decree and amendments before a passing pull request updates the site and API. [How updates work](docs/RELEASE.md#maintain-holiday-data).
 
-No key, CORS enabled, JSON by default.
+## Your first API request
+
+No signup or API key. CORS is enabled. Check `status`, `missing`, and `sources` alongside the dates.
 
 ```bash
 curl "https://kalender.rezaprama.com/api/v1/holidays?year=2026"
 ```
 
 ```js
-const res = await fetch('https://kalender.rezaprama.com/api/v1/holidays?year=2026&lang=en');
-const { status, holidays, sources } = await res.json();
-// holidays: [{ date, name, nameEn, nameLocalized, type: 'national' | 'leave', status, sourceId }]
+const response = await fetch('https://kalender.rezaprama.com/api/v1/holidays?year=2026&lang=en');
+if (!response.ok) throw new Error(`Calendar API: ${response.status}`);
+const { status, holidays, sources, missing } = await response.json();
+
+console.log(status); // 'official', 'estimated', or 'unverified'
+for (const holiday of holidays) {
+  console.log(holiday.date, holiday.nameLocalized, holiday.type);
+}
+// Match holiday.sourceId to sources[].id to show the government source.
+// Inspect missing before treating the result as a complete holiday list.
 ```
 
-| Endpoint | Purpose |
-| --- | --- |
-| `GET /api/v1/holidays?year=` | Holidays and collective leave, `format=json\|ics\|csv` |
-| `GET /api/v1/workdays?start=&end=` | Working days in a range, with data coverage |
-| `GET /api/v1/date?date=` | One date in every calendar, with holidays and observances |
-| `GET /api/v1/convert?calendar=&year=&month=&day=` | Hijri, Javanese or Chinese date to Gregorian |
-| `GET /api/v1/observances?year=` | Calculated religious and cultural observances (not holidays) |
-| `GET /api/v1/calendars` | Supported calendars, methods and ranges |
+| Endpoint | Example | Returns |
+| --- | --- | --- |
+| `/api/v1/holidays` | [`?year=2026`](https://kalender.rezaprama.com/api/v1/holidays?year=2026) | Holidays, collective leave, status, sources; JSON, ICS, or CSV |
+| `/api/v1/date` | [`?date=2026-08-17`](https://kalender.rezaprama.com/api/v1/date?date=2026-08-17) | One Gregorian date across the supported calendars |
+| `/api/v1/workdays` | [`?start=2026-08-01&end=2026-08-31`](https://kalender.rezaprama.com/api/v1/workdays?start=2026-08-01&end=2026-08-31) | Working-day count and data coverage |
+| `/api/v1/convert` | [`?calendar=islamic&year=1447&month=10&day=1`](https://kalender.rezaprama.com/api/v1/convert?calendar=islamic&year=1447&month=10&day=1) | A Hijri, Javanese, or Chinese date converted to Gregorian |
+| `/api/v1/observances` | [`?year=2026`](https://kalender.rezaprama.com/api/v1/observances?year=2026) | Calculated cultural and religious observances, distinct from public holidays |
+| `/api/v1/calendars` | [Open endpoint](https://kalender.rezaprama.com/api/v1/calendars) | Supported calendars, methods, and conversion ranges |
 
-Full reference: [docs/API.md](docs/API.md) and the OpenAPI 3.1 document at `/openapi.json`.
+[API reference and error responses](docs/API.md) · [OpenAPI 3.1](https://kalender.rezaprama.com/openapi.json) · [Interactive examples](https://kalender.rezaprama.com/api)
 
-## Embed
+## Put a calendar on your website
+
+Paste this into a page that allows custom HTML:
 
 ```html
 <script src="https://kalender.rezaprama.com/embed.js" defer></script>
@@ -60,62 +111,72 @@ Full reference: [docs/API.md](docs/API.md) and the OpenAPI 3.1 document at `/ope
 </kalender-indonesia>
 ```
 
-The web component creates an iframe that resizes itself. A plain `<iframe src="https://kalender.rezaprama.com/embed?year=2026">` works too.
+Change `year`, use `lang="en"` for English, or choose another supported calendar mode in the [embed guide](https://kalender.rezaprama.com/api#embed). The component creates an iframe and adjusts its height. If your platform strips scripts, use an ordinary iframe from that guide.
 
-## Development
+Keep a visible credit link to [Reza Prama Arviandi](https://rezaprama.com). Review the [data licenses](LICENSE-DATA.md), especially the Chinese calendar conditions, before commercial use.
 
-Requirements: Node.js 22 or later, npm.
+## Run it locally
+
+Use **Node.js 22 or newer** and npm.
 
 ```bash
-npm install
-npm run build
+git clone https://github.com/rezaprama/kalender.git
+cd kalender
+npm ci
+npm run hooks:install
 npm run dev
 ```
 
-| Command | What it does |
+Open **http://localhost:8787**. The dev command builds the data and assets, watches for changes, and starts Wrangler. For a Node preview without workerd, run `npm run build` followed by `npx tsx scripts/serve.ts`, then open http://localhost:8788.
+
+| Command | Purpose |
 | --- | --- |
-| `npm run build` | Datasets, hashed assets, OpenAPI, sitemap into `dist/` and `src/generated/` |
-| `npm run dev` | Build, watch and run `wrangler dev` on :8787 |
-| `npx tsx scripts/serve.ts` | Same routing on Node (:8788), for machines where workerd cannot start |
-| `npm run check` | Build, typecheck, lint (Biome) and unit/integration tests |
-| `npm run e2e` | Browser journeys and axe-core WCAG 2.2 AA audit (needs Playwright Chromium) |
-| `npm run monitor` | Check government sources for new decrees (see below) |
+| `npm run check` | Build, strict typechecking, Biome lint, data validation, and unit/integration/documentation tests |
+| `npm run smoke` | Bundle the Worker in a dry run and check its routes |
+| `npm run e2e` | Browser journeys and axe-core accessibility checks; install Chromium with `npx playwright install --with-deps --only-shell chromium` first |
+| `npm run monitor` | Inspect government sources for new decisions; does not edit official records |
+| `npm run hooks:install` | Enable this clone's commit attribution check; CI checks new commits too |
 
-### Layout
+<details>
+<summary>Project layout</summary>
 
-```
-src/core.ts          civil-date math, ICS/CSV
-src/calendars/       gregorian, islamic, chinese (HKO table), javanese, describeDate()
-src/holidays.ts      holiday categories, projections, plausibility checks
-src/observances.ts   calculated observances (never stored as holidays)
-src/api.ts           /api/v1/*
+```text
+src/core.ts          civil-date math, ICS and CSV
+src/calendars/       Gregorian, Hijri, Javanese and Chinese conversions
+src/holidays.ts      holiday categories and partial projections
+src/api.ts           public API routes
 src/render.ts        server-rendered pages
-src/worker.ts        routing and security headers
-src/client/          browser JS and CSS
-data/official/       curated, sourced holiday years
-scripts/             build, data validation, preview, monitoring
-tests/               node:test suites; tests/e2e/ Playwright journeys
+src/worker.ts        routing, caching and security headers
+src/client/          browser TypeScript and CSS
+data/official/       sourced holiday records, one JSON file per year
+scripts/             build, validation, monitoring and maintenance
+tests/               unit, integration, documentation and browser tests
 ```
 
-## Deployment
+</details>
 
-Cloudflare Workers with static assets. `dist/` is served directly; only HTML pages, `/embed` and `/api/*` run the Worker.
+## Deploy your own copy
 
-```bash
-npm run deploy
-```
+Fork this repository and use your own Cloudflare account. Before deploying, change the account ID, Worker name, and domain routes in [`wrangler.jsonc`](wrangler.jsonc). Site URLs and attribution are defined in [`src/core.ts`](src/core.ts); keep the original author's credit when adapting them.
 
-Cloudflare Workers Builds is connected to this repository: pushes to `main` build with `npm run build` and deploy with `npx wrangler deploy`. The custom domain `kalender.rezaprama.com` is declared in `wrangler.jsonc`.
+Connect your fork through Cloudflare Workers Builds: production branch `main`, build command `npm run build`, deploy command `npx wrangler deploy`, Preview command `npx wrangler preview`. Or, after signing in with `npx wrangler login`, run `npm run deploy` locally.
 
-Other branches use Cloudflare's preview builds (`npx wrangler preview`, currently an open beta). The required `previews` configuration is included in `wrangler.jsonc`.
+This repository already deploys `main` to [kalender.rezaprama.com](https://kalender.rezaprama.com). Other branches use Cloudflare preview builds. See [deployment, verification, and maintenance](docs/RELEASE.md) for the full workflow.
 
-Government sources are checked daily around 08:00 WIB through GitHub Actions. New findings update one review issue; identical findings stay quiet. Official data changes require source verification and a passing pull request. See [release and maintenance](docs/RELEASE.md).
+## Help fill the archive
 
-## License and attribution
+The most useful next contribution is a verified historical year, a missing decree amendment, an independent calendar reference, or an accessibility fix. Bring a government source and explain what changed. [Start with CONTRIBUTING.md](CONTRIBUTING.md) or [open an issue](https://github.com/rezaprama/kalender/issues/new/choose).
 
-- Code: [Apache-2.0](LICENSE)
-- Original curated data: [CC BY 4.0](LICENSE-DATA.md)
-- Chinese calendar table: Hong Kong Observatory data, © Government of the Hong Kong SAR, **non-commercial use only** under [HKO conditions](third_party/hko/NOTICE.md). It is not covered by Apache-2.0 or CC BY 4.0.
-- Third-party notices: [NOTICE](NOTICE)
+If this helps your project, a star makes it easier to find again. Forks, sourced corrections, and examples of real use help the calendar improve.
 
-If you use the data or the embed on a website, please credit [Reza Prama Arviandi](https://rezaprama.com) with a normal link.
+## Licenses and credit
+
+| Part | Terms |
+| --- | --- |
+| Source code | [Apache-2.0](LICENSE) |
+| Original data curation | [CC BY 4.0](LICENSE-DATA.md), with attribution |
+| Indonesian government decisions | Their own rights and source notices; see [data licensing](LICENSE-DATA.md) |
+| HKO-derived Chinese calendar table | **Non-commercial use only**, © Government of the Hong Kong SAR; [HKO conditions and disclaimer](third_party/hko/NOTICE.md). Excluded from Apache-2.0 and CC BY 4.0 |
+| Third-party assets | Their included licenses; see [NOTICE](NOTICE) |
+
+For websites using the data or embed, credit **[Reza Prama Arviandi](https://rezaprama.com)** with a normal link. Keep source and third-party notices required by the applicable license.

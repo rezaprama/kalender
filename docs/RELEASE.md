@@ -28,6 +28,8 @@ Cloudflare Workers Builds is connected to `rezaprama/kalender` on the existing W
 - Preview command (other branches): `npx wrangler preview` (Cloudflare open beta).
 - Root directory: repository root.
 
+Set the Preview command explicitly to `npx wrangler preview` in **Settings → Builds → Previews Base**. Existing Previews keep their own build configuration: select the branch in the dashboard's Preview selector, open its **Settings → Builds**, and check its **Preview command** too. A legacy `versions upload` command can fail the Worker identity check when the build targets a Preview. Retry from that Preview's build page after correcting its configuration.
+
 The GitHub app connection and build credentials are managed in Cloudflare. They are not committed to the repository. The application itself requires no runtime secrets.
 
 Git preview builds use the explicit `previews: {}` configuration in `wrangler.jsonc`. Static assets remain at the top level, as required by Cloudflare. There are no production data bindings or secrets to copy. Production routes stay outside the preview configuration. The existing version-upload workflow (`npx wrangler versions upload`) is also compatible with this repository if selected in a different build integration.

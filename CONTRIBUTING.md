@@ -23,7 +23,8 @@ The validator (`scripts/data.ts`) checks provenance, counts, duplicates, weekend
 ## Development
 
 ```bash
-npm install
+npm ci
+npm run hooks:install
 npm run build
 npm run check   # must pass before every commit
 npm run e2e     # browser + accessibility; run for UI changes
@@ -34,6 +35,12 @@ npm run e2e     # browser + accessibility; run for UI changes
 - Dates are `YYYY-MM-DD` strings handled at UTC noon. Never use the local timezone for date-only values.
 - UI changes must keep `npm run e2e` (axe-core WCAG 2.2 AA, keyboard journeys) passing in light and dark mode.
 - Commit messages: [Conventional Commits](https://www.conventionalcommits.org/) in English, e.g. `fix(data): add 2021 Idulfitri amendment`.
+
+## Commit authorship
+
+Credit the people who contributed. AI tools may assist your work, but do not list assistants or vendors as commit authors, committers, co-authors, sign-offs, or promotional credits in commits and pull request descriptions. Preserve real human co-authors and required third-party notices.
+
+`npm run hooks:install` enables the local commit-message check for this clone. The required CI job checks every newly introduced commit, including intermediate commits in a pull request. Published history is preserved; older commits are outside the new-commit check. Shared [Claude Code settings](.claude/settings.json) disable automatic commit, pull request, and session-link attribution for this project. See the [repository instructions](AGENTS.md).
 
 ## Content and licensing
 
