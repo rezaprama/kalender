@@ -1,5 +1,5 @@
 import { CALENDARS, describeDate } from './calendars/index.ts';
-import { fromChinese } from './calendars/chinese.ts';
+import { HKO_ATTRIBUTION, HKO_RIGHTS, fromChinese } from './calendars/chinese.ts';
 import { fromHijri, umalquraAvailable } from './calendars/islamic.ts';
 import { fromJavanese } from './calendars/javanese.ts';
 import { observancesInYear } from './observances.ts';
@@ -7,7 +7,19 @@ import { AUTHOR, MAX_YEAR, MIN_YEAR, SITE, civil, toCSV, toICS, validYear, workd
 
 export const API_VERSION = 'v1';
 const CORS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS', 'Access-Control-Allow-Headers': 'If-None-Match' };
-const attribution = { name: AUTHOR.name, url: AUTHOR.url, project: SITE, license: { code: 'Apache-2.0', data: 'CC-BY-4.0' } };
+const AUTHOR_CREDIT = { name: AUTHOR.name, url: AUTHOR.url, project: SITE };
+/**
+ * License block for API bodies. CC BY 4.0 covers the project's own curation only; when a
+ * response contains Chinese-calendar data derived from Hong Kong Observatory tables, the
+ * HKO non-commercial terms are listed so machine readers do not assume commercial reuse.
+ */
+export function attributionFor(usesHko: boolean) {
+  return {
+    ...AUTHOR_CREDIT,
+    license: { code: 'Apache-2.0', data: 'CC-BY-4.0', ...(usesHko ? { exceptions: [{ fields: 'Chinese calendar data', terms: HKO_RIGHTS, ...HKO_ATTRIBUTION }] } : {}) },
+  };
+}
+const usesHko = (holidays: Holiday[]) => holidays.some((h) => h.sourceId === 'calc-chinese');
 
 export class ApiError extends Error {
   constructor(public status: number, public code: string, message: string) { super(message); }
@@ -84,7 +96,7 @@ function holidays(request: Request, url: URL, years: Map<number, YearData>): Res
     return json({
       year, status: data.status, updated: data.updated, version: data.version,
       holidays: rows.map((h: Holiday) => ({ ...h, nameLocalized: lang === 'en' ? h.nameEn : h.name })),
-      sources: data.sources, missing: data.missing, note: data.note[lang as Lang], attribution,
+      sources: data.sources, missing: data.missing, note: data.note[lang as Lang], attribution: attributionFor(usesHko(rows)),
     });
   });
 }
@@ -103,7 +115,7 @@ function workdaysRoute(request: Request, url: URL, years: Map<number, YearData>)
     ...result,
     coverage: spanned.map((d) => ({ year: d.year, status: d.status, missing: d.missing })),
     official: spanned.every((d) => d.status === 'official'),
-    attribution,
+    attribution: attributionFor(usesHko(spanned.flatMap((d) => d.holidays).filter((h) => h.date >= start && h.date <= end))),
   }));
 }
 
@@ -127,7 +139,7 @@ function dateInfo(date: string, lang: Lang, years: Map<number, YearData>) {
 function dateRoute(request: Request, url: URL, years: Map<number, YearData>): Response {
   const date = dateParam(url, 'date');
   const lang = param(url, 'lang', ['id', 'en'] as const, 'id')!;
-  return cached(request, etag(years.get(Number(date.slice(0, 4)))!, url), () => json({ ...dateInfo(date, lang, years), calendars: CALENDARS, attribution }));
+  return cached(request, etag(years.get(Number(date.slice(0, 4)))!, url), () => { const info = dateInfo(date, lang, years); return json({ ...info, calendars: CALENDARS, attribution: attributionFor(info.chinese !== null) }); });
 }
 
 function convertRoute(request: Request, url: URL, years: Map<number, YearData>): Response {
@@ -152,7 +164,7 @@ function convertRoute(request: Request, url: URL, years: Map<number, YearData>):
     if (error instanceof ApiError) throw error;
     throw new ApiError(400, 'invalid_date', (error as Error).message);
   }
-  return cached(request, etag({ version: API_VERSION }, url), () => json({ calendar, method, input: Object.fromEntries(url.searchParams), ...dateInfo(date, lang, years), attribution }));
+  return cached(request, etag({ version: API_VERSION }, url), () => { const info = dateInfo(date, lang, years); return json({ calendar, method, input: Object.fromEntries(url.searchParams), ...info, attribution: attributionFor(info.chinese !== null) }); });
 }
 
 function observancesRoute(request: Request, url: URL): Response {
@@ -162,7 +174,7 @@ function observancesRoute(request: Request, url: URL): Response {
     year,
     note: lang === 'id' ? 'Peringatan hasil perhitungan, bukan hari libur. Tanggal Islam tabular ±1 hari.' : 'Calculated observances, not public holidays. Islamic dates are tabular, ±1 day.',
     observances: observancesInYear(year).map((o) => ({ ...o, nameLocalized: lang === 'en' ? o.nameEn : o.name })),
-    attribution,
+    attribution: attributionFor(observancesInYear(year).some((o) => o.calendar === 'chinese')),
   }));
 }
 
@@ -176,7 +188,7 @@ export function handleApi(request: Request, url: URL, years: Map<number, YearDat
       case '/api/v1/date': return dateRoute(request, url, years);
       case '/api/v1/convert': return convertRoute(request, url, years);
       case '/api/v1/observances': return observancesRoute(request, url);
-      case '/api/v1/calendars': return cached(request, etag({ version: API_VERSION }, url), () => json({ calendars: CALENDARS, attribution }));
+      case '/api/v1/calendars': return cached(request, etag({ version: API_VERSION }, url), () => json({ calendars: CALENDARS, attribution: attributionFor(true) }));
       default: throw new ApiError(404, 'not_found', 'Unknown API endpoint. See /openapi.json.');
     }
   } catch (error) {

@@ -54,6 +54,16 @@ jobs:
           else
             gh issue create --title "Holiday sources need review" --label monitor --body-file monitor-report.md
           fi
+      - name: Close the monitor issue when nothing needs a curator
+        if: steps.monitor.outputs.changes == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          existing=$(gh issue list --state open --label monitor --json number --jq '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue close "$existing" --comment "Resolved: the latest scheduled check found no action items. Report: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          fi
       - name: Retain monitor evidence
         if: always()
         uses: actions/upload-artifact@v4

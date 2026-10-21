@@ -17,6 +17,9 @@ export const MONTH_LENGTHS_HEX =
 /** Indices (into the month list starting at 1900-12-22 = 0) of leap months. */
 export const LEAP_MONTH_INDICES = [31, 67, 102, 131, 167, 201, 231, 266, 302, 337, 366, 402, 437, 466, 502, 537, 572, 602, 637, 672, 702, 737, 772, 808, 837, 872, 908, 937, 972, 1007, 1038, 1071, 1107, 1142, 1172, 1206, 1242, 1277, 1307, 1342, 1378, 1408, 1442, 1477, 1512, 1541, 1577, 1612, 1645, 1677, 1713, 1747, 1777, 1812, 1847, 1877, 1912, 1947, 1983, 2012, 2047, 2083, 2112, 2147, 2182, 2218, 2247, 2282, 2318, 2347, 2382, 2417, 2452];
 
+/** Terms that apply to any record derived from the HKO table (they override CC BY 4.0). */
+export const HKO_RIGHTS = 'Derived from Hong Kong Observatory data: non-commercial use only, rights held by the Government of the Hong Kong SAR. Not covered by Apache-2.0 or CC BY 4.0. See https://github.com/rezaprama/kalender/blob/main/third_party/hko/NOTICE.md';
+
 export const HKO_ATTRIBUTION = {
   owner: 'Government of the Hong Kong Special Administrative Region',
   source: 'Hong Kong Observatory, https://www.hko.gov.hk',

@@ -10,6 +10,7 @@ Base URL: `https://kalender.rezaprama.com`. Machine-readable spec: [`/openapi.js
 - Errors: `{"error":{"code":"invalid_parameter","message":"..."}}` with status `400`, `404`, `405` or `501`.
 - `lang=id|en` selects `nameLocalized`; canonical `name` is always Indonesian.
 - Every response includes `attribution`. Please credit Reza Prama Arviandi (https://rezaprama.com) when you publish the data.
+- `attribution.license.data` (`CC-BY-4.0`) covers the project's own curation. When a JSON body contains Chinese-calendar data derived from Hong Kong Observatory tables (`/date`, `/convert`, `/calendars`, Chinese observances, or projected Tahun Baru Imlek from 2028), `attribution.license.exceptions` lists the HKO terms: non-commercial use only. Sources derived from HKO carry the same text in `rights`. CSV and ICS exports do not repeat it; see [LICENSE-DATA.md](../LICENSE-DATA.md).
 
 ## Status and uncertainty
 

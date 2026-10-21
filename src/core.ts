@@ -6,7 +6,8 @@ export const AUTHOR = { name: 'Reza Prama Arviandi', url: 'https://rezaprama.com
 export type Lang = 'id' | 'en';
 export type Status = 'official' | 'estimated' | 'unverified';
 export type HolidayType = 'national' | 'leave';
-export interface Source { id: string; title: string; url: string; published: string; checked: string; decree?: string }
+/** rights: third-party terms that override the project's CC BY 4.0 data license for records citing this source. */
+export interface Source { id: string; title: string; url: string; published: string; checked: string; decree?: string; rights?: string }
 /** uncertaintyDays: calculated dates that may shift (e.g. ±1 for Hijri). subjectTo: decreed date that a later Kemenag isbat may still change. */
 export interface Holiday { date: string; name: string; nameEn: string; type: HolidayType; status: Status; sourceId: string; uncertaintyDays?: number; subjectTo?: 'isbat' }
 export interface YearData {

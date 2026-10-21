@@ -1,5 +1,5 @@
 import { addDays, dayOfWeek, type Holiday, type Source } from './core.ts';
-import { chineseNewYear } from './calendars/chinese.ts';
+import { HKO_RIGHTS, chineseNewYear } from './calendars/chinese.ts';
 import { easter } from './calendars/gregorian.ts';
 import { fromHijri, toHijri } from './calendars/islamic.ts';
 
@@ -94,7 +94,7 @@ export const METHODOLOGY_URL = 'https://github.com/rezaprama/kalender/blob/main/
 export const ESTIMATE_SOURCES: Source[] = [
   { id: 'keppres-8-2024', title: 'Keppres 8/2024 tentang Hari-hari Libur: kategori libur yang berlaku (bukan penetapan tanggal tahun ini)', url: 'https://peraturan.bpk.go.id/Details/276688/keppres-no-8-tahun-2024-hari-hari-libur', published: '2024-01-29', checked: '2026-10-21', decree: 'Keputusan Presiden Nomor 8 Tahun 2024' },
   { id: 'calc-computus', title: 'Perhitungan: Paskah Gregorian (algoritme Meeus/Jones/Butcher)', url: `${METHODOLOGY_URL}#christian-holidays`, published: '2026-10-21', checked: '2026-10-21' },
-  { id: 'calc-chinese', title: 'Perhitungan: kalender Tionghoa ICU (Intl), meridian UTC+8', url: `${METHODOLOGY_URL}#chinese-calendar`, published: '2026-10-21', checked: '2026-10-21' },
+  { id: 'calc-chinese', title: 'Perhitungan: tabel kalender Tionghoa Hong Kong Observatory 1901-2100', url: `${METHODOLOGY_URL}#chinese-calendar`, published: '2026-10-21', checked: '2026-10-21', rights: HKO_RIGHTS },
   { id: 'calc-hijri-civil', title: 'Perhitungan: Hijriah tabular (islamic-civil); dapat berbeda ±1 hari dari sidang isbat', url: `${METHODOLOGY_URL}#islamic-calendar`, published: '2026-10-21', checked: '2026-10-21' },
 ];
 

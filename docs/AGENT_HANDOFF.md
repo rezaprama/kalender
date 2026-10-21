@@ -17,7 +17,7 @@ Date: 21 October 2026 (WIB).
 - Production had 38 successful route/API checks and 37 browser tests, including Umm al-Qura on the Workers runtime.
 - Reported production Lighthouse: accessibility, best practices and SEO 100; performance mobile 92-100 and desktop 98-100. These are measurements, not a guarantee.
 
-Daily source monitoring was dispatched successfully in GitHub Actions. Two Setkab feeds were unreachable and are tracked in [issue #6](https://github.com/rezaprama/kalender/issues/6); Kemenko PMK and the cited source pages were checked. The final CI run is the authority for each released commit.
+Daily source monitoring was dispatched successfully in GitHub Actions. Two Setkab search feeds were unreachable and are tracked in [issue #6](https://github.com/rezaprama/kalender/issues/6); Kemenko PMK and the cited source pages were checked. The final CI run is the authority for each released commit.
 
 ## Data and licensing boundaries
 
