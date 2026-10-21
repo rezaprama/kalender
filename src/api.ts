@@ -20,7 +20,7 @@ export function apiError(error: ApiError): Response {
 function json(body: unknown, status = 200, headers: Record<string, string> = {}): Response {
   return new Response(JSON.stringify(body, null, 2) + '\n', {
     status,
-    headers: { 'Content-Type': 'application/json; charset=utf-8', 'X-Content-Type-Options': 'nosniff', ...CORS, ...headers },
+    headers: { 'Content-Type': 'application/json; charset=utf-8', 'X-Content-Type-Options': 'nosniff', 'Content-Security-Policy': "default-src 'none'; frame-ancestors 'none'", ...CORS, ...headers },
   });
 }
 
@@ -59,7 +59,7 @@ function etag(data: { version: string }, url: URL): string {
 }
 
 function cached(request: Request, tag: string, make: () => Response): Response {
-  const headers = { ETag: tag, 'Cache-Control': 'public, max-age=3600' };
+  const headers = { ETag: tag, 'Cache-Control': 'public, max-age=3600', 'X-Content-Type-Options': 'nosniff' };
   if (request.headers.get('If-None-Match') === tag) return new Response(null, { status: 304, headers: { ...CORS, ...headers } });
   const response = make();
   for (const [key, value] of Object.entries(headers)) response.headers.set(key, value);

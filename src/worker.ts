@@ -22,6 +22,7 @@ function htmlHeaders(embed: boolean): Record<string, string> {
     'X-Content-Type-Options': 'nosniff',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
     'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+    'Strict-Transport-Security': 'max-age=31536000',
     ...(embed ? {} : { 'X-Frame-Options': 'SAMEORIGIN' }),
   };
 }
@@ -39,6 +40,10 @@ function notFound(request: Request, lang: Lang): Response {
 
 function redirect(location: string, status = 302): Response {
   return new Response(null, { status, headers: { Location: location, 'Cache-Control': 'no-store' } });
+}
+
+function indexableYear(year: number, current: number): boolean {
+  return years.get(year)?.status === 'official' || (year >= current - 1 && year <= current + 3);
 }
 
 function queryYear(url: URL): number | undefined {
@@ -77,13 +82,14 @@ export function route(request: Request): Response {
     }
     const target = queryYear(url);
     if (url.searchParams.has('year')) return redirect(pathFor(target ?? year, lang, month));
-    return page(request, { lang, year, month, page: 'calendar', path: pathname });
+    // Month pages only for years with official data or near today; thousands of empty months add no value to search.
+    return page(request, { lang, year, month, page: 'calendar', path: pathname, noindex: month !== undefined && !indexableYear(year, current) });
   }
 
   const slug = PAGE_SLUGS[lang][rest[0]];
   if (slug && rest.length === 1) {
     const year = queryYear(url) ?? current;
-    return page(request, { lang, year, page: slug, path: url.searchParams.has('year') ? `${pathname}?year=${year}` : pathname });
+    return page(request, { lang, year, page: slug, path: url.searchParams.has('year') ? `${pathname}?year=${year}` : pathname, noindex: slug === 'holidays' && !indexableYear(year, current) });
   }
   return notFound(request, lang);
 }

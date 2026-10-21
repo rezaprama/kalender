@@ -11,3 +11,8 @@
   Cache-Control: public, max-age=86400
 /embed.js
   Cache-Control: public, max-age=86400
+/*
+  X-Content-Type-Options: nosniff
+  Strict-Transport-Security: max-age=31536000
+/og.png
+  Cache-Control: public, max-age=604800

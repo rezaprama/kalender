@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Build, typecheck, lint, test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # Build, typecheck, Biome lint, dataset validation, unit/integration/docs tests.
+      - run: npm run check
+      - name: Install Chromium for browser tests
+        run: npx playwright install --with-deps --only-shell chromium
+      # Playwright journeys and axe-core WCAG 2.2 AA audit against the Node preview.
+      - run: npm run e2e

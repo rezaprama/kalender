@@ -257,3 +257,23 @@ describe('exports', () => {
     assert.match(await get('/api/v1/holidays?year=2027&format=csv').text(), /"isbat"/);
   });
 });
+
+describe('search indexing and headers', () => {
+  test('month pages are indexed only for official or near years; archive holiday lists are noindex', async () => {
+    const robots = async (path: string) => (await get(path).text()).match(/<meta name="robots" content="([^"]+)"/)![1];
+    assert.equal(await robots('/2026/04'), 'index,follow');
+    assert.equal(await robots('/2022/04'), 'index,follow');
+    assert.equal(await robots('/1950/04'), 'noindex,follow');
+    assert.equal(await robots('/2090/04'), 'noindex,follow');
+    assert.equal(await robots('/1950'), 'index,follow');
+    assert.equal(await robots('/libur?year=1950'), 'noindex,follow');
+    assert.equal(await robots('/libur?year=2026'), 'index,follow');
+  });
+
+  test('HSTS on pages, locked-down CSP and nosniff on API responses', () => {
+    assert.equal(get('/2026').headers.get('strict-transport-security'), 'max-age=31536000');
+    const api = get('/api/v1/holidays?year=2026');
+    assert.match(api.headers.get('content-security-policy')!, /default-src 'none'/);
+    assert.equal(get('/api/v1/holidays?year=2026&format=ics').headers.get('x-content-type-options'), 'nosniff');
+  });
+});
