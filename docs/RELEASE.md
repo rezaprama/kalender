@@ -20,14 +20,19 @@ Do not rewrite public history. Keep license exceptions, attribution and data pro
 
 `wrangler.jsonc` declares Worker `kalender`, its Cloudflare account, static assets in `dist/`, and custom domain `kalender.rezaprama.com`.
 
-Cloudflare Workers Builds connects `rezaprama/kalender` to the existing Worker:
+Cloudflare Workers Builds is connected to `rezaprama/kalender` on the existing Worker:
 
 - Production branch: `main`.
 - Build command: `npm run build`.
 - Deploy command: `npx wrangler deploy`.
+- Preview command (other branches): `npx wrangler preview` (Cloudflare open beta).
 - Root directory: repository root.
 
-The GitHub app connection and build credentials are managed in Cloudflare. They are not committed to the repository. The application itself requires no runtime secrets. For a manual deployment with an existing Wrangler login:
+The GitHub app connection and build credentials are managed in Cloudflare. They are not committed to the repository. The application itself requires no runtime secrets.
+
+Git preview builds use the explicit `previews: {}` configuration in `wrangler.jsonc`. Static assets remain at the top level, as required by Cloudflare. There are no production data bindings or secrets to copy. Production routes stay outside the preview configuration. The existing version-upload workflow (`npx wrangler versions upload`) is also compatible with this repository if selected in a different build integration.
+
+For a manual production deployment with an existing Wrangler login:
 
 ```bash
 npm run deploy

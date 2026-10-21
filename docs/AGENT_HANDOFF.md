@@ -4,17 +4,20 @@ Date: 21 October 2026 (WIB).
 
 - Public repository: <https://github.com/rezaprama/kalender>.
 - Initial release pull request: <https://github.com/rezaprama/kalender/pull/1>.
+- Initial release merged to `main` as `8e2ba41`; both the release-branch and main CI runs passed.
 - Production Worker: `kalender`, <https://kalender.rezaprama.com>.
+- Cloudflare Workers Builds is connected to `rezaprama/kalender`, production branch `main`, build `npm run build`, deploy `npx wrangler deploy`.
+- Non-production Git builds use Cloudflare's beta `npx wrangler preview`. `wrangler.jsonc` explicitly includes `previews: {}`; assets and production routes remain at the top level. The Worker has no stateful data bindings or secrets to duplicate.
 - Release notes: [CHANGELOG.md](../CHANGELOG.md). Deployment and maintenance: [RELEASE.md](RELEASE.md).
 
 ## Verified baseline
 
-- GitHub CI passed on the initial release branch: build, worker/client/browser typechecking, lint, 80 unit/integration/documentation tests, 11 bundle smoke checks and 37 browser tests.
+- GitHub CI passed on the released branch and `main`: build, worker/client/browser typechecking, lint, 81 unit/integration/documentation tests, 11 bundle smoke checks and 37 browser tests.
 - Local dependency audit found zero vulnerabilities. Common secret patterns were checked in all 159 historical blobs; no findings. `internal/` is ignored and untracked.
 - Production had 38 successful route/API checks and 37 browser tests, including Umm al-Qura on the Workers runtime.
 - Reported production Lighthouse: accessibility, best practices and SEO 100; performance mobile 92-100 and desktop 98-100. These are measurements, not a guarantee.
 
-The release pull request adds daily monitoring with stable finding fingerprints and updates public deployment guidance. Its final CI run is the authority for the released commit.
+Daily source monitoring was dispatched successfully in GitHub Actions. Two Setkab feeds were unreachable and are tracked in [issue #6](https://github.com/rezaprama/kalender/issues/6); Kemenko PMK and the cited source pages were checked. The final CI run is the authority for each released commit.
 
 ## Data and licensing boundaries
 

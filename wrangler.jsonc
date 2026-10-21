@@ -10,5 +10,8 @@
   // paths (HTML pages, /api/*, /embed) reach it. No run_worker_first needed:
   // dist/ contains no HTML, so page routes never collide with assets.
   "assets": { "directory": "./dist", "binding": "ASSETS" },
+  // Cloudflare's Git preview trigger uses `wrangler preview`. Assets stay above;
+  // this Worker has no production state or secrets to copy into previews.
+  "previews": {},
   "observability": { "enabled": true, "head_sampling_rate": 0.1 }
 }
