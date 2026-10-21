@@ -7,10 +7,13 @@ export type Lang = 'id' | 'en';
 export type Status = 'official' | 'estimated' | 'unverified';
 export type HolidayType = 'national' | 'leave';
 export interface Source { id: string; title: string; url: string; published: string; checked: string; decree?: string }
-export interface Holiday { date: string; name: string; nameEn: string; type: HolidayType; status: Status; sourceId: string }
+/** uncertaintyDays: calculated dates that may shift (e.g. ±1 for Hijri). subjectTo: decreed date that a later Kemenag isbat may still change. */
+export interface Holiday { date: string; name: string; nameEn: string; type: HolidayType; status: Status; sourceId: string; uncertaintyDays?: number; subjectTo?: 'isbat' }
 export interface YearData {
   year: number; status: Status; updated: string; version: string; holidays: Holiday[];
   sources: Source[]; missing: string[]; note: { id: string; en: string };
+  /** Counts stated by the cited decrees after amendments (official years only); validated against the records. */
+  declared?: { national: number; leave: number };
 }
 export const MONTHS = {
   id: ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'],

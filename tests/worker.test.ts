@@ -139,3 +139,22 @@ describe('API', () => {
     assert.equal(get('/api/v1/workdays?start=2000-01-01&end=2026-01-01').status, 400);
   });
 });
+
+describe('consistency', () => {
+  test('API, static dataset and pages agree for official, estimated and archive years', async () => {
+    const { readFile } = await import('node:fs/promises');
+    for (const year of [1950, 2026, 2027, 2028, 2100]) {
+      const file = JSON.parse(await readFile(`dist/data/${year}.json`, 'utf8')) as { status: string; holidays: Record<string, unknown>[] };
+      const api = await get(`/api/v1/holidays?year=${year}`).json() as { status: string; holidays: Record<string, unknown>[] };
+      assert.equal(api.status, file.status, String(year));
+      assert.deepEqual(api.holidays.map(({ nameLocalized: _, ...h }) => h), file.holidays, String(year));
+      const page = await get(`/libur?year=${year}`).text();
+      assert.equal((page.match(/<tr data-holiday-type=/g) ?? []).length, file.holidays.length, String(year));
+    }
+  });
+
+  test('estimates and pending isbat are labelled on pages', async () => {
+    assert.match(await get('/libur?year=2028').text(), /Perkiraan ±1 hari/);
+    assert.match(await get('/en/holidays?year=2027').text(), /Subject to isbat/);
+  });
+});

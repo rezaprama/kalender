@@ -1,5 +1,5 @@
 import { MONTHS, addDays, breaks, dayOfWeek, escapeHtml as e, formatDate, hijri, jakartaToday, pasaran, pathFor, type Lang, type YearData } from '../core.ts';
-import { statusLabel, words } from '../i18n.ts';
+import { eventQualifiers, statusLabel, words } from '../i18n.ts';
 
 const body = document.body;
 const lang = (body.dataset.lang === 'en' ? 'en' : 'id') as Lang;
@@ -45,7 +45,7 @@ async function dateDetails(date: string): Promise<string> {
     events = matches.length
       ? `<ul class="detail-events">${matches.map((h) => {
           const source = data.sources.find((s) => s.id === h.sourceId);
-          return `<li class="${h.type}"><strong>${e(lang === 'en' ? h.nameEn : h.name)}</strong><span>${h.type === 'national' ? t.national : t.leave} · ${e(statusLabel(h.status, lang))}</span>${source ? `<a href="${e(source.url)}" rel="noopener">${t.source}</a>` : ''}</li>`;
+          return `<li class="${h.type}"><strong>${e(lang === 'en' ? h.nameEn : h.name)}</strong><span>${[h.type === 'national' ? t.national : t.leave, statusLabel(h.status, lang), ...eventQualifiers(h, lang)].map(e).join(' · ')}</span>${source ? `<a href="${e(source.url)}" rel="noopener">${t.source}</a>` : ''}</li>`;
         }).join('')}</ul>`
       : `<p class="quiet">${data.status === 'unverified' ? e(data.note[lang]) : lang === 'id' ? 'Tidak ada libur nasional atau cuti bersama tercatat.' : 'No national holiday or collective leave listed.'}</p>`;
   } catch {
@@ -96,7 +96,7 @@ async function setupNextHoliday(): Promise<void> {
     if (!upcoming) { node.innerHTML = `<p class="quiet">${data.holidays.length ? t.noNext : e(data.note[lang])}</p>`; return; }
     const days = Math.round((Date.parse(upcoming.date) - Date.parse(today)) / 86400000);
     const when = Number(today.slice(0, 4)) !== shownYear ? '' : days === 0 ? t.today : lang === 'id' ? `${days} hari lagi` : `in ${days} day${days === 1 ? '' : 's'}`;
-    node.innerHTML = `<button class="next-card" data-date="${upcoming.date}"><strong>${e(lang === 'en' ? upcoming.nameEn : upcoming.name)}</strong><span>${e(formatDate(upcoming.date, lang, true))}</span>${when ? `<span class="quiet">${when}</span>` : ''}${upcoming.status !== 'official' ? `<small class="estimate-label">${t.estimate}</small>` : ''}</button>`;
+    node.innerHTML = `<button class="next-card" data-date="${upcoming.date}"><strong>${e(lang === 'en' ? upcoming.nameEn : upcoming.name)}</strong><span>${e(formatDate(upcoming.date, lang, true))}</span>${when ? `<span class="quiet">${when}</span>` : ''}${eventQualifiers(upcoming, lang).map((q) => `<small class="estimate-label">${e(q)}</small>`).join('')}</button>`;
   } catch { node.innerHTML = `<p class="quiet">${t.error}</p>`; }
 }
 

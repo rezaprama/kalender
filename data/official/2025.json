@@ -3,6 +3,10 @@
   "status": "official",
   "updated": "2026-10-21",
   "version": "2026.10.21",
+  "declared": {
+    "national": 17,
+    "leave": 11
+  },
   "holidays": [
     {
       "date": "2025-01-01",
@@ -235,7 +239,7 @@
       "title": "SKB 3 Menteri: libur nasional dan cuti bersama 2025",
       "url": "https://www.kemenkopmk.go.id/index.php/pemerintah-tetapkan-hari-libur-nasional-dan-cuti-bersama-tahun-2025",
       "published": "2024-10-15",
-      "decree": "1017/2024, 2/2024, 2/2024",
+      "decree": "SKB Menteri Agama 1017/2024, Menteri Ketenagakerjaan 2/2024, Menteri PANRB 2/2024",
       "checked": "2026-10-21"
     },
     {
@@ -243,7 +247,8 @@
       "title": "Perubahan SKB: tambahan cuti bersama 18 Agustus 2025",
       "url": "https://setneg.go.id/baca/index/sambut_hut_ke_80_kemerdekaan_ri_pemerintah_tetapkan_18_agustus_2025_sebagai_cuti_bersama",
       "published": "2025-08-07",
-      "checked": "2026-10-21"
+      "checked": "2026-10-21",
+      "decree": "SKB Menteri Agama 933/2025, Menteri Ketenagakerjaan 1/2025, Menteri PANRB 3/2025 (perubahan atas SKB 1017/2024, 2/2024, 2/2024)"
     }
   ],
   "missing": [],

@@ -3,6 +3,10 @@
   "status": "official",
   "updated": "2026-10-21",
   "version": "2026.10.21",
+  "declared": {
+    "national": 18,
+    "leave": 8
+  },
   "holidays": [
     {
       "date": "2027-01-01",
@@ -58,7 +62,8 @@
       "nameEn": "Eid al-Fitr",
       "type": "national",
       "status": "official",
-      "sourceId": "skb-2027"
+      "sourceId": "skb-2027",
+      "subjectTo": "isbat"
     },
     {
       "date": "2027-03-11",
@@ -66,7 +71,8 @@
       "nameEn": "Eid al-Fitr",
       "type": "national",
       "status": "official",
-      "sourceId": "skb-2027"
+      "sourceId": "skb-2027",
+      "subjectTo": "isbat"
     },
     {
       "date": "2027-03-12",
@@ -130,7 +136,8 @@
       "nameEn": "Eid al-Adha",
       "type": "national",
       "status": "official",
-      "sourceId": "skb-2027"
+      "sourceId": "skb-2027",
+      "subjectTo": "isbat"
     },
     {
       "date": "2027-05-18",
@@ -219,7 +226,7 @@
       "title": "SKB 3 Menteri: 18 libur nasional dan 8 cuti bersama 2027",
       "url": "https://setneg.go.id/baca/index/inilah_skb_3_menteri_libur_nasional_dan_cuti_bersama_2027",
       "published": "2026-09-15",
-      "decree": "1205/2026, 3/2026, 2/2026",
+      "decree": "SKB Menteri Agama 1205/2026, Menteri Ketenagakerjaan 3/2026, Menteri PANRB 2/2026",
       "checked": "2026-10-21"
     }
   ],

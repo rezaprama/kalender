@@ -56,6 +56,8 @@ export function openapi() {
           properties: {
             date: { type: 'string', format: 'date' }, name: { type: 'string' }, nameEn: { type: 'string' }, nameLocalized: { type: 'string' },
             type: { enum: ['national', 'leave'] }, status: { enum: ['official', 'estimated', 'unverified'] }, sourceId: { type: 'string' },
+            uncertaintyDays: { type: 'integer', minimum: 1, description: 'Calculated date may shift by this many days (estimates only).' },
+            subjectTo: { enum: ['isbat'], description: 'Decreed date that a later Kemenag isbat decision may still change.' },
           },
         },
         HolidayResponse: {
