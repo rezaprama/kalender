@@ -1,0 +1,18 @@
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+/data/*
+  Cache-Control: public, max-age=3600
+  Access-Control-Allow-Origin: *
+  X-Content-Type-Options: nosniff
+/openapi.json
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=3600
+/theme.js
+  Cache-Control: public, max-age=86400
+/embed.js
+  Cache-Control: public, max-age=86400
+/*
+  X-Content-Type-Options: nosniff
+  Strict-Transport-Security: max-age=31536000
+/og.png
+  Cache-Control: public, max-age=604800

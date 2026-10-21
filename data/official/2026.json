@@ -3,6 +3,10 @@
   "status": "official",
   "updated": "2026-10-21",
   "version": "2026.10.21",
+  "declared": {
+    "national": 17,
+    "leave": 8
+  },
   "holidays": [
     {
       "date": "2026-01-01",
@@ -211,8 +215,16 @@
       "title": "SKB 3 Menteri: 17 libur nasional dan 8 cuti bersama 2026",
       "url": "https://www.kemenkopmk.go.id/pemerintah-tetapkan-17-hari-libur-nasional-dan-8-hari-cuti-bersama-tahun-2026",
       "published": "2025-09-19",
-      "decree": "1497/2025, 2/2025, 5/2025",
+      "decree": "SKB Menteri Agama 1497/2025, Menteri Ketenagakerjaan 2/2025, Menteri PANRB 5/2025",
       "checked": "2026-10-21"
+    },
+    {
+      "id": "skb-2026-setneg",
+      "title": "Setneg: Inilah SKB 3 Menteri Libur Nasional dan Cuti Bersama 2026 (nomor SKB)",
+      "url": "https://setneg.go.id/baca/index/inilah_skb_3_menteri_libur_nasional_dan_cuti_bersama_2026",
+      "published": "2025-09-19",
+      "checked": "2026-10-21",
+      "decree": "SKB Menteri Agama 1497/2025, Menteri Ketenagakerjaan 2/2025, Menteri PANRB 5/2025"
     }
   ],
   "missing": [],

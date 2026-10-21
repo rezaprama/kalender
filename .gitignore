@@ -9,3 +9,5 @@ artifacts/
 worker-configuration.d.ts
 *.log
 .DS_Store
+src/generated/
+internal/

@@ -1,0 +1,47 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "files": {
+    "includes": [
+      "src/**",
+      "scripts/**",
+      "tests/**",
+      "!src/generated/**"
+    ]
+  },
+  "formatter": {
+    "enabled": false
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "style": {
+        "noNonNullAssertion": "off",
+        "useTemplate": "off"
+      },
+      "suspicious": {
+        "noAssignInExpressions": "off"
+      },
+      "complexity": {
+        "useLiteralKeys": "off"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "**/*.css"
+      ],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noImportantStyles": "off"
+          },
+          "style": {
+            "noDescendingSpecificity": "off"
+          }
+        }
+      }
+    }
+  ]
+}

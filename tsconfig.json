@@ -9,8 +9,22 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "types": ["node", "@cloudflare/workers-types"],
-    "lib": ["ES2023", "DOM", "DOM.Iterable"]
+    "types": [
+      "node",
+      "@cloudflare/workers-types"
+    ],
+    "lib": [
+      "ES2023"
+    ]
   },
-  "include": ["src", "scripts", "tests", "worker-configuration.d.ts"]
+  "include": [
+    "src",
+    "scripts",
+    "tests",
+    "worker-configuration.d.ts"
+  ],
+  "exclude": [
+    "src/client",
+    "tests/e2e"
+  ]
 }

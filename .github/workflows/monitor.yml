@@ -1,0 +1,63 @@
+name: Holiday source monitor
+
+# Deterministic, read-only check of government sources. It never edits data;
+# when something needs a curator it opens (or comments on) one issue.
+on:
+  schedule:
+    - cron: '0 1 * * *' # daily, 08:00 WIB (GitHub scheduling may be delayed)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: holiday-source-monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - id: monitor
+        run: npx tsx scripts/monitor.ts --report monitor-report.md
+      - name: Append data audit
+        run: |
+          echo "" >> monitor-report.md
+          echo "## Data audit" >> monitor-report.md
+          npx tsx scripts/audit.ts >> monitor-report.md 2>&1 || echo "**Audit reported a problem.**" >> monitor-report.md
+      - name: Open or update the monitor issue
+        if: steps.monitor.outputs.changes == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh label create monitor --color C0262D --description "Holiday source monitor" --force
+          existing=$(gh issue list --state open --label monitor --json number --jq '.[0].number')
+          if [ -n "$existing" ]; then
+            fingerprint=$(sed -n 's/.*<!-- kalender-monitor:\([a-f0-9]*\) -->.*/\1/p' monitor-report.md)
+            current=$(gh issue view "$existing" --json body --jq '.body')
+            if [ -n "$fingerprint" ] && [[ "$current" == *"<!-- kalender-monitor:$fingerprint -->"* ]]; then
+              echo "Findings unchanged; no issue update."
+            else
+              gh issue edit "$existing" --body-file monitor-report.md
+            fi
+          else
+            gh issue create --title "Holiday sources need review" --label monitor --body-file monitor-report.md
+          fi
+      - name: Retain monitor evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: holiday-source-report
+          path: monitor-report.md
+          retention-days: 30

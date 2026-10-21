@@ -1,0 +1,57 @@
+Kalender Indonesia
+Copyright 2026 Reza Prama Arviandi (https://rezaprama.com)
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+The original curated dataset is licensed under CC BY 4.0. LICENSE-DATA.md lists
+which parts of the repository are under which terms.
+
+-------------------------------------------------------------------------------
+Third-party material distributed with this product
+-------------------------------------------------------------------------------
+
+Phosphor Icons (SVG paths inlined into rendered pages)
+https://github.com/phosphor-icons/core
+
+  MIT License
+
+  Copyright (c) 2023 Phosphor Icons
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+
+-------------------------------------------------------------------------------
+Data and references
+-------------------------------------------------------------------------------
+
+Hong Kong Observatory material (src/calendars/chinese-hko-data.ts)
+  Chinese lunisolar month boundaries 1901-2100 derived from the Hong Kong
+  Observatory "Gregorian-Lunar Calendar Conversion Tables". Intellectual property
+  rights: Government of the Hong Kong Special Administrative Region. The Materials
+  are part of the website https://www.hko.gov.hk, published by the Hong Kong
+  Observatory. Used for non-commercial purposes free of charge under the HKO
+  conditions; NOT covered by Apache-2.0 or CC BY 4.0. The HKO Intellectual
+  Property Rights Notice, Conditions and Disclaimer are reproduced in
+  third_party/hko/NOTICE.md. Commercial use requires HKO's written authorisation.
+
+Official holiday dates are taken from decrees published by the Government of the
+Republic of Indonesia (setkab.go.id, setneg.go.id, kemenkopmk.go.id,
+jdih.kemnaker.go.id, peraturan.bpk.go.id, kemenag.go.id). Each record links to
+its source. The project claims no rights in the decrees themselves.
+
+Research captures of other calendar websites used during development are not
+part of this repository or of any release, and are not covered by its licenses.

@@ -1,4 +1,6 @@
-# PROJECT CONTEXT & OPERATING PRINCIPLES
+# Product specification
+
+Product scope and quality principles for Kalender Indonesia. The repository is the source of truth for what is implemented; see README.md and docs/METHODOLOGY.md.
 
 ## A. Project identity
 
@@ -6,7 +8,7 @@
 **Repository:** https://github.com/rezaprama/kalender
 **Local directory:** `F:\100 Github\kalender`
 **Production domain:** https://kalender.rezaprama.com
-**Hosting:** Cloudflare Pages
+**Hosting:** Cloudflare Workers + Static Assets
 **Version control:** Git and GitHub
 **Author:** Reza Prama Arviandi
 **Author website:** https://rezaprama.com
@@ -15,49 +17,6 @@
 **Project type:** Open-source web application, holiday dataset, developer API, and embeddable calendar infrastructure.
 
 The project aims to become a trusted, comprehensive Indonesian calendar resource that combines everyday usability with rigorous engineering and verifiable public information.
-
-## B. Development history
-
-Initial development was conducted using OpenAI Codex. The previous session ended because its usage quota was exhausted, potentially leaving unfinished implementations and uncommitted changes.
-
-Claude Code is responsible for continuing the existing work, not starting a replacement project.
-
-Before implementing changes:
-
-1. Inspect the local repository and Git history.
-2. Read AGENTS.md, CLAUDE.md, README, and relevant documentation.
-3. Identify completed, partial, broken, and missing features.
-4. Examine uncommitted changes and preserve valuable work.
-5. Evaluate the existing architecture and dependencies.
-6. Run available tests and inspect failures.
-7. Reconstruct unfinished work.
-8. Continue implementation from the actual repository state.
-
-Never overwrite functioning implementations without technical justification.
-
-Maintain a durable development checkpoint in `docs/AGENT_HANDOFF.md`, including completed work, decisions, remaining tasks, test evidence, and the next actionable step.
-
-Never report unverified work as complete.
-
-## C. Product references and reverse engineering
-
-Relevant Indonesian calendar references include:
-
-https://tanggalans.com/
-
-https://kalenderku.id/
-
-Reverse-engineering reference:
-
-https://github.com/morluto/rea
-
-Study publicly observable functionality, interaction patterns, information architecture, and usability.
-
-Use appropriate available design and development skills, including `design-taste-frontend`, `caveman`, and anti-AI-slop design guidance where installed.
-
-Create an original implementation rather than copying protected website assets, source code, branding, or copyrighted content.
-
-The objective is to substantially improve usefulness, reliability, developer accessibility, and overall user experience.
 
 ## D. Calendar correctness
 
@@ -259,7 +218,7 @@ The repository should be understandable and maintainable by independent contribu
 
 Preferred pipeline:
 
-GitHub → Cloudflare Pages → kalender.rezaprama.com
+GitHub → Cloudflare Workers Builds → Cloudflare Workers + Static Assets → kalender.rezaprama.com
 
 Use the existing stack unless there is a strong reason to change it.
 
@@ -288,47 +247,6 @@ Use a normal crawlable HTML link to the author website without unnecessary nofol
 Attribution should be visible, tasteful, and consistent with responsible web practices.
 
 Avoid hidden backlinks or manipulative SEO implementations.
-
-## M. Engineering and execution standards
-
-Act as a senior software engineer and critical technical reviewer.
-
-Do not automatically agree with previous architecture or implementation choices.
-
-Evaluate assumptions and identify weak technical decisions.
-
-Preserve what works and correct what does not.
-
-Prefer:
-
-* Data correctness.
-* Deterministic behavior.
-* Strong typing.
-* Modular architecture.
-* Accessibility.
-* Automated validation.
-* Secure defaults.
-* Maintainability.
-* Performance.
-* Low operating costs.
-
-Test important calendar calculations independently.
-
-Use credible evidence rather than assumptions.
-
-Avoid reporting speculative benchmarks as actual measurements.
-
-Implement changes rather than repeatedly discussing plans.
-
-At significant checkpoints, record what has changed and what remains unfinished.
-
-When working with Claude Code, continue executing actionable development tasks unless genuinely blocked by missing credentials, necessary approvals, or inaccessible dependencies.
-
-The permanent priority order is:
-
-**Correctness → Reliability → Accessibility → Usability → Maintainability → Performance → Discoverability → Visual polish.**
-
-The ultimate objective is a production-ready, technically credible, open-source Indonesian calendar platform that users and developers can trust.
 
 # MULTI-CALENDAR EXPANSION
 
@@ -472,4 +390,3 @@ This sequence is provisional and should be adjusted after inspecting existing im
 Each calendar module should have independent validation requirements and explicit supported date ranges.
 
 Prioritize correctness and user utility over nominal feature completeness.
-
