@@ -22,7 +22,8 @@
     "cf:types": "wrangler types",
     "monitor": "tsx scripts/monitor.ts",
     "audit": "tsx scripts/audit.ts",
-    "e2e": "tsx --test --test-concurrency=1 tests/e2e/*.e2e.ts"
+    "e2e": "tsx --test --test-concurrency=1 tests/e2e/*.e2e.ts",
+    "smoke": "wrangler deploy --dry-run --outdir .wrangler/dry-run && node scripts/smoke.mjs .wrangler/dry-run/worker.js"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",

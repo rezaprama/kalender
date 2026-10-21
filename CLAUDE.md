@@ -9,6 +9,8 @@ Indonesian multi-calendar site, holiday dataset, public API and embed. Owner: Re
 - `npm run build` → `dist/` (static, served before the Worker) + `src/generated/` (bundled into the Worker). Run before typecheck/tests on a fresh clone.
 - `npm run check` = build + typecheck + lint (Biome) + tests (`node:test` via tsx). Must pass before every commit.
 - `npm run dev` (wrangler) or `npx tsx scripts/serve.ts` (Node preview on :8788, same routing) when workerd cannot start on Windows.
+- `npm run e2e` (Playwright + axe-core), `npm run smoke` (wrangler dry-run bundle smoke test), `npm run monitor` (gov sources, read-only), `npx tsx scripts/audit.ts`.
+- Release/deploy steps: `docs/RELEASE.md`. Data evidence: `docs/DATA_SOURCES.md`. Methods: `docs/METHODOLOGY.md`.
 
 ## Layout
 - `src/core.ts` date math (UTC-noon civil dates), exports. `src/calendars/` calendar systems. `src/render.ts` HTML. `src/api.ts` API. `src/worker.ts` routing. `src/client/` browser JS/CSS.

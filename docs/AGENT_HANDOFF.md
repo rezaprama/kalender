@@ -4,7 +4,8 @@ Authoritative checkpoint. Update at every milestone. States: NOT_STARTED · IN_P
 
 ## Current
 - Branch: `feat/kalender-completion` (from `main` @ 6927e9e "chore: preserve initial Codex implementation"). No remote configured. Nothing pushed or deployed.
-- Phase: 7 — final integration and release readiness. Next action: final user-journey pass (14 scenarios), release notes, final report; external publication needs owner approval.
+- Status: RELEASE_READY. All local work verified; external publication (GitHub push, Cloudflare deploy) awaits owner approval — steps in docs/RELEASE.md.
+- Next action (owner): push `main` + `feat/kalender-completion`, open PR, connect Workers Builds; then verify live (RELEASE.md §3) and run Lighthouse on production.
 
 ## Milestones
 | Phase | State | Evidence |
@@ -15,7 +16,7 @@ Authoritative checkpoint. Update at every milestone. States: NOT_STARTED · IN_P
 | 4 Multi-calendar | VERIFIED | Javanese (weton/neptu, Asapon/Aboge, windu table + Kraton 1960 Be), Hijri civil (own arithmetic vs ICU every day), Umm al-Qura (self-checked), Chinese (HKO), observances; /api/v1/date|convert|observances|calendars; UI mode overlay; check 67/67, e2e 35/35 |
 | 5 API, embed, OSS docs | VERIFIED | ICS structural validator on official/estimated/empty years; estimates labelled in ICS/CSV; `<kalender-indonesia>` web component tested cross-origin with auto-height; docs examples executed by tests/docs.test.ts; LICENSE (canonical Apache-2.0), LICENSE-DATA (CC BY 4.0), NOTICE (Phosphor MIT, HKO, gov sources); check 72/72, e2e 36/36 |
 | 6 SEO, perf, security, CI, monitoring | VERIFIED (CI not executed on GitHub: no remote) | Lighthouse (local Node preview, compressed): mobile 100/100/100/100 on /2026, /en/2026/08, /api, /2026/03?mode=jawa; desktop 100 perf. npm audit 0. noindex policy, HSTS, JSON CSP. monitor.ts live run OK + unit tests; audit.ts; ci.yml/monitor.yml parse; check 78/78, e2e 36/36 |
-| 7 Final integration | IN_PROGRESS | |
+| 7 Final integration | VERIFIED (local) | 14 user scenarios covered by e2e (incl. 1900/2100 limits, all calendars in details, ICS download, phone axe); wrangler dry-run bundle 477 KiB / 42.6 KiB gzip, smoke 11/11 on the bundle; check 78/78; e2e 37/37; audit OK; monitor live OK |
 
 ## Decisions
 - Hosting: Workers + Static Assets (owner confirmed). `run_worker_first` and `not_found_handling` removed: `dist/` has no HTML, so static files never invoke the Worker and every unmatched path (pages, `/api/*`, `/embed`) reaches it.
@@ -39,11 +40,16 @@ Authoritative checkpoint. Update at every milestone. States: NOT_STARTED · IN_P
 - Historical: 1900–1944 `pre-independence`; 1945–2021 archive not curated (DEFERRED: needs per-year decree evidence).
 
 ## Known defects / blockers
+- **Owner decision:** `docs/PROJECT_CONTEXT.md` is the original brief and mentions studying competitor sites; decide whether it should be public before pushing.
+- Workers runtime itself never executed here (workerd crash); bundle verified in Node. Check Umm al-Qura/ICU on production (RELEASE.md §3).
+- GitHub Actions workflows parsed but never run (no remote).
+- Historical holidays 1945–2021 not curated (DEFERRED); Nyepi/Waisak not projected; MABIMS predictor DEFERRED.
 - **Environment:** `wrangler dev` crashes (workerd access violation 0xc0000005), reproduced with a trivial worker. `System32\vcruntime140.dll` is 14.28 while registry reports VC++ 14.50. Owner action: reinstall the latest Microsoft Visual C++ Redistributable x64. Workaround: `npx tsx scripts/serve.ts`.
 - Sources page now describes quarterly + September monitoring; must be implemented in Phase 6 (scripts/monitor.ts) or the copy changed.
 - Web tools: WebFetch/WebSearch fail in this environment (model error); research uses the built-in browser + Bing.
 
 ## Verification log
+- 2026-10-21 Phase 7: check 78/78, smoke 11/11 (wrangler dry-run bundle), e2e 37/37, audit exit 0, monitor live: no action needed.
 - 2026-10-21 Phase 6: check 78/78, e2e 36/36, npm audit 0, Lighthouse local 100s (see above), monitor live: no action needed. Assets: JS 27.5 KB raw / 11.1 KB gzip; CSS 24.4 / 5.8 KB; /2026 HTML 78 KB raw / 8.5 KB br.
 - 2026-10-21 Phase 5: check 72/72 (incl. docs examples), e2e 36/36.
 - 2026-10-21 Phase 4: check 67/67, e2e 35/35 (axe incl. overlay pages). workerd runtime still unverified (local crash) — ICU-dependent paths guarded.

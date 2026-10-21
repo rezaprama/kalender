@@ -203,6 +203,32 @@ describe('journeys', () => {
     await page.close();
   });
 
+  test('release scenarios: range limits, every calendar in details, ICS download, phone accessibility', async () => {
+    const last = await open('/2100');
+    assert.equal(await last.page.locator('a[aria-label*="2101"]').count(), 0);
+    assert.equal(await last.page.locator('a[aria-label*="2099"]').count(), 1);
+    await last.page.close();
+    const first = await open('/en/1900');
+    assert.equal(await first.page.locator('a[aria-label*="1899"]').count(), 0);
+    await first.page.close();
+
+    const { page } = await open('/en/2026/02#2026-02-17');
+    await page.locator('#dialog-content .detail-list').waitFor();
+    const details = await page.locator('#dialog-content').innerText();
+    for (const expected of [/Chinese New Year/, /Weton/, /Hijri/, /Chinese/, /Kongzili/, /Javanese/]) assert.match(details, expected);
+    await page.keyboard.press('Escape');
+    const ics = await page.request.get(BASE + (await page.locator('.aside-links a[href*="format=ics"]').getAttribute('href'))!);
+    assert.equal(ics.status(), 200);
+    assert.match(ics.headers()['content-type'], /text\/calendar/);
+    await page.close();
+
+    for (const path of ['/2026', '/alat', '/libur']) {
+      const phone = await open(path, { mobile: true });
+      assert.deepEqual(await axe(phone.page), [], path);
+      await phone.page.close();
+    }
+  });
+
   test('no horizontal overflow on a phone', async () => {
     for (const path of ['/2026', '/2026/08', '/libur', '/alat', '/api', '/sumber', '/embed']) {
       const { page } = await open(path, { mobile: true });

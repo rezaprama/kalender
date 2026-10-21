@@ -28,6 +28,8 @@ jobs:
       - run: npm ci
       # Build, typecheck, Biome lint, dataset validation, unit/integration/docs tests.
       - run: npm run check
+      # Bundle exactly what Cloudflare would deploy (no credentials needed) and smoke-test it.
+      - run: npm run smoke
       - name: Install Chromium for browser tests
         run: npx playwright install --with-deps --only-shell chromium
       # Playwright journeys and axe-core WCAG 2.2 AA audit against the Node preview.
