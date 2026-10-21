@@ -159,7 +159,7 @@ tests/               unit, integration, documentation and browser tests
 
 Fork this repository and use your own Cloudflare account. Before deploying, change the account ID, Worker name, and domain routes in [`wrangler.jsonc`](wrangler.jsonc). Site URLs and attribution are defined in [`src/core.ts`](src/core.ts); keep the original author's credit when adapting them.
 
-Connect your fork through Cloudflare Workers Builds: production branch `main`, build command `npm run build`, deploy command `npx wrangler deploy`. Or, after signing in with `npx wrangler login`, run `npm run deploy` locally.
+Connect your fork through Cloudflare Workers Builds: production branch `main`, build command `npm run build`, deploy command `npx wrangler deploy`, Preview command `npx wrangler preview`. Or, after signing in with `npx wrangler login`, run `npm run deploy` locally.
 
 This repository already deploys `main` to [kalender.rezaprama.com](https://kalender.rezaprama.com). Other branches use Cloudflare preview builds. See [deployment, verification, and maintenance](docs/RELEASE.md) for the full workflow.
 

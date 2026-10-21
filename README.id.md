@@ -143,7 +143,7 @@ Lihat [struktur proyek di README Inggris](README.md#run-it-locally) untuk peta k
 
 Fork repositori ini dan gunakan akun Cloudflare sendiri. Sebelum deploy, ubah ID akun, nama Worker, dan rute domain di [`wrangler.jsonc`](wrangler.jsonc). URL situs dan atribusi berada di [`src/core.ts`](src/core.ts); pertahankan kredit penulis asli saat menyesuaikannya.
 
-Hubungkan fork melalui Cloudflare Workers Builds: branch produksi `main`, perintah build `npm run build`, dan perintah deploy `npx wrangler deploy`. Atau, setelah masuk dengan `npx wrangler login`, jalankan `npm run deploy` secara lokal.
+Hubungkan fork melalui Cloudflare Workers Builds: branch produksi `main`, perintah build `npm run build`, perintah deploy `npx wrangler deploy`, dan Preview command `npx wrangler preview`. Atau, setelah masuk dengan `npx wrangler login`, jalankan `npm run deploy` secara lokal.
 
 Repositori ini sudah men-deploy `main` ke [kalender.rezaprama.com](https://kalender.rezaprama.com). Branch lain memakai build pratinjau Cloudflare. Baca [panduan deploy, verifikasi, dan pemeliharaan](docs/RELEASE.md) untuk alur lengkap.
 
