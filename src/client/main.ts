@@ -1,4 +1,8 @@
-import { MONTHS, addDays, civil, breaks, dayOfWeek, escapeHtml as e, formatDate, hijri, jakartaToday, pasaran, pathFor, type Lang, type YearData } from '../core.ts';
+import { MONTHS, addDays, civil, breaks, dayOfWeek, escapeHtml as e, formatDate, jakartaToday, pathFor, type Lang, type YearData } from '../core.ts';
+import { describeDate } from '../calendars/index.ts';
+import { formatChinese, toChinese, type ChineseDate } from '../calendars/chinese.ts';
+import { HIJRI_MONTHS, toHijri } from '../calendars/islamic.ts';
+import { toJavanese, weton } from '../calendars/javanese.ts';
 import { eventQualifiers, statusLabel, words } from '../i18n.ts';
 
 const body = document.body;
@@ -30,14 +34,27 @@ function toast(message: string): void {
 
 const WEEKDAY_LONG = { id: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'], en: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] };
 
+/** Detail rows for every calendar system: [label, value, optional qualifier]. */
+function calendarRows(date: string): [string, string, string?][] {
+  const d = describeDate(date, lang);
+  const { weton, kraton, aboge } = d.javanese;
+  const jv = (x: typeof kraton) => `${x.day} ${x.monthName} ${x.year} ${x.yearName}`;
+  const rows: [string, string, string?][] = [
+    ['Weton', `${weton.weekday} ${weton.pasaran}`, `neptu ${weton.neptu.weekday} + ${weton.neptu.pasaran} = ${weton.neptu.total}`],
+    [lang === 'id' ? 'Jawa' : 'Javanese', jv(kraton), [`${lang === 'id' ? 'kurup' : 'kurup'} ${kraton.kurup === 'asapon' ? 'Asapon' : 'Aboge'}`, kraton.projected ? (lang === 'id' ? 'proyeksi' : 'projected') : '', kraton.kurup === 'asapon' && jv(aboge) !== jv(kraton) ? `Aboge: ${jv(aboge)}` : ''].filter(Boolean).join(' · ')],
+    [lang === 'id' ? 'Hijriah' : 'Hijri', d.islamic.civil.formatted, [lang === 'id' ? 'tabular, bukan keputusan isbat' : 'tabular, not an isbat decision', d.islamic.umalqura && d.islamic.umalqura.formatted !== d.islamic.civil.formatted ? `Umm al-Qura: ${d.islamic.umalqura.formatted}` : ''].filter(Boolean).join(' · ')],
+  ];
+  if (d.chinese) rows.push([lang === 'id' ? 'Tionghoa' : 'Chinese', formatChinese(d.chinese, lang), 'HKO']);
+  return rows;
+}
+
 /** Shared date detail markup for the dialog and the date tool. */
 async function dateDetails(date: string): Promise<string> {
-  const weekday = WEEKDAY_LONG.id[dayOfWeek(date)];
-  const rows: [string, string][] = [
-    [t.date, formatDate(date, lang, true)],
-    [lang === 'id' ? 'Weton' : 'Weton (Javanese)', `${weekday} ${pasaran(date)}`],
-    [lang === 'id' ? 'Hijriah (tabular)' : 'Hijri (tabular)', hijri(date, lang)],
-  ];
+  const rows = calendarRows(date);
+  const observances = describeDate(date, lang).observances;
+  const observed = observances.length
+    ? `<p class="detail-observances"><span class="eyebrow">${lang === 'id' ? 'PERINGATAN (PERHITUNGAN, BUKAN LIBUR)' : 'OBSERVANCES (CALCULATED, NOT HOLIDAYS)'}</span>${observances.map((o) => `${e(lang === 'en' ? o.nameEn : o.name)}${o.uncertaintyDays ? ` <small class="estimate-label">±${o.uncertaintyDays} ${t.days}</small>` : ''}`).join('<br>')}</p>`
+    : '';
   let events = '';
   try {
     const data = await loadYear(Number(date.slice(0, 4)));
@@ -51,7 +68,7 @@ async function dateDetails(date: string): Promise<string> {
   } catch {
     events = `<p class="quiet">${t.error}</p>`;
   }
-  return `<dl class="detail-list">${rows.map(([k, v]) => `<div><dt>${e(k)}</dt><dd>${e(v)}</dd></div>`).join('')}</dl>${events}`;
+  return `${events}<dl class="detail-list">${rows.map(([k, v, q]) => `<div><dt>${e(k)}</dt><dd>${e(v)}${q ? `<small>${e(q)}</small>` : ''}</dd></div>`).join('')}</dl>${observed}`;
 }
 
 function setupDialog(): void {
@@ -202,6 +219,100 @@ function setupDateCalculator(): void {
   });
 }
 
+type Mode = 'masehi' | 'hijriah' | 'tionghoa' | 'jawa';
+const MODES: Mode[] = ['masehi', 'hijriah', 'tionghoa', 'jawa'];
+const PASARAN_SHORT: Record<string, string> = { Legi: 'Lgi', Pahing: 'Phg', Pon: 'Pon', Wage: 'Wge', Kliwon: 'Kli' };
+
+/** Secondary-calendar label for one day: [short label for small cells, full label]. */
+function altLabel(date: string, mode: Mode): [string, string] | undefined {
+  if (mode === 'hijriah') {
+    const h = toHijri(date, 'civil');
+    const month = HIJRI_MONTHS[lang][h.month - 1];
+    return [h.day === 1 ? month.slice(0, 3) : String(h.day), `${h.day} ${month}`];
+  }
+  if (mode === 'tionghoa') {
+    let c: ChineseDate | undefined;
+    try { c = toChinese(date); } catch { return undefined; }
+    const month = `${lang === 'id' ? 'Bln' : 'M'}${c.month}${c.leap ? '+' : ''}`;
+    return [c.day === 1 ? month : String(c.day), `${c.day} · ${month}`];
+  }
+  if (mode === 'jawa') {
+    const w = weton(date), j = toJavanese(date);
+    return [PASARAN_SHORT[w.pasaran], `${w.pasaran} · ${j.day} ${j.monthName}`];
+  }
+  return undefined;
+}
+
+/** Month heading subtitle: the secondary-calendar months a Gregorian month spans. */
+function altSpan(first: string, last: string, mode: Mode): string {
+  if (mode === 'hijriah') {
+    const a = toHijri(first, 'civil'), b = toHijri(last, 'civil');
+    const name = (h: typeof a) => HIJRI_MONTHS[lang][h.month - 1];
+    return a.year === b.year ? `${name(a)}–${name(b)} ${b.year} ${lang === 'id' ? 'H' : 'AH'}` : `${name(a)} ${a.year} – ${name(b)} ${b.year}`;
+  }
+  if (mode === 'tionghoa') {
+    try {
+      const a = toChinese(first), b = toChinese(last);
+      return `${lang === 'id' ? 'Bulan' : 'Month'} ${a.month}${a.leap ? '+' : ''}–${b.month}${b.leap ? '+' : ''} · ${b.kongzili} Kongzili`;
+    } catch { return lang === 'id' ? 'Di luar tabel HKO' : 'Outside the HKO table'; }
+  }
+  if (mode === 'jawa') {
+    const a = toJavanese(first), b = toJavanese(last);
+    return `${a.monthName}–${b.monthName} ${b.year} ${b.yearName}${b.projected ? (lang === 'id' ? ' (proyeksi)' : ' (projected)') : ''}`;
+  }
+  return '';
+}
+
+function setupCalendarMode(): void {
+  const select = $<HTMLSelectElement>('#calendar-mode');
+  const params = new URLSearchParams(location.search);
+  let stored: string | null = null;
+  try { stored = localStorage.getItem('calendar-mode'); } catch { /* storage unavailable */ }
+  const initial = (params.get('mode') ?? stored ?? 'masehi') as Mode;
+  const apply = (mode: Mode) => {
+    if (!MODES.includes(mode)) mode = 'masehi';
+    document.documentElement.dataset.mode = mode;
+    document.querySelectorAll<HTMLElement>('.day[data-date]').forEach((day) => {
+      const base = day.dataset.label ?? day.getAttribute('aria-label');
+      if (base && day.dataset.label === undefined) day.dataset.label = base;
+      const alt = altLabel(day.dataset.date!, mode);
+      const large = !!day.closest('.month.large');
+      if (alt) day.dataset.alt = large ? alt[1] : alt[0];
+      else delete day.dataset.alt;
+      if (base) day.setAttribute('aria-label', alt ? `${base}, ${alt[1]}` : base);
+    });
+    const notes: Record<Mode, string> = {
+      masehi: '',
+      hijriah: lang === 'id' ? 'Hijriah tabular (perhitungan). Tanggal resmi ditetapkan Kemenag melalui sidang isbat dan dapat berbeda ±1 hari.' : 'Tabular Hijri (calculated). Official dates are set by the Kemenag isbat and may differ by ±1 day.',
+      tionghoa: lang === 'id' ? 'Kalender Tionghoa dari tabel Hong Kong Observatory; bulan kabisat ditandai +.' : 'Chinese calendar from Hong Kong Observatory tables; leap months are marked +.',
+      jawa: lang === 'id' ? 'Pasaran dan tanggal Jawa (kurup Asapon). Hari Jawa berganti saat magrib; di sini memakai tengah malam.' : 'Pasaran and Javanese date (Asapon kurup). The Javanese day begins at sunset; this view uses midnight.',
+    };
+    let modeNote = $('.mode-note');
+    if (notes[mode] && !modeNote && $('.calendar-meta')) { modeNote = document.createElement('p'); modeNote.className = 'mode-note'; $('.calendar-meta')!.after(modeNote); }
+    if (modeNote) { modeNote.textContent = notes[mode]; modeNote.hidden = !notes[mode]; }
+    document.querySelectorAll<HTMLElement>('.month').forEach((month) => {
+      const days = month.querySelectorAll<HTMLElement>('.day[data-date]');
+      let note = month.querySelector<HTMLElement>('.month-alt');
+      if (mode === 'masehi' || !days.length) { note?.remove(); return; }
+      if (!note) { note = document.createElement('p'); note.className = 'month-alt'; month.querySelector('.month-head')?.after(note); }
+      note.textContent = altSpan(days[0].dataset.date!, days[days.length - 1].dataset.date!, mode);
+    });
+  };
+  apply(initial);
+  if (select) {
+    select.value = MODES.includes(initial) ? initial : 'masehi';
+    select.addEventListener('change', () => {
+      const mode = select.value as Mode;
+      apply(mode);
+      try { localStorage.setItem('calendar-mode', mode); } catch { /* storage unavailable */ }
+      const url = new URL(location.href);
+      if (mode === 'masehi') url.searchParams.delete('mode');
+      else url.searchParams.set('mode', mode);
+      history.replaceState(null, '', url);
+    });
+  }
+}
+
 function setupEmbedBuilder(): void {
   const form = $<HTMLFormElement>('#embed-form'), preview = $<HTMLIFrameElement>('#embed-preview'), code = $<HTMLTextAreaElement>('#embed-code');
   if (!form || !preview || !code) return;
@@ -271,6 +382,7 @@ function setupGridKeys(): void {
 }
 
 setupTheme();
+setupCalendarMode();
 setupToday();
 setupDialog();
 setupGridKeys();

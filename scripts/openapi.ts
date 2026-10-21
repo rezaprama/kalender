@@ -46,6 +46,8 @@ export function openapi() {
           responses: { 200: { description: 'Working-day count with per-year data coverage' }, 400: error },
         },
       },
+      // Calendar conversions are calculations; responses label method and supported range.
+      ...calendarPaths(),
     },
     components: {
       schemas: {
@@ -70,5 +72,42 @@ export function openapi() {
         },
       },
     },
+  };
+}
+
+function calendarPaths() {
+  const lang = { name: 'lang', in: 'query', schema: { enum: ['id', 'en'], default: 'id' } };
+  const int = (name: string, description: string) => ({ name, in: 'query', required: true, description, schema: { type: 'integer' } });
+  return {
+    '/api/v1/date': {
+      get: {
+        summary: 'Everything about one date: weton and neptu, Javanese (kraton and Aboge kurup), Hijri (tabular and Umm al-Qura), Chinese (HKO), observances, holidays',
+        parameters: [{ name: 'date', in: 'query', required: true, schema: { type: 'string', format: 'date' } }, lang],
+        responses: { 200: { description: 'Date description. `chinese` is null before 1900-12-22; `islamic.umalqura` is null if the runtime lacks ICU data.' }, 400: error },
+      },
+    },
+    '/api/v1/convert': {
+      get: {
+        summary: 'Convert a Hijri, Javanese or Chinese date to Gregorian',
+        parameters: [
+          { name: 'calendar', in: 'query', required: true, schema: { enum: ['islamic', 'javanese', 'chinese'] } },
+          int('year', 'Hijri 1317-1525, Javanese 1817-2034, or Chinese lunar year 1900-2100 (Gregorian year in which it began)'),
+          int('month', '1-12'), int('day', '1-30'),
+          { name: 'method', in: 'query', description: 'Hijri only', schema: { enum: ['civil', 'umalqura'], default: 'civil' } },
+          { name: 'kurup', in: 'query', description: 'Javanese only', schema: { enum: ['asapon', 'aboge'], default: 'asapon' } },
+          { name: 'leap', in: 'query', description: 'Chinese only: leap month', schema: { type: 'boolean', default: false } },
+          lang,
+        ],
+        responses: { 200: { description: 'Gregorian date plus its full description' }, 400: error, 501: { description: 'Method unavailable in this runtime' } },
+      },
+    },
+    '/api/v1/observances': {
+      get: {
+        summary: 'Calculated religious and cultural observances for a year (not public holidays)',
+        parameters: [year, lang],
+        responses: { 200: { description: 'Observances; Islamic ones carry uncertaintyDays = 1' }, 400: error },
+      },
+    },
+    '/api/v1/calendars': { get: { summary: 'Supported calendar systems, methods and date ranges', responses: { 200: { description: 'Calendar metadata' } } } },
   };
 }

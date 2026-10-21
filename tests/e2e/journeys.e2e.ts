@@ -43,7 +43,7 @@ async function axe(page: Page): Promise<string[]> {
 }
 
 describe('accessibility (axe-core, WCAG 2.2 AA)', () => {
-  for (const path of ['/2026', '/en/2026/08', '/libur?year=2027', '/alat', '/api', '/sumber', '/embed?year=2026&month=3', '/2100', '/404-not-here']) {
+  for (const path of ['/2026', '/en/2026/08', '/libur?year=2027', '/alat', '/api', '/sumber', '/embed?year=2026&month=3', '/2100', '/404-not-here', '/2026?mode=jawa', '/en/2026/08?mode=tionghoa', '/2026/03?mode=hijriah']) {
     for (const dark of [false, true]) {
       test(`${path} ${dark ? 'dark' : 'light'}`, async () => {
         const { page, errors } = await open(path, { dark });
@@ -141,6 +141,24 @@ describe('journeys', () => {
     await page.click('#add-form button[type=submit]');
     await page.locator('#add-result dl').waitFor();
     assert.match(await page.locator('#add-result').innerText(), /31 Desember 2025/);
+    await page.close();
+  });
+
+  test('secondary calendar mode: overlay, accessible labels, shareable URL, remembered', async () => {
+    const { page } = await open('/2026/06');
+    await page.selectOption('#calendar-mode', 'jawa');
+    assert.equal(await page.evaluate(() => document.documentElement.dataset.mode), 'jawa');
+    assert.equal(new URL(page.url()).searchParams.get('mode'), 'jawa');
+    assert.equal(await page.locator('.day[data-date="2026-06-17"]').getAttribute('data-alt'), 'Kliwon · 1 Sura');
+    assert.match(await page.locator('.month-alt').first().innerText(), /1960 Be/);
+    assert.match(await page.locator('.mode-note').innerText(), /Asapon/);
+    await page.selectOption('#calendar-mode', 'hijriah');
+    const year = await open('/2026');
+    assert.equal(await year.page.evaluate(() => document.documentElement.dataset.mode), 'masehi'); // new context: nothing stored
+    await year.page.close();
+    await page.goto(BASE + '/2026');
+    assert.equal(await page.evaluate(() => document.documentElement.dataset.mode), 'hijriah'); // remembered in this context
+    assert.match((await page.locator('.day[data-date="2026-03-20"]').getAttribute('aria-label'))!, /1 Syawal/);
     await page.close();
   });
 

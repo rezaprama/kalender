@@ -1,4 +1,4 @@
-import { civil, type Lang } from '../core.ts';
+import { civil, iso, type Lang } from '../core.ts';
 
 /**
  * Chinese lunisolar calendar, table-driven from the Hong Kong Observatory
@@ -6,8 +6,7 @@ import { civil, type Lang } from '../core.ts';
  * ICU's astronomical `chinese` calendar is NOT used for 1900-12-22..2100-12-31:
  * it disagrees with HKO and the Indonesian SKB on some new moons close to
  * midnight Beijing time (e.g. Imlek 2027: HKO/SKB 6 Feb, ICU 7 Feb).
- * Dates before 1900-12-22 (outside HKO coverage) fall back to ICU and are
- * reported with source "icu".
+ * Supported range: 1900-12-22 to 2100-12-31. Earlier dates throw RangeError.
  */
 const TABLE_START = '1900-12-22'; // first day of the 11th month of lunar year 1900 (Geng-zi)
 const START_MONTH = 11;
@@ -29,7 +28,7 @@ export interface ChineseDate {
   kongzili: number;
   stem: number;
   branch: number;
-  source: 'hko' | 'icu';
+  source: 'hko';
 }
 
 export const STEMS = ['Jia', 'Yi', 'Bing', 'Ding', 'Wu', 'Ji', 'Geng', 'Xin', 'Ren', 'Gui'] as const;
@@ -64,8 +63,6 @@ function cycle(year: number) {
   return { stem: c % 10, branch: c % 12 };
 }
 
-const icu = new Intl.DateTimeFormat('en-u-ca-chinese', { year: 'numeric', month: 'numeric', day: 'numeric', timeZone: 'UTC' });
-
 export function toChinese(date: string): ChineseDate {
   const ms = civil(date).valueOf();
   const table = monthTable();
@@ -79,25 +76,24 @@ export function toChinese(date: string): ChineseDate {
     const m = table[lo];
     return { year: m.year, month: m.month, leap: m.leap, day: Math.round((ms - m.start) / DAY) + 1, kongzili: m.year + 551, ...cycle(m.year), source: 'hko' };
   }
-  const parts = icu.formatToParts(new Date(ms));
-  const value = (type: string) => parts.find((p) => p.type === type)?.value ?? '';
-  const year = Number(value('relatedYear') || value('year'));
-  const monthRaw = value('month');
-  return { year, month: Number.parseInt(monthRaw, 10), leap: monthRaw.endsWith('bis'), day: Number(value('day')), kongzili: year + 551, ...cycle(year), source: 'icu' };
+  throw new RangeError(`Chinese calendar supported from ${TABLE_START} (HKO table coverage).`);
 }
 
-/** First day of the lunar year that begins in Gregorian `year` (1900 from ICU, 1901-2100 from HKO). */
+/** First day of the lunar year that begins in Gregorian `year` (1901-2100). */
 export function chineseNewYear(year: number): string {
-  if (year >= 1901) {
-    const m = monthTable().find((x) => x.year === year && x.month === 1 && !x.leap);
-    if (m) return new Date(m.start).toISOString().slice(0, 10);
-  }
-  for (let d = Date.UTC(year, 0, 21, 12); d <= Date.UTC(year, 1, 21, 12); d += DAY) {
-    const date = new Date(d).toISOString().slice(0, 10);
-    const c = toChinese(date);
-    if (c.month === 1 && c.day === 1 && !c.leap) return date;
-  }
-  throw new RangeError(`No Chinese New Year found for ${year}`);
+  const m = monthTable().find((x) => x.year === year && x.month === 1 && !x.leap);
+  if (!m) throw new RangeError(`Chinese New Year ${year} is outside the HKO table (1901-2100).`);
+  return new Date(m.start).toISOString().slice(0, 10);
+}
+
+/** Gregorian date of a Chinese lunar date (lunar year = Gregorian year in which it began). */
+export function fromChinese(year: number, month: number, day: number, leap = false): string {
+  const table = monthTable();
+  const i = table.findIndex((m) => m.year === year && m.month === month && m.leap === leap);
+  if (i < 0 || !Number.isInteger(day) || day < 1) throw new RangeError('Invalid or unsupported Chinese date.');
+  const length = i + 1 < table.length ? (table[i + 1].start - table[i].start) / DAY : 1;
+  if (day > length) throw new RangeError(`Month has ${length} days.`);
+  return iso(new Date(table[i].start + (day - 1) * DAY));
 }
 
 export function formatChinese(c: ChineseDate, lang: Lang = 'id'): string {

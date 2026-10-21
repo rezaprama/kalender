@@ -349,3 +349,14 @@ dialog::backdrop { background: rgb(10 10 12 / .45); }
   .today-stamp, .intro-copy { display: none !important; }
   .day.today { outline: none; }
 }
+
+/* Secondary calendar overlay (set by JS from data-alt; Gregorian stays primary) */
+.mode-control select { min-height: 40px; padding: 0 .6rem; font-weight: 550; }
+.day[data-alt]::after { content: attr(data-alt); display: block; margin-top: 1px; font-size: .56rem; font-weight: 500; line-height: 1; letter-spacing: 0; color: var(--muted); }
+.month:not(.large) .day[data-alt] { place-items: center; align-content: center; gap: 1px; }
+.day.national[data-alt]::after, .day.leave[data-alt]::after { color: inherit; opacity: .85; }
+.month.large .day[data-alt]::after { margin-top: auto; font-size: .72rem; }
+.month-alt { margin: -.15rem 0 .35rem; font-size: .75rem; color: var(--muted); }
+.detail-list dd small { display: block; margin-top: .1rem; color: var(--muted); font-size: .8rem; font-weight: 400; }
+.detail-observances { margin: 1rem 0 0; font-size: .92rem; }
+.mode-note { margin: -.4rem 0 1rem; font-size: .82rem; color: var(--muted); }

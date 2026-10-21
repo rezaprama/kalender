@@ -1,3 +1,8 @@
+import { CALENDARS, describeDate } from './calendars/index.ts';
+import { fromChinese } from './calendars/chinese.ts';
+import { fromHijri, umalquraAvailable } from './calendars/islamic.ts';
+import { fromJavanese } from './calendars/javanese.ts';
+import { observancesInYear } from './observances.ts';
 import { AUTHOR, MAX_YEAR, MIN_YEAR, SITE, civil, toCSV, toICS, validYear, workdays, type Holiday, type Lang, type YearData } from './core.ts';
 
 export const API_VERSION = 'v1';
@@ -102,6 +107,65 @@ function workdaysRoute(request: Request, url: URL, years: Map<number, YearData>)
   }));
 }
 
+function intParam(url: URL, name: string, min: number, max: number): number {
+  const raw = url.searchParams.get(name);
+  if (raw === null) throw new ApiError(400, 'missing_parameter', `${name} is required.`);
+  const value = Number(raw);
+  if (!/^-?\d+$/.test(raw) || value < min || value > max) throw new ApiError(400, 'invalid_parameter', `${name} must be an integer from ${min} to ${max}.`);
+  return value;
+}
+
+function dateInfo(date: string, lang: Lang, years: Map<number, YearData>) {
+  const data = years.get(Number(date.slice(0, 4)))!;
+  return {
+    ...describeDate(date, lang),
+    holidays: data.holidays.filter((h) => h.date === date).map((h) => ({ ...h, nameLocalized: lang === 'en' ? h.nameEn : h.name, source: data.sources.find((s) => s.id === h.sourceId) })),
+    coverage: { year: data.year, status: data.status, missing: data.missing },
+  };
+}
+
+function dateRoute(request: Request, url: URL, years: Map<number, YearData>): Response {
+  const date = dateParam(url, 'date');
+  const lang = param(url, 'lang', ['id', 'en'] as const, 'id')!;
+  return cached(request, etag(years.get(Number(date.slice(0, 4)))!, url), () => json({ ...dateInfo(date, lang, years), calendars: CALENDARS, attribution }));
+}
+
+function convertRoute(request: Request, url: URL, years: Map<number, YearData>): Response {
+  const calendar = param(url, 'calendar', ['islamic', 'javanese', 'chinese'] as const);
+  if (!calendar) throw new ApiError(400, 'missing_parameter', 'calendar is required (islamic, javanese, chinese).');
+  const lang = param(url, 'lang', ['id', 'en'] as const, 'id')!;
+  const month = intParam(url, 'month', 1, 12), day = intParam(url, 'day', 1, 30);
+  let date: string, method: string;
+  try {
+    if (calendar === 'islamic') {
+      method = param(url, 'method', ['civil', 'umalqura'] as const, 'civil')!;
+      if (method === 'umalqura' && !umalquraAvailable()) throw new ApiError(501, 'method_unavailable', 'Umm al-Qura data is not available in this runtime.');
+      date = fromHijri(intParam(url, 'year', 1317, 1525), month, day, method as 'civil' | 'umalqura');
+    } else if (calendar === 'javanese') {
+      method = param(url, 'kurup', ['asapon', 'aboge'] as const, 'asapon')!;
+      date = fromJavanese(intParam(url, 'year', 1817, 2034), month, day, method as 'asapon' | 'aboge');
+    } else {
+      method = 'hko';
+      date = fromChinese(intParam(url, 'year', 1900, 2100), month, day, param(url, 'leap', ['true', 'false'] as const, 'false') === 'true');
+    }
+  } catch (error) {
+    if (error instanceof ApiError) throw error;
+    throw new ApiError(400, 'invalid_date', (error as Error).message);
+  }
+  return cached(request, etag({ version: API_VERSION }, url), () => json({ calendar, method, input: Object.fromEntries(url.searchParams), ...dateInfo(date, lang, years), attribution }));
+}
+
+function observancesRoute(request: Request, url: URL): Response {
+  const year = yearParam(url);
+  const lang = param(url, 'lang', ['id', 'en'] as const, 'id')!;
+  return cached(request, etag({ version: API_VERSION }, url), () => json({
+    year,
+    note: lang === 'id' ? 'Peringatan hasil perhitungan, bukan hari libur. Tanggal Islam tabular ±1 hari.' : 'Calculated observances, not public holidays. Islamic dates are tabular, ±1 day.',
+    observances: observancesInYear(year).map((o) => ({ ...o, nameLocalized: lang === 'en' ? o.nameEn : o.name })),
+    attribution,
+  }));
+}
+
 export function handleApi(request: Request, url: URL, years: Map<number, YearData>): Response {
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: { ...CORS, 'Access-Control-Max-Age': '86400' } });
   try {
@@ -109,6 +173,10 @@ export function handleApi(request: Request, url: URL, years: Map<number, YearDat
     switch (url.pathname.replace(/\/$/, '')) {
       case '/api/v1/holidays': return holidays(request, url, years);
       case '/api/v1/workdays': return workdaysRoute(request, url, years);
+      case '/api/v1/date': return dateRoute(request, url, years);
+      case '/api/v1/convert': return convertRoute(request, url, years);
+      case '/api/v1/observances': return observancesRoute(request, url);
+      case '/api/v1/calendars': return cached(request, etag({ version: API_VERSION }, url), () => json({ calendars: CALENDARS, attribution }));
       default: throw new ApiError(404, 'not_found', 'Unknown API endpoint. See /openapi.json.');
     }
   } catch (error) {

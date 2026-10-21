@@ -41,10 +41,6 @@ export function pasaran(date: string): string {
   const offset = Math.round((civil(date).valueOf()-Date.UTC(1945,7,17,12))/86400000);
   return ['Legi','Pahing','Pon','Wage','Kliwon'][((offset%5)+5)%5];
 }
-/** Tabular Hijri is a conversion, not an Indonesian moon-sighting determination. */
-export function hijri(date: string, lang: Lang = 'id'): string {
-  return new Intl.DateTimeFormat(`${lang === 'id' ? 'id-ID' : 'en-GB'}-u-ca-islamic-civil`,{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(civil(date));
-}
 export function escapeHtml(value: unknown): string { return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!)); }
 export function pathFor(year: number, lang: Lang = 'id', month?: number): string { return `${lang === 'en' ? '/en' : ''}/${year}${month ? `/${String(month).padStart(2,'0')}` : ''}`; }
 export function workdays(start: string, end: string, holidays: Holiday[], includeLeave = false, saturdayWorking = false) {

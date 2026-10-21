@@ -158,3 +158,54 @@ describe('consistency', () => {
     assert.match(await get('/en/holidays?year=2027').text(), /Subject to isbat/);
   });
 });
+
+describe('calendar API', () => {
+  test('/api/v1/date combines every calendar with holidays and coverage', async () => {
+    const r = get('/api/v1/date?date=2026-08-17&lang=en');
+    assert.equal(r.status, 200);
+    const body = await r.json() as { javanese: { weton: { weekday: string; pasaran: string; neptu: { total: number } }; kraton: { year: number; yearName: string } }; islamic: { civil: { year: number; month: number; day: number } }; chinese: { month: number; kongzili: number }; holidays: { nameLocalized: string; source: { url: string } }[]; coverage: { status: string }; calendars: unknown[] };
+    assert.deepEqual([body.javanese.weton.weekday, body.javanese.weton.pasaran, body.javanese.weton.neptu.total], ['Senin', 'Legi', 9]);
+    assert.equal(body.javanese.kraton.yearName, 'Be');
+    assert.equal(body.islamic.civil.year, 1448);
+    assert.equal(body.chinese.kongzili, 2577);
+    assert.equal(body.holidays[0].nameLocalized, 'Independence Day');
+    assert.match(body.holidays[0].source.url, /\.go\.id\//);
+    assert.equal(body.coverage.status, 'official');
+    assert.equal(body.calendars.length, 4);
+    const early = await get('/api/v1/date?date=1900-06-01').json() as { chinese: unknown };
+    assert.equal(early.chinese, null);
+  });
+
+  test('/api/v1/convert for Hijri, Javanese and Chinese', async () => {
+    const hijri = await get('/api/v1/convert?calendar=islamic&year=1447&month=10&day=1').json() as { date: string; method: string };
+    assert.deepEqual([hijri.date, hijri.method], ['2026-03-20', 'civil']);
+    const uq = await get('/api/v1/convert?calendar=islamic&year=1447&month=10&day=1&method=umalqura').json() as { date: string };
+    assert.equal(uq.date, '2026-03-20');
+    const jawa = await get('/api/v1/convert?calendar=javanese&year=1960&month=1&day=1').json() as { date: string };
+    assert.equal(jawa.date, '2026-06-17');
+    const aboge = await get('/api/v1/convert?calendar=javanese&year=1960&month=1&day=1&kurup=aboge').json() as { date: string };
+    assert.equal(aboge.date, '2026-06-18');
+    const imlek = await get('/api/v1/convert?calendar=chinese&year=2027&month=1&day=1').json() as { date: string };
+    assert.equal(imlek.date, '2027-02-06');
+    for (const q of ['', 'calendar=mayan&year=1&month=1&day=1', 'calendar=islamic&year=1447&month=13&day=1', 'calendar=islamic&year=1447&month=2&day=30', 'calendar=chinese&year=2024&month=2&day=1&leap=true', 'calendar=islamic&year=1200&month=1&day=1']) {
+      assert.equal(get(`/api/v1/convert?${q}`).status, 400, q);
+    }
+  });
+
+  test('/api/v1/observances and /api/v1/calendars', async () => {
+    const o = await get('/api/v1/observances?year=2026&lang=en').json() as { observances: { nameLocalized: string; calendar: string }[]; note: string };
+    assert.ok(o.observances.some((x) => x.nameLocalized === 'Lantern Festival (Cap Go Meh)'));
+    assert.match(o.note, /not public holidays/);
+    const c = await get('/api/v1/calendars').json() as { calendars: { id: string; range: string[] }[] };
+    assert.deepEqual(c.calendars.map((x) => x.id), ['gregorian', 'islamic', 'chinese', 'javanese']);
+    assert.deepEqual(c.calendars.find((x) => x.id === 'chinese')!.range, ['1900-12-22', '2100-12-31']);
+  });
+});
+
+test('every handled API endpoint is documented in openapi.json', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const source = await readFile('src/api.ts', 'utf8');
+  const handled = [...source.matchAll(/case '(\/api\/v1\/[a-z]+)'/g)].map((m) => m[1]).sort();
+  const spec = JSON.parse(await readFile('dist/openapi.json', 'utf8')) as { paths: Record<string, unknown> };
+  assert.deepEqual(Object.keys(spec.paths).sort(), handled);
+});
