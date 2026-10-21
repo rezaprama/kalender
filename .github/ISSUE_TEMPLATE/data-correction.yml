@@ -1,0 +1,26 @@
+name: Holiday data correction / Koreksi data libur
+description: Report a wrong, missing or amended holiday with a government source. / Laporkan libur yang salah, hilang, atau berubah beserta sumber pemerintah.
+title: "data: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Official records change only with a government source (`*.go.id`) that lists the date. News articles can help you find the decree but are not enough on their own.
+        Rekaman resmi hanya diubah dengan sumber pemerintah (`*.go.id`) yang mencantumkan tanggalnya.
+  - type: input
+    id: year
+    attributes: { label: Year / Tahun, placeholder: "2027" }
+    validations: { required: true }
+  - type: textarea
+    id: change
+    attributes:
+      label: What is wrong or missing? / Apa yang salah atau hilang?
+      description: Date, name, and whether it is a national holiday (libur nasional) or collective leave (cuti bersama).
+    validations: { required: true }
+  - type: input
+    id: source
+    attributes: { label: Government source URL / URL sumber pemerintah, placeholder: "https://…go.id/…" }
+    validations: { required: true }
+  - type: input
+    id: decree
+    attributes: { label: Decree number and date / Nomor dan tanggal keputusan, placeholder: "SKB Menteri Agama …, Menteri Ketenagakerjaan …, Menteri PANRB …" }
