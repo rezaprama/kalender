@@ -4,8 +4,8 @@ Authoritative checkpoint. Update at every milestone. States: NOT_STARTED · IN_P
 
 ## Current
 - Branch: `feat/kalender-completion` (from `main` @ 6927e9e "chore: preserve initial Codex implementation"). No remote configured. Nothing pushed or deployed.
-- Status: RELEASE_READY. All local work verified; external publication (GitHub push, Cloudflare deploy) awaits owner approval — steps in docs/RELEASE.md.
-- Next action (owner): push `main` + `feat/kalender-completion`, open PR, connect Workers Builds; then verify live (RELEASE.md §3) and run Lighthouse on production.
+- Status: LIVE at https://kalender.rezaprama.com (deployed 2026-10-21 with `wrangler deploy` from the local checkout; version d139bfa). GitHub repo NOT yet created: `gh repo create`/`git push` were blocked by the local Claude Code permission classifier, so Workers Builds, CI runs and the release tag are pending.
+- Next action: owner allows `gh repo create rezaprama/kalender --public` + `git push` (or runs them), then connect Workers Builds in the Cloudflare dashboard, merge PR after CI, tag v1.0.0.
 
 ## Milestones
 | Phase | State | Evidence |
@@ -41,14 +41,16 @@ Authoritative checkpoint. Update at every milestone. States: NOT_STARTED · IN_P
 - Historical: 1900–1944 `pre-independence`; 1945–2021 archive not curated (DEFERRED: needs per-year decree evidence).
 
 ## Known defects / blockers
-- Workers runtime itself never executed here (workerd crash); bundle verified in Node. Check Umm al-Qura/ICU on production (RELEASE.md §3).
+- Production verified: 38 live route/API checks, e2e 37/37 against production (E2E_BASE), Umm al-Qura works on Workers. Lighthouse production: a11y/best/seo 100; perf mobile 92–100, desktop 98–100.
+- Cloudflare Web Analytics is enabled on the zone and injects a beacon; pages send `no-transform` to keep the no-tracking promise, and the Worker gzips HTML itself.
 - GitHub Actions workflows parsed but never run (no remote).
 - Historical holidays 1945–2021 not curated (DEFERRED); Nyepi/Waisak not projected; MABIMS predictor DEFERRED.
-- **Environment:** `wrangler dev` crashes (workerd access violation 0xc0000005), reproduced with a trivial worker. `System32\vcruntime140.dll` is 14.28 while registry reports VC++ 14.50. Owner action: reinstall the latest Microsoft Visual C++ Redistributable x64. Workaround: `npx tsx scripts/serve.ts`.
+- Environment: fixed 2026-10-21. VC++ Redistributable x64 14.51 installed via winget (official package, hash verified); `wrangler dev` now runs the project.
 - Sources page now describes quarterly + September monitoring; must be implemented in Phase 6 (scripts/monitor.ts) or the copy changed.
 - Web tools: WebFetch/WebSearch fail in this environment (model error); research uses the built-in browser + Bing.
 
 ## Verification log
+- 2026-10-21 Publication: secret scan of all history clean; HKO licensing separated; deployed; live checks 38/38; prod e2e 37/37; check 80/80.
 - 2026-10-21 Phase 7: check 78/78, smoke 11/11 (wrangler dry-run bundle), e2e 37/37, audit exit 0, monitor live: no action needed.
 - 2026-10-21 Phase 6: check 78/78, e2e 36/36, npm audit 0, Lighthouse local 100s (see above), monitor live: no action needed. Assets: JS 27.5 KB raw / 11.1 KB gzip; CSS 24.4 / 5.8 KB; /2026 HTML 78 KB raw / 8.5 KB br.
 - 2026-10-21 Phase 5: check 72/72 (incl. docs examples), e2e 36/36.
