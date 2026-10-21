@@ -66,7 +66,7 @@ The site renders HTML on Cloudflare Workers. No browser framework, ads, tracking
 
 An empty holiday array for an unverified year means **missing research**, not a holiday-free year. Calculated Islamic dates can differ by a day; dates subject to isbat keep that label. Javanese dates after 2052 are projections. See the [methods and calendar ranges](docs/METHODOLOGY.md).
 
-Government sources are checked daily around **08:00 WIB**. New findings go to a review issue. A curator verifies the decree and amendments before a passing pull request updates the site and API. [How updates work](docs/RELEASE.md#maintain-holiday-data).
+Government sources are checked **quarterly** (1 January, April, July and October, around 08:00 WIB), and manually when a new decree is expected. New findings go to a review issue. A curator verifies the decree and amendments before a passing pull request updates the site and API. [How updates work](docs/RELEASE.md#maintain-holiday-data).
 
 ## Your first API request
 

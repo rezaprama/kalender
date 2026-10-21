@@ -11,7 +11,7 @@ Date: 22 October 2026 (WIB). Branch `fix/monitor-feeds-and-docs`.
 - Added issue forms that require a government source for data corrections.
 - Promo video (ignored `artifacts/promo`): the 9:16 version placed the logo, the Proklamasi callout and the credit under Reels/Stories UI. Re-rendered both formats with a safe-zone layout, explicit owner credit, and vendored OFL fonts. Verification, covers, silent version and ZIP regenerated.
 - Not measured in this session: Lighthouse (production and PageSpeed API unreachable from the sandbox). Typecheck, lint, smoke and e2e are run by CI, not locally (npm registry unreachable).
-- Policy conflict for the owner: the source monitor runs daily, while project instructions set a quarterly default. It is deterministic and cheap; the schedule is unchanged pending a decision.
+- Owner decision (22 October 2026): source monitoring runs quarterly (1 Jan, Apr, Jul, Oct), not daily; manual runs when a decree is expected.
 
 - Public repository: <https://github.com/rezaprama/kalender>.
 - Initial release pull request: <https://github.com/rezaprama/kalender/pull/1>.
@@ -42,7 +42,7 @@ Daily source monitoring was dispatched successfully in GitHub Actions. Two Setka
 
 - Static assets bypass the Worker. HTML pages and API requests use one shared generated dataset.
 - HTML carries `no-transform` to prevent CDN script injection; Worker applies gzip itself.
-- Source monitoring runs daily around 08:00 WIB. Unchanged action findings do not repeatedly notify. Curators verify decrees before changing official data.
+- Source monitoring runs quarterly around 08:00 WIB (1 Jan, Apr, Jul, Oct) and on manual dispatch. Unchanged action findings do not repeatedly notify. Curators verify decrees before changing official data.
 - `wrangler dev` works locally after the official Windows VC++ x64 runtime installation. No runtime credentials are stored in the project.
 - Public history is preserved. The original brief still exists in the first commit and was checked before publication.
 
