@@ -66,7 +66,7 @@ HTML dirender di Cloudflare Workers. Tanpa framework browser, iklan, skrip pelac
 
 Daftar libur kosong pada tahun yang belum diverifikasi berarti **riset belum lengkap**, bukan tidak ada libur. Tanggal Islam hasil perhitungan bisa berbeda sehari; tanggal yang menunggu isbat tetap diberi label. Tanggal Jawa setelah 2052 adalah proyeksi. Baca [metode dan rentang setiap kalender](docs/METHODOLOGY.md).
 
-Sumber pemerintah diperiksa setiap hari sekitar **08.00 WIB**. Temuan baru masuk ke issue peninjauan. Kurator memeriksa keputusan beserta perubahannya sebelum pull request yang lulus pemeriksaan memperbarui situs dan API. [Alur pembaruan data](docs/RELEASE.md#maintain-holiday-data).
+Sumber pemerintah diperiksa **setiap tiga bulan** (1 Januari, April, Juli, dan Oktober, sekitar 08.00 WIB), dan secara manual saat keputusan baru dinantikan. Temuan baru masuk ke issue peninjauan. Kurator memeriksa keputusan beserta perubahannya sebelum pull request yang lulus pemeriksaan memperbarui situs dan API. [Alur pembaruan data](docs/RELEASE.md#maintain-holiday-data).
 
 ## Permintaan API pertamamu
 

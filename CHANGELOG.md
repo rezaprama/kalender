@@ -2,6 +2,16 @@
 
 All notable changes are listed here. Dates are in WIB. Data changes are listed separately from code changes because they affect what users rely on.
 
+## [Unreleased]
+
+### Changed
+- Government-source monitoring runs quarterly (1 January, April, July, October) instead of daily, with manual runs when a decree is expected. Setkab search feeds are optional; an unreachable required feed still needs a curator.
+- JSON API bodies containing HKO-derived Chinese-calendar data list the HKO non-commercial terms in `attribution.license.exceptions`.
+- GitHub Actions: checkout, setup-node and upload-artifact v7. Dependabot no longer proposes TypeScript or `@types/node` major upgrades automatically.
+
+### Fixed
+- The commit attribution check rejects newer assistant identities, `Assisted-by`-style trailers and assistant session links; human co-authors remain accepted.
+
 ## [1.0.0] — 2026-10-21
 
 ### Data
