@@ -3,8 +3,13 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 
-const AI_NAME = /^(?:claude(?:\s+(?:code|opus|sonnet|haiku)(?:\s+[\w.-]+)*)?|anthropic|codex|chatgpt|openai|gemini|(?:github\s+)?copilot)(?:\s*\[bot\])?$/i;
-const AI_EMAIL = /^(?:noreply|no-reply)@(?:anthropic|openai)\.com$/i;
+/** Bare product names, or "Claude <model family>"; a human named "Claude Martin" stays allowed. */
+const AI_NAME = /^(?:claude(?:\s+(?:code|opus|sonnet|haiku|fable|mythos|instant|ai|agent|assistant)(?:\s+[\w.-]+)*)?|anthropic|codex(?:\s+cli)?|chatgpt|openai(?:\s+codex)?|gemini(?:\s+code\s+assist)?|(?:github\s+)?copilot(?:\s+swe\s+agent)?|cursor(?:\s+agent)?|devin(?:\s+ai)?|aider|jules|windsurf|amazon\s+q)(?:\s*\[bot\])?$/i;
+const AI_EMAIL = /^(?:(?:noreply|no-reply)@(?:anthropic|openai)\.com|[\w.+-]*@(?:anthropic\.com|cursor\.com)|\d+\+(?:copilot|devin-ai-integration\[bot\]|google-labs-jules\[bot\])@users\.noreply\.github\.com)$/i;
+/** Credit trailers, including ones some tools add instead of Co-authored-by. */
+const CREDIT_TRAILER = /^\s*(?:co-authored-by|co-developed-by|signed-off-by|authored-by|assisted-by|generated-by|helped-by):\s*(.+)$/i;
+/** Session or provenance trailers and links emitted by coding assistants. */
+const SESSION_CREDIT = /^\s*(?:(?:claude|codex|copilot|cursor)-session(?:-url)?:|.*\bhttps?:\/\/(?:claude\.ai\/code\/session_|chatgpt\.com\/codex\/tasks\/))/i;
 
 export function isAssistant(identity: string): boolean {
   const match = identity.trim().match(/^(.*?)\s*<([^>]+)>/);
@@ -16,8 +21,9 @@ export function attributionIssues(message: string, author = '', committer = ''):
   if (isAssistant(author)) issues.push('Assistant author identity');
   if (isAssistant(committer)) issues.push('Assistant committer identity');
   for (const line of message.split(/\r?\n/)) {
-    const trailer = line.match(/^\s*(?:co-authored-by|signed-off-by|authored-by):\s*(.+)$/i);
+    const trailer = line.match(CREDIT_TRAILER);
     if (trailer && isAssistant(trailer[1])) issues.push('Assistant attribution trailer');
+    if (SESSION_CREDIT.test(line)) issues.push('Assistant session link');
     if (/^\s*(?:🤖\s*)?(?:generated|created|written)\s+(?:with|by)\s+(?:\[)?(?:claude|anthropic|codex|chatgpt|openai|gemini|(?:github\s+)?copilot)\b/i.test(line)) {
       issues.push('Assistant promotional credit');
     }
