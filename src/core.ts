@@ -25,7 +25,8 @@ export function civil(date: string): Date {
   return result;
 }
 export function iso(date: Date): string { return date.toISOString().slice(0,10); }
-export function addDays(date: string, count: number): string { const d = civil(date); d.setUTCDate(d.getUTCDate()+count); return iso(d); }
+/** Result is range-checked: stepping past 1900-01-01 or 2100-12-31 throws RangeError. */
+export function addDays(date: string, count: number): string { const d = civil(date); d.setUTCDate(d.getUTCDate()+count); const result = iso(d); civil(result); return result; }
 export function daysInMonth(year: number, month: number): number { return new Date(Date.UTC(year,month,0,12)).getUTCDate(); }
 export function dayOfWeek(date: string): number { return civil(date).getUTCDay(); }
 export function jakartaToday(now = new Date()): string { return new Intl.DateTimeFormat('en-CA',{ timeZone:'Asia/Jakarta', year:'numeric',month:'2-digit',day:'2-digit' }).format(now); }

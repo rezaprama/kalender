@@ -1,10 +1,9 @@
-import { AUTHOR, SITE, MONTHS, WEEKDAYS, civil, daysInMonth, dayOfWeek, escapeHtml as e, formatDate, pathFor, type Lang, type YearData } from './core.ts';
+import { AUTHOR, SITE, MONTHS, WEEKDAYS, daysInMonth, dayOfWeek, escapeHtml as e, formatDate, pathFor, type Lang, type YearData } from './core.ts';
 import { words,route,statusLabel } from './i18n.ts';
 export interface Assets { css:string;js:string;icons:Record<string,string> }
 export interface PageOptions {lang:Lang;year:number;month?:number;page?:'calendar'|'holidays'|'tools'|'api'|'sources'|'404';path:string;data:YearData;assets:Assets;officialYears:number[];embed?:boolean}
 let icons:Record<string,string>={};
 function icon(name:string) { return icons[name]??''; }
-function buttonIcon(name:string,label:string) { return `${icon(name)}<span>${e(label)}</span>`; }
 function attribution(lang:Lang) { return `${words[lang].foot} <a href="${AUTHOR.url}" rel="author">${AUTHOR.name}</a>`; }
 function badge(data:YearData,lang:Lang) { return `<span class="badge ${data.status}">${icon(data.status==='official'?'seal-check':'info')}${e(statusLabel(data.status,lang))}</span>`; }
 export function monthGrid(data:YearData,month:number,lang:Lang,large=false): string {

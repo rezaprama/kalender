@@ -1,0 +1,7 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "kalender", "runtimeExecutable": "npx", "runtimeArgs": ["wrangler", "dev", "--port", "8787"], "port": 8787 },
+    { "name": "kalender-node", "runtimeExecutable": "npx", "runtimeArgs": ["tsx", "scripts/serve.ts"], "port": 8788 }
+  ]
+}
