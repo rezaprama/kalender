@@ -11,13 +11,14 @@ import { jakartaToday } from '../../src/core.ts';
 import { launch } from '../../scripts/browser.ts';
 
 const PORT = 8791;
-const BASE = `http://localhost:${PORT}`;
+/** E2E_BASE runs the same journeys against a deployed site, e.g. https://kalender.rezaprama.com. */
+const BASE = process.env.E2E_BASE ?? `http://localhost:${PORT}`;
 const axePath = createRequire(import.meta.url).resolve('axe-core/axe.min.js');
 let server: ChildProcess;
 let browser: Browser;
 
 before(async () => {
-  server = spawn(process.execPath, ['--import', 'tsx', 'scripts/serve.ts'], { env: { ...process.env, PORT: String(PORT) }, stdio: 'ignore' });
+  if (!process.env.E2E_BASE) server = spawn(process.execPath, ['--import', 'tsx', 'scripts/serve.ts'], { env: { ...process.env, PORT: String(PORT) }, stdio: 'ignore' });
   for (let i = 0; i < 100 && !(await fetch(BASE).then((r) => r.ok, () => false)); i++) await new Promise((r) => setTimeout(r, 100));
   browser = await launch();
 });

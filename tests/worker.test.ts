@@ -287,3 +287,7 @@ test('HKO attribution and disclaimer accompany Chinese calendar data', async () 
   const sources = await get('/sumber').text();
   assert.match(sources, /shall not be constituted as any form of co-operation or affiliation by the Observatory/);
 });
+
+test('HTML is marked no-transform so the CDN cannot inject scripts', () => {
+  assert.match(get('/2026').headers.get('cache-control')!, /no-transform/);
+});

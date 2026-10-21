@@ -17,7 +17,8 @@ const BASE_CSP = "default-src 'self'; img-src 'self' data:; style-src 'self'; sc
 function htmlHeaders(embed: boolean): Record<string, string> {
   return {
     'Content-Type': 'text/html; charset=utf-8',
-    'Cache-Control': 'public, max-age=600',
+    // no-transform stops Cloudflare from injecting scripts (e.g. Web Analytics) into pages: the site promises no tracking, and CSP would block them anyway.
+    'Cache-Control': 'public, max-age=600, no-transform',
     'Content-Security-Policy': `${BASE_CSP}; frame-ancestors ${embed ? '*' : "'self'"}`,
     'X-Content-Type-Options': 'nosniff',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
@@ -94,10 +95,25 @@ export function route(request: Request): Response {
   return notFound(request, lang);
 }
 
+/**
+ * Pages carry `no-transform` (no CDN script injection), which also disables the CDN's
+ * own compression, so the Worker gzips HTML itself. Only on the Workers runtime:
+ * `encodeBody: 'manual'` is Workers-specific and Node tests read plain bodies.
+ */
+function compressHtml(request: Request, response: Response): Response {
+  const onWorkers = typeof navigator !== 'undefined' && navigator.userAgent === 'Cloudflare-Workers';
+  if (!onWorkers || !response.body || !/text\/html/.test(response.headers.get('Content-Type') ?? '') || !/\bgzip\b/.test(request.headers.get('Accept-Encoding') ?? '')) return response;
+  const headers = new Headers(response.headers);
+  headers.set('Content-Encoding', 'gzip');
+  headers.append('Vary', 'Accept-Encoding');
+  headers.delete('Content-Length');
+  return new Response(response.body.pipeThrough(new CompressionStream('gzip')), { status: response.status, headers, encodeBody: 'manual' });
+}
+
 export default {
   fetch(request: Request): Response {
     try {
-      return route(request);
+      return compressHtml(request, route(request));
     } catch (error) {
       console.error('Unhandled error', error);
       return new Response('Internal Server Error', { status: 500, headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' } });
