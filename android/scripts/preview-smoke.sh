@@ -31,6 +31,14 @@ for trial in 1 2 3 4 5; do
     -d kalender://date/2026-08-17 > "$output/start-$trial.txt"
   grep -q 'Status: ok' "$output/start-$trial.txt"
 done
+if [[ "${ANDROID_VERIFY_UPDATE:-false}" == 'true' ]]; then
+  adb install -r "$apk" > "$output/update-install.txt"
+  grep -q 'Success' "$output/update-install.txt"
+  adb shell am start -W -a android.intent.action.VIEW \
+    -n "$app_id/com.rezaprama.kalender.MainActivity" \
+    -d kalender://date/2026-08-17 > "$output/update-start.txt"
+  grep -q 'Status: ok' "$output/update-start.txt"
+fi
 adb shell uiautomator dump /sdcard/kalender-preview.xml
 adb pull /sdcard/kalender-preview.xml "$output/preview-ui.xml"
 grep -q 'kalender\.' "$output/preview-ui.xml"

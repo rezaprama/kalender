@@ -23,10 +23,12 @@ $previousPassword = $env:KALENDER_STORE_PASSWORD
 $keytool = if ($env:JAVA_HOME) { Join-Path $env:JAVA_HOME 'bin/keytool' } else { 'keytool' }
 try {
     $env:KALENDER_STORE_PASSWORD = $password
-    & $keytool -genkeypair -alias kalender -keyalg RSA -keysize 4096 -sigalg SHA256withRSA -validity 10000 -dname "CN=$Owner" -storetype PKCS12 -keystore $store -storepass:env KALENDER_STORE_PASSWORD -keypass:env KALENDER_STORE_PASSWORD
-    if ($LASTEXITCODE -ne 0) { throw 'Key generation failed' }
+    # Persist recovery metadata before key generation, so interruption cannot orphan a key.
     @{ schema = 1; alias = 'kalender'; storeFile = 'release.keystore'; owner = $Owner; password = $password } |
         ConvertTo-Json | Set-Content -LiteralPath $config -Encoding utf8
+    if ($env:OS -ne 'Windows_NT') { & chmod 600 $config }
+    & $keytool -genkeypair -alias kalender -keyalg RSA -keysize 4096 -sigalg SHA256withRSA -validity 10000 -dname "CN=$Owner" -storetype PKCS12 -keystore $store -storepass:env KALENDER_STORE_PASSWORD -keypass:env KALENDER_STORE_PASSWORD
+    if ($LASTEXITCODE -ne 0) { throw 'Key generation failed' }
     if ($env:OS -ne 'Windows_NT') { & chmod 600 $store $config }
     Write-Host "Signing identity created in $KeyDirectory"
     Write-Host 'Back up release.keystore and private.json securely. Neither belongs in Git, CI, or a public release.'

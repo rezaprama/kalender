@@ -26,4 +26,7 @@ try {
     $env:KALENDER_STORE_PASSWORD = $private.password
     & $java --class-path $jar (Join-Path $PSScriptRoot 'SignApk.java') $source $output $store $private.alias
     if ($LASTEXITCODE -ne 0) { throw 'APK signing or verification failed' }
+    $expectedCertificate = (Get-Content -LiteralPath (Join-Path $repo 'android/release-cert.sha256') -Raw).Trim().ToLowerInvariant()
+    $actualCertificate = (Get-Content -LiteralPath "$output.certificate.sha256" -Raw).Trim().ToLowerInvariant()
+    if ($actualCertificate -ne $expectedCertificate) { throw 'Publisher certificate differs from the repository fingerprint. Do not publish this APK.' }
 } finally { $env:KALENDER_STORE_PASSWORD = $previousPassword }

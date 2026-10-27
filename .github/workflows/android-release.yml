@@ -65,6 +65,7 @@ jobs:
         env:
           ANDROID_APP_ID: com.rezaprama.kalender
           ANDROID_BUILD_LABEL: R8-optimized owner-signed release
+          ANDROID_VERIFY_UPDATE: 'true'
       - uses: actions/upload-artifact@v7
         if: always()
         with:
