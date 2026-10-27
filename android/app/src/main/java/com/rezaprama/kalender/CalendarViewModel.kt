@@ -118,8 +118,10 @@ class CalendarViewModel(application: Application, private val saved: SavedStateH
     private fun reloadAgenda() {
         val snapshot = mutable.value
         viewModelScope.launch {
-            val events = agenda.load(snapshot.month, ZoneId.of(snapshot.zone))
-            if (mutable.value.month == snapshot.month && mutable.value.zone == snapshot.zone) mutable.update { it.copy(events = events) }
+            try {
+                val events = agenda.load(snapshot.month, ZoneId.of(snapshot.zone))
+                if (mutable.value.month == snapshot.month && mutable.value.zone == snapshot.zone) mutable.update { it.copy(events = events) }
+            } catch (_: Exception) { message(if (snapshot.language == "id") "Agenda lokal belum dapat dibaca." else "Local events are unavailable.") }
         }
     }
 

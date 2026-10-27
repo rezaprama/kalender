@@ -7,6 +7,8 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.Context
+import android.content.res.Configuration
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -66,10 +68,32 @@ import java.util.Locale
 import kotlin.math.abs
 
 private val BrandRed = Color(0xffc0262d)
+private val PaperColors = lightColorScheme(
+    primary = BrandRed, onPrimary = Color.White, primaryContainer = Color(0xffffdad9), onPrimaryContainer = Color(0xff710e17),
+    secondary = Color(0xff45454d), onSecondary = Color.White, secondaryContainer = Color(0xffe8e7e0), onSecondaryContainer = Color(0xff24242a),
+    tertiary = Color(0xff745400), tertiaryContainer = Color(0xffffe2a2), onTertiaryContainer = Color(0xff372600),
+    background = Color(0xfff8f8f5), onBackground = Color(0xff202024), surface = Color(0xfff8f8f5), onSurface = Color(0xff202024),
+    surfaceVariant = Color(0xffe8e7e0), onSurfaceVariant = Color(0xff55555b), outline = Color(0xff77777c), outlineVariant = Color(0xffcfcec7),
+    surfaceContainerLowest = Color.White, surfaceContainerLow = Color(0xfff3f3ee), surfaceContainer = Color(0xffeeeee8), surfaceContainerHigh = Color(0xffe8e8e2), surfaceContainerHighest = Color(0xffe2e2dc),
+)
+private val InkColors = darkColorScheme(
+    primary = Color(0xffffa1a6), onPrimary = Color(0xff650b14), primaryContainer = Color(0xff8c1a23), onPrimaryContainer = Color(0xffffdad9),
+    secondary = Color(0xffc9c8c1), onSecondary = Color(0xff303036), secondaryContainer = Color(0xff35353b), onSecondaryContainer = Color(0xffe7e6df),
+    tertiary = Color(0xffecc16d), tertiaryContainer = Color(0xff554000), onTertiaryContainer = Color(0xffffe2a2),
+    background = Color(0xff141417), onBackground = Color(0xffe8e7e2), surface = Color(0xff141417), onSurface = Color(0xffe8e7e2),
+    surfaceVariant = Color(0xff38383e), onSurfaceVariant = Color(0xffc7c6c0), outline = Color(0xff99989d), outlineVariant = Color(0xff49494e),
+    surfaceContainerLowest = Color(0xff101013), surfaceContainerLow = Color(0xff1c1c20), surfaceContainer = Color(0xff222226), surfaceContainerHigh = Color(0xff2a2a2e), surfaceContainerHighest = Color(0xff333337),
+)
 private fun CalendarState.tr(id: String, en: String) = if (language == "id") id else en
 
 class MainActivity : ComponentActivity() {
     private lateinit var model: CalendarViewModel
+    override fun attachBaseContext(base: Context) {
+        val language = base.getSharedPreferences("settings", 0).getString("language", "id")!!
+        val locale = Locale.forLanguageTag(language)
+        val configuration = Configuration(base.resources.configuration).apply { setLocale(locale); setLayoutDirection(locale) }
+        super.attachBaseContext(base.createConfigurationContext(configuration))
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -77,6 +101,8 @@ class MainActivity : ComponentActivity() {
         if (savedInstanceState == null) handleIntent(intent)
         setContent {
             val state by model.state.collectAsStateWithLifecycle()
+            val initialLanguage = remember { state.language }
+            LaunchedEffect(state.language) { if (state.language != initialLanguage) recreate() }
             val dark = when (state.theme) { "dark" -> true; "light" -> false; else -> isSystemInDarkTheme() }
             SideEffect {
                 WindowCompat.getInsetsController(window, window.decorView).apply {
@@ -84,7 +110,7 @@ class MainActivity : ComponentActivity() {
                     isAppearanceLightNavigationBars = !dark
                 }
             }
-            MaterialTheme(colorScheme = if (dark) darkColorScheme(primary = Color(0xffff8a91), background = Color(0xff141417), surface = Color(0xff202024)) else lightColorScheme(primary = BrandRed, background = Color(0xfff8f8f5), surface = Color.White, outline = Color(0xffc9c8c0)), shapes = Shapes(medium = RoundedCornerShape(16.dp), large = RoundedCornerShape(24.dp))) {
+            MaterialTheme(colorScheme = if (dark) InkColors else PaperColors, shapes = Shapes(medium = RoundedCornerShape(16.dp), large = RoundedCornerShape(24.dp))) {
                 CalendarApp(state, model, ::openLink, ::shareEvent, ::openInCalendar)
             }
             LaunchedEffect(state.loading) { if (!state.loading) { withFrameNanos { }; reportFullyDrawn() } }
@@ -96,6 +122,7 @@ class MainActivity : ComponentActivity() {
 
     private fun launchSafely(intent: Intent) {
         try { startActivity(intent) } catch (_: ActivityNotFoundException) { model.message(model.state.value.tr("Tidak ada aplikasi yang dapat membuka ini.", "No application can open this action.")) }
+        catch (_: SecurityException) { model.message(model.state.value.tr("Aplikasi tujuan menolak akses.", "The destination application denied access.")) }
     }
     private fun openLink(url: String) {
         val uri = Uri.parse(url)
@@ -114,13 +141,13 @@ class MainActivity : ComponentActivity() {
     }
     private fun shareEvent(event: AgendaEvent) {
         lifecycleScope.launch {
-            val uri = withContext(Dispatchers.IO) {
+            val uri = try { withContext(Dispatchers.IO) {
                 val directory = File(cacheDir, "exports").apply { mkdirs() }
                 directory.listFiles()?.filter { it.lastModified() < System.currentTimeMillis() - 86400000 }?.forEach(File::delete)
                 val file = File(directory, "kalender-${event.uid}.ics")
                 file.writeText(IcsExport.encode(event), Charsets.UTF_8)
                 FileProvider.getUriForFile(this@MainActivity, "$packageName.files", file)
-            }
+            } } catch (_: Exception) { model.message(model.state.value.tr("Berkas ICS belum dapat dibagikan.", "The ICS file could not be shared.")); return@launch }
             launchSafely(Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
                 type = "text/calendar"; putExtra(Intent.EXTRA_STREAM, uri)
                 clipData = android.content.ClipData.newRawUri("Calendar", uri)
@@ -203,6 +230,17 @@ private fun MonthScreen(state: CalendarState, model: CalendarViewModel, open: (S
     var mode by rememberSaveable { mutableStateOf("masehi") }
     val holidays = remember(state.holidays) { state.holidays.holidays.groupBy { it.date } }
     val events = remember(state.events, state.deviceEvents, state.date, state.zone) { visibleEvents(state, state.date) }
+    val today = CalendarMath.today(ZoneId.of(state.zone))
+    val eventDates = remember(state.events, state.deviceEvents, state.month, state.zone) {
+        buildSet {
+            for (event in state.events + state.deviceEvents) {
+                val zone = if (event.allDay) ZoneOffset.UTC else ZoneId.of(state.zone)
+                var day = maxOf(state.month.atDay(1), Instant.ofEpochMilli(event.start).atZone(zone).toLocalDate())
+                val last = minOf(state.month.atEndOfMonth(), Instant.ofEpochMilli(event.end - 1).atZone(zone).toLocalDate())
+                while (day <= last) { add(day); day = day.plusDays(1) }
+            }
+        }
+    }
     LazyColumn(Modifier.fillMaxSize().testTag("month-list"), contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 100.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
         item { MonthHeader(state, model) }
         item {
@@ -229,13 +267,13 @@ private fun MonthScreen(state: CalendarState, model: CalendarViewModel, open: (S
                                 val leave = holidays[date].orEmpty().any { it.leave }
                                 val color = when { selected -> MaterialTheme.colorScheme.primary; national -> MaterialTheme.colorScheme.errorContainer; leave -> MaterialTheme.colorScheme.tertiaryContainer; else -> Color.Transparent }
                                 val content = when { selected -> MaterialTheme.colorScheme.onPrimary; national -> MaterialTheme.colorScheme.onErrorContainer; leave -> MaterialTheme.colorScheme.onTertiaryContainer; date.dayOfWeek.value == 7 -> MaterialTheme.colorScheme.primary; else -> MaterialTheme.colorScheme.onSurface }
-                                Surface(onClick = { model.select(date) }, modifier = Modifier.weight(1f).padding(2.dp).semantics { contentDescription = CalendarMath.format(date, state.language) + holidays[date].orEmpty().joinToString { ": " + if (state.language == "id") it.name else it.nameEn }; this.selected = selected }, shape = RoundedCornerShape(14.dp), color = color, contentColor = content) {
+                                Surface(onClick = { model.select(date) }, modifier = Modifier.weight(1f).padding(2.dp).semantics { contentDescription = CalendarMath.format(date, state.language) + holidays[date].orEmpty().joinToString { ": " + if (state.language == "id") it.name else it.nameEn } + if (date in eventDates) state.tr(". Ada agenda", ". Has events") else ""; this.selected = selected }, shape = RoundedCornerShape(14.dp), color = color, contentColor = content) {
                                     Column(Modifier.heightIn(min = 56.dp).padding(vertical = 7.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                                         Text(date.dayOfMonth.toString(), fontSize = 18.sp, fontWeight = if (selected || national) FontWeight.Bold else FontWeight.Normal)
                                         when (mode) {
                                             "jawa" -> Text(CalendarMath.weton(date).pasaran.take(3), fontSize = 10.sp)
                                             "hijri" -> Text(CalendarMath.hijri(date).day.toString(), fontSize = 10.sp)
-                                            else -> if (date == CalendarMath.today(ZoneId.of(state.zone))) Box(Modifier.size(4.dp).background(content, CircleShape))
+                                            else -> if (date == today || date in eventDates) Box(Modifier.size(4.dp).background(content, CircleShape))
                                         }
                                     }
                                 }
@@ -329,7 +367,7 @@ private fun ToolsScreen(state: CalendarState, model: CalendarViewModel, open: (S
                     Text(state.tr("Hitung hari kerja", "Count working days"), style = MaterialTheme.typography.titleMedium)
                     OutlinedButton(onClick = { pickDate(context, begin) { from = it.toString(); model.select(it) } }, modifier = Modifier.fillMaxWidth()) { Text(state.tr("Dari: ", "From: ") + from) }
                     OutlinedButton(onClick = { pickDate(context, end) { until = it.toString(); model.select(it) } }, modifier = Modifier.fillMaxWidth()) { Text(state.tr("Sampai: ", "Until: ") + until) }
-                    Row(verticalAlignment = Alignment.CenterVertically) { Checkbox(checked = includeLeave, onCheckedChange = { includeLeave = it }); Text(state.tr("Kurangi cuti bersama", "Exclude collective leave")) }
+                    Row(verticalAlignment = Alignment.CenterVertically) { Checkbox(checked = includeLeave, onCheckedChange = { includeLeave = it }, modifier = Modifier.semantics { contentDescription = state.tr("Kurangi cuti bersama", "Exclude collective leave") }); Text(state.tr("Kurangi cuti bersama", "Exclude collective leave")) }
                     Text(state.tr("Senin–Jumat; kedua tanggal ikut dihitung.", "Monday–Friday; both dates included."), style = MaterialTheme.typography.bodySmall)
                     if (result != null) Text("${result.working} " + state.tr("hari kerja", "working days"), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
                     else Text(state.tr("Pilih rentang satu tahun yang arsip liburnya sudah resmi, dengan tanggal akhir setelah awal.", "Choose a range in one verified holiday year, ending on or after the start."), style = MaterialTheme.typography.bodySmall)
@@ -403,7 +441,7 @@ private fun EventEditor(state: CalendarState, event: AgendaEvent?, onDismiss: ()
         LazyColumn(contentPadding = PaddingValues(start = 24.dp, end = 24.dp, bottom = 32.dp), verticalArrangement = Arrangement.spacedBy(14.dp), modifier = Modifier.imePadding().testTag("editor-list")) {
             item { Text(if (event == null) state.tr("Agenda baru", "New event") else state.tr("Edit agenda", "Edit event"), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold) }
             item { OutlinedTextField(title, { if (it.length <= 500) title = it }, Modifier.fillMaxWidth(), label = { Text(state.tr("Judul", "Title")) }, keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences), singleLine = true) }
-            item { Row(verticalAlignment = Alignment.CenterVertically) { Text(state.tr("Sepanjang hari", "All day"), Modifier.weight(1f)); Switch(allDay, { allDay = it }) } }
+            item { Row(verticalAlignment = Alignment.CenterVertically) { Text(state.tr("Sepanjang hari", "All day"), Modifier.weight(1f)); Switch(allDay, { allDay = it }, modifier = Modifier.semantics { contentDescription = state.tr("Sepanjang hari", "All day") }) } }
             item { OutlinedButton(onClick = { pickDate(context, firstDate) { firstDate = it; if (lastDate < it) lastDate = it } }, Modifier.fillMaxWidth()) { Text(state.tr("Mulai: ", "Start: ") + firstDate) } }
             if (!allDay) item { OutlinedButton(onClick = { TimePickerDialog(context, { _, hour, minute -> start = LocalTime.of(hour, minute) }, start.hour, start.minute, true).show() }, Modifier.fillMaxWidth()) { Text(start.format(DateTimeFormatter.ofPattern("HH:mm"))) } }
             item { OutlinedButton(onClick = { pickDate(context, lastDate) { lastDate = it } }, Modifier.fillMaxWidth()) { Text(state.tr("Selesai: ", "End: ") + lastDate) } }

@@ -1,7 +1,30 @@
+import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.FileSystemOperations
+import org.gradle.api.tasks.*
+import javax.inject.Inject
+
 plugins {
     id("com.android.application")
     kotlin("android")
     id("org.jetbrains.kotlin.plugin.compose")
+}
+
+abstract class CalendarAssetsTask : DefaultTask() {
+    @get:InputDirectory @get:PathSensitive(PathSensitivity.RELATIVE)
+    abstract val officialData: DirectoryProperty
+    @get:InputFiles @get:PathSensitive(PathSensitivity.RELATIVE)
+    abstract val licenseFiles: ConfigurableFileCollection
+    @get:OutputDirectory abstract val outputDirectory: DirectoryProperty
+    @get:Inject abstract val files: FileSystemOperations
+
+    @TaskAction fun generate() {
+        files.sync {
+            from(officialData) { include("*.json"); into("official") }
+            from(licenseFiles) { into("licenses") }
+            into(outputDirectory)
+        }
+    }
 }
 
 android {
@@ -32,18 +55,19 @@ android {
     }
     buildFeatures { compose = true; buildConfig = true }
     compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
-    kotlinOptions { jvmTarget = "17" }
-    sourceSets["main"].assets.srcDir(layout.buildDirectory.dir("generated/calendarAssets"))
     packaging { resources.excludes += "/META-INF/{AL2.0,LGPL2.1}" }
     lint { abortOnError = true; checkReleaseBuilds = true }
 }
 
-val syncCalendarAssets by tasks.registering(Sync::class) {
-    from(rootProject.projectDir.resolve("../data/official")) { include("*.json"); into("official") }
-    from(rootProject.projectDir.resolve("..")) { include("LICENSE", "LICENSE-DATA.md", "NOTICE"); into("licenses") }
-    into(layout.buildDirectory.dir("generated/calendarAssets"))
+kotlin { compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) } }
+
+androidComponents.onVariants { variant ->
+    val assets = tasks.register<CalendarAssetsTask>("generate${variant.name.replaceFirstChar { it.uppercase() }}CalendarAssets") {
+        officialData.set(rootProject.layout.projectDirectory.dir("../data/official"))
+        licenseFiles.from(listOf("LICENSE", "LICENSE-DATA.md", "NOTICE").map { rootProject.file("../$it") })
+    }
+    variant.sources.assets?.addGeneratedSourceDirectory(assets, CalendarAssetsTask::outputDirectory)
 }
-tasks.configureEach { if (name.startsWith("merge") && name.endsWith("Assets")) dependsOn(syncCalendarAssets) }
 
 dependencies {
     implementation(project(":core"))

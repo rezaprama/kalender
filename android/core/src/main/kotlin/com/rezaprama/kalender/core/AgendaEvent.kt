@@ -23,9 +23,11 @@ data class AgendaEvent(
         require(title.isNotBlank() && title.length <= 500)
         require(end > start)
         require(location.length <= 1000 && notes.length <= 10000)
+        require(listOf(title, location, notes).none { '\u0000' in it })
         require(uid.matches(Regex("[A-Za-z0-9-]{1,120}")))
         ZoneId.of(zone)
         val dateZone = if (allDay) ZoneOffset.UTC else ZoneId.of(zone)
+        if (allDay) require(Math.floorMod(start, 86400000L) == 0L && Math.floorMod(end, 86400000L) == 0L)
         CalendarMath.requireDate(Instant.ofEpochMilli(start).atZone(dateZone).toLocalDate())
         require(end <= CalendarMath.maximum.plusDays(1).atStartOfDay(dateZone).toInstant().toEpochMilli())
     }

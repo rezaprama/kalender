@@ -24,7 +24,7 @@ data class Holiday(val date: LocalDate, val name: String, val nameEn: String, va
 data class HolidayYear(val year: Int, val official: Boolean = false, val updated: String = "", val holidays: List<Holiday> = emptyList())
 
 class HolidayRepository(private val context: Context) {
-    private val cache = File(context.filesDir, "holidays").apply { mkdirs() }
+    private val cache = File(context.filesDir, "holidays")
     private val preferences = context.getSharedPreferences("holiday_versions", Context.MODE_PRIVATE)
 
     private fun parse(raw: String, requestedYear: Int): HolidayYear {
@@ -48,7 +48,8 @@ class HolidayRepository(private val context: Context) {
             Holiday(date, row.getString("name"), row.getString("nameEn"), type == "leave", links.getValue(row.getString("sourceId")), row.optString("subjectTo") == "isbat")
         }
         require(dates.distinctBy { Triple(it.date, it.leave, it.name) }.size == dates.size)
-        return HolidayYear(requestedYear, true, data.getString("updated"), dates)
+        val updated = LocalDate.parse(data.getString("updated")).toString()
+        return HolidayYear(requestedYear, true, updated, dates)
     }
 
     suspend fun load(year: Int): HolidayYear = withContext(Dispatchers.IO) {
@@ -76,6 +77,7 @@ class HolidayRepository(private val context: Context) {
             }
             val raw = buffer.toString("UTF-8")
             val result = parse(raw, year)
+            check(cache.exists() || cache.mkdirs())
             val stream = file.startWrite()
             try { stream.write(raw.toByteArray()); file.finishWrite(stream) } catch (error: Exception) { file.failWrite(stream); throw error }
             preferences.edit().putString("etag-$year", connection.getHeaderField("ETag")).apply()
