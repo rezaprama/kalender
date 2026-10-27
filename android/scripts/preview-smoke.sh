@@ -9,7 +9,7 @@ app_id="${ANDROID_APP_ID:-com.rezaprama.kalender.preview}"
 tools="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -n 1)"
 "$tools/apksigner" verify --verbose --print-certs "$apk" > "$output/signature.txt"
 if [[ -n "${ANDROID_EXPECTED_CERT:-}" ]]; then
-  grep -Fq "Signer #1 certificate SHA-256 digest: $ANDROID_EXPECTED_CERT" "$output/signature.txt"
+  python3 android/scripts/verify_certificate.py "$output/signature.txt" "$ANDROID_EXPECTED_CERT"
 fi
 "$tools/aapt" dump permissions "$apk" > "$output/permissions.txt"
 if grep -Eq 'WRITE_CALENDAR|READ_CONTACTS|ACCESS_FINE_LOCATION|com.google.android.gms.permission.AD_ID' "$output/permissions.txt"; then

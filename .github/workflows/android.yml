@@ -32,6 +32,8 @@ jobs:
           distribution: temurin
           java-version: '17'
       - uses: gradle/actions/setup-gradle@v6
+      - name: Test publisher certificate checks
+        run: python3 -m unittest discover -s scripts/tests -v
       - name: Test core, lint, and build installable APKs
         run: ./gradlew :core:test :app:lintDebug :app:assembleDebug :app:assemblePreview :app:assembleRelease :app:assembleDebugAndroidTest --no-daemon
       - uses: actions/upload-artifact@v7
