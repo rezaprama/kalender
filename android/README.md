@@ -2,9 +2,21 @@
 
 An offline Indonesian calendar with a private agenda and optional device-calendar integration. Native Kotlin and Jetpack Compose, with the same government-sourced holiday archive as [Kalender](https://kalender.rezaprama.com).
 
-**Preview 0.1.0 · Android 8.0 or newer · Indonesian and English**
+**Early access 0.1.0 · Android 8.0 or newer · Indonesian and English**
+
+[Download Android APK](https://github.com/rezaprama/kalender/releases/download/android-v0.1.0/kalender-0.1.0-android.apk) · [Bahasa Indonesia](README.id.md) · [Release notes](https://github.com/rezaprama/kalender/releases/tag/android-v0.1.0)
+
+[![Android](https://github.com/rezaprama/kalender/actions/workflows/android.yml/badge.svg)](https://github.com/rezaprama/kalender/actions/workflows/android.yml)
 
 Made and maintained by [Reza Prama Arviandi](https://rezaprama.com).
+
+<p>
+<img src="../docs/images/android-light.png" width="260" alt="Native Android calendar in Indonesian with official holidays and a date detail card">
+<img src="../docs/images/android-dark.png" width="260" alt="The same native Android calendar in English and dark mode">
+<img src="../docs/images/android-agenda.png" width="260" alt="Private monthly agenda with a local event">
+</p>
+
+Actual emulator captures. The interface also passes the compact API 26 layout and API 37 tests with 130% text scaling.
 
 ## What works
 
@@ -18,11 +30,17 @@ Made and maintained by [Reza Prama Arviandi](https://rezaprama.com).
 
 Opening the calendar, browsing dates, and using the private agenda need no network connection. Updates run only when requested. No ads, analytics SDK, WebView, or embedded browser engine.
 
-## Install a preview
+## Install
+
+Download the owner-signed APK from the link above. Its application ID is `com.rezaprama.kalender`; the permanent publisher key allows normal updates without uninstalling the app. The public certificate fingerprint and release procedure are documented in [RELEASE.md](RELEASE.md). Check the release's `SHA256SUMS` when verifying a download.
+
+This is an early release. Local reminders, local recurrence, widgets, ICS import, and a cloud-sync service are not included. Device calendars retain their own reminder/sync behavior. Uninstalling the app deletes its private agenda; use explicit ICS export for events you want to retain elsewhere.
+
+## Development preview
 
 Open a successful run in [Android Actions](https://github.com/rezaprama/kalender/actions/workflows/android.yml), download **kalender-android-preview**, and extract its APK. Install it on a test phone using Android's normal package installer or `adb install`.
 
-The optimized preview uses R8 and resource shrinking. Its application ID is `com.rezaprama.kalender.preview`, with a **temporary CI debug signing key**. Different CI runs may have different keys; Android may require uninstalling an older preview. Uninstalling deletes its private agenda. Export important events first. This is not a Play Store release or a stable signing identity.
+The development preview uses R8 and resource shrinking. Its application ID is `com.rezaprama.kalender.preview`, with a **temporary CI debug signing key**. Different CI runs may have different keys; Android may require uninstalling an older development preview. Export important events first. The owner-signed public APK uses a separate, permanent identity.
 
 ## Build
 

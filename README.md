@@ -36,7 +36,7 @@ Look up a holiday. Find a longer break. Check a weton. Bring the calendar into y
 | You want to… | Start here |
 | --- | --- |
 | Check dates and plan time off | [Open the calendar](https://kalender.rezaprama.com) or [use the planning tools](https://kalender.rezaprama.com/alat) |
-| Try the native Android preview | [Offline calendar, private agenda, and device integration](android/README.md) |
+| Use the native Android app | [Offline calendar, private agenda, and device integration](android/README.md) |
 | Add holidays to a calendar app | [Download the 2026 ICS file](https://kalender.rezaprama.com/api/v1/holidays?year=2026&format=ics) |
 | Build an app or spreadsheet | [Try the API](#your-first-api-request), [read the reference](docs/API.md), or [download CSV](https://kalender.rezaprama.com/api/v1/holidays?year=2026&format=csv) |
 | Put a calendar on your website | [Copy the embed](#put-a-calendar-on-your-website) |

@@ -1,0 +1,73 @@
+name: Android release verification
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Owner-signed Android release tag (android-v0.1.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Signed APK on API ${{ matrix.api }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - api: 26
+            target: google_apis
+            profile: ''
+          - api: 35
+            target: google_apis
+            profile: pixel_7
+          - api: '37.0'
+            target: google_apis_ps16k
+            profile: pixel_7
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Download the signed release and verify checksums
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          [[ "$RELEASE_TAG" =~ ^android-v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --pattern '*.apk' --pattern SHA256SUMS --dir artifacts/android-release
+          (cd artifacts/android-release && sha256sum -c SHA256SUMS)
+          version="${RELEASE_TAG#android-v}"
+          test -f "artifacts/android-release/kalender-$version-android.apk"
+          printf 'ANDROID_APK_PATH=artifacts/android-release/kalender-%s-android.apk\n' "$version" >> "$GITHUB_ENV"
+          printf 'ANDROID_EXPECTED_CERT=%s\n' "$(tr -d '\r\n' < android/release-cert.sha256)" >> "$GITHUB_ENV"
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - uses: ReactiveCircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api }}
+          target: ${{ matrix.target }}
+          arch: x86_64
+          profile: ${{ matrix.profile }}
+          disable-animations: true
+          script: bash android/scripts/preview-smoke.sh
+        env:
+          ANDROID_APP_ID: com.rezaprama.kalender
+          ANDROID_BUILD_LABEL: R8-optimized owner-signed release
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: signed-android-api-${{ matrix.api }}
+          path: artifacts/android-device/
+          overwrite: true

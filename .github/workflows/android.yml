@@ -33,7 +33,12 @@ jobs:
           java-version: '17'
       - uses: gradle/actions/setup-gradle@v6
       - name: Test core, lint, and build installable APKs
-        run: ./gradlew :core:test :app:lintDebug :app:assembleDebug :app:assemblePreview :app:assembleDebugAndroidTest --no-daemon
+        run: ./gradlew :core:test :app:lintDebug :app:assembleDebug :app:assemblePreview :app:assembleRelease :app:assembleDebugAndroidTest --no-daemon
+      - uses: actions/upload-artifact@v7
+        with:
+          name: kalender-android-unsigned
+          path: android/app/build/outputs/apk/release/*-unsigned.apk
+          if-no-files-found: error
       - uses: actions/upload-artifact@v7
         with:
           name: kalender-android-preview
@@ -108,5 +113,6 @@ jobs:
         if: always()
         with:
           name: android-device-api-${{ matrix.api }}
+          overwrite: true
           path: |
             artifacts/android-device/
