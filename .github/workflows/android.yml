@@ -1,0 +1,118 @@
+name: Android
+
+on:
+  pull_request:
+    paths: ['android/**', 'data/official/**', '.github/workflows/android.yml', 'LICENSE*', 'NOTICE']
+  push:
+    branches: [main]
+    paths: ['android/**', 'data/official/**', '.github/workflows/android.yml', 'LICENSE*', 'NOTICE']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Android build and date tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: android
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Test core, lint, and build installable APKs
+        run: ./gradlew :core:test :app:lintDebug :app:assembleDebug :app:assemblePreview :app:assembleRelease :app:assembleDebugAndroidTest --no-daemon
+      - uses: actions/upload-artifact@v7
+        with:
+          name: kalender-android-unsigned
+          path: android/app/build/outputs/apk/release/*-unsigned.apk
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v7
+        with:
+          name: kalender-android-preview
+          path: android/app/build/outputs/apk/preview/*.apk
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v7
+        with:
+          name: kalender-android-test-apks
+          path: |
+            android/app/build/outputs/apk/debug/*.apk
+            android/app/build/outputs/apk/androidTest/debug/*.apk
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: android-build-reports
+          path: |
+            android/core/build/reports/tests/
+            android/core/build/test-results/
+            android/app/build/reports/lint-results*
+
+  device:
+    name: Android device tests (API ${{ matrix.api }})
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - api: 26
+            target: google_apis
+            profile: ''
+          - api: 35
+            target: google_apis
+            profile: pixel_7
+          - api: '37.0'
+            target: google_apis_ps16k
+            profile: pixel_7
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Enable KVM for the Android emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - uses: actions/download-artifact@v8
+        with:
+          name: kalender-android-preview
+          path: artifacts/android-preview
+      - uses: actions/download-artifact@v8
+        with:
+          name: kalender-android-test-apks
+          path: artifacts/android-test-apks
+      - uses: ReactiveCircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api }}
+          arch: x86_64
+          target: ${{ matrix.target }}
+          profile: ${{ matrix.profile }}
+          disable-animations: true
+          script: bash android/scripts/device-test.sh
+        env:
+          ANDROID_TEST_FONT_SCALE: ${{ matrix.api == '37.0' && '1.3' || '1.0' }}
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: android-device-api-${{ matrix.api }}
+          overwrite: true
+          path: |
+            artifacts/android-device/
