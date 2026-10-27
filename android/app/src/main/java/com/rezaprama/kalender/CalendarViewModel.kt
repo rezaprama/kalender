@@ -24,6 +24,10 @@ data class CalendarState(
     val holidays: HolidayYear,
     val events: List<AgendaEvent> = emptyList(),
     val deviceEvents: List<AgendaEvent> = emptyList(),
+    val agendaLoading: Boolean = true,
+    val agendaError: Boolean = false,
+    val deviceLoading: Boolean = false,
+    val deviceError: Boolean = false,
     val zone: String = "Asia/Jakarta",
     val language: String = "id",
     val theme: String = "system",
@@ -43,14 +47,17 @@ class CalendarViewModel(application: Application, private val saved: SavedStateH
     val state = mutable.asStateFlow()
     private var loadJob: Job? = null
 
-    init { loadYear(initialDate.year); reloadAgenda(); onResume() }
+    init { loadYear(initialDate.year); reloadAgenda() }
 
     fun select(date: LocalDate) {
         CalendarMath.requireDate(date)
         saved["date"] = date.toString()
         val changedYear = date.year != mutable.value.holidays.year
         val changedMonth = YearMonth.from(date) != mutable.value.month
-        mutable.update { it.copy(date = date, month = YearMonth.from(date)) }
+        mutable.update {
+            val selected = it.copy(date = date, month = YearMonth.from(date))
+            if (changedMonth) selected.copy(events = emptyList(), deviceEvents = emptyList()) else selected
+        }
         if (changedYear) loadYear(date.year)
         if (changedMonth) { reloadDevice(); reloadAgenda() }
     }
@@ -87,7 +94,7 @@ class CalendarViewModel(application: Application, private val saved: SavedStateH
     fun setting(key: String, value: String) {
         when (key) {
             "language" -> { require(value in setOf("id", "en")); mutable.update { it.copy(language = value) } }
-            "zone" -> { require(value in setOf("Asia/Jakarta", "Asia/Makassar", "Asia/Jayapura")); mutable.update { it.copy(zone = value) }; reloadDevice(); reloadAgenda() }
+            "zone" -> { require(value in setOf("Asia/Jakarta", "Asia/Makassar", "Asia/Jayapura")); mutable.update { it.copy(zone = value, events = emptyList(), deviceEvents = emptyList()) }; reloadDevice(); reloadAgenda() }
             "theme" -> { require(value in setOf("system", "light", "dark")); mutable.update { it.copy(theme = value) } }
             else -> return
         }
@@ -97,31 +104,33 @@ class CalendarViewModel(application: Application, private val saved: SavedStateH
     fun connect(enabled: Boolean) {
         val allowed = enabled && ContextCompat.checkSelfPermission(getApplication(), Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED
         preferences.edit().putBoolean("device_calendar", allowed).apply()
-        mutable.update { it.copy(connected = allowed, deviceEvents = emptyList()) }
+        mutable.update { it.copy(connected = allowed, deviceEvents = emptyList(), deviceLoading = allowed, deviceError = false) }
         if (allowed) reloadDevice()
     }
 
-    fun onResume() { connect(preferences.getBoolean("device_calendar", false)) }
+    fun onResume() { connect(preferences.getBoolean("device_calendar", false)); if (mutable.value.agendaError) reloadAgenda() }
 
     private fun reloadDevice() {
         if (!mutable.value.connected) return
         val snapshot = mutable.value
+        mutable.update { it.copy(deviceLoading = true, deviceError = false) }
         viewModelScope.launch {
             try {
                 val events = DeviceCalendar.read(getApplication(), snapshot.month, ZoneId.of(snapshot.zone))
-                if (mutable.value.connected && mutable.value.month == snapshot.month && mutable.value.zone == snapshot.zone) mutable.update { it.copy(deviceEvents = events) }
+                if (mutable.value.connected && mutable.value.month == snapshot.month && mutable.value.zone == snapshot.zone) mutable.update { it.copy(deviceEvents = events, deviceLoading = false) }
             } catch (_: SecurityException) { connect(false) }
-            catch (_: Exception) { message(if (snapshot.language == "id") "Kalender perangkat belum dapat dibaca." else "Device calendars are unavailable.") }
+            catch (_: Exception) { if (mutable.value.month == snapshot.month && mutable.value.zone == snapshot.zone) mutable.update { it.copy(deviceLoading = false, deviceError = true) } }
         }
     }
 
     private fun reloadAgenda() {
         val snapshot = mutable.value
+        mutable.update { it.copy(agendaLoading = true, agendaError = false) }
         viewModelScope.launch {
             try {
                 val events = agenda.load(snapshot.month, ZoneId.of(snapshot.zone))
-                if (mutable.value.month == snapshot.month && mutable.value.zone == snapshot.zone) mutable.update { it.copy(events = events) }
-            } catch (_: Exception) { message(if (snapshot.language == "id") "Agenda lokal belum dapat dibaca." else "Local events are unavailable.") }
+                if (mutable.value.month == snapshot.month && mutable.value.zone == snapshot.zone) mutable.update { it.copy(events = events, agendaLoading = false) }
+            } catch (_: Exception) { if (mutable.value.month == snapshot.month && mutable.value.zone == snapshot.zone) mutable.update { it.copy(agendaLoading = false, agendaError = true) } }
         }
     }
 

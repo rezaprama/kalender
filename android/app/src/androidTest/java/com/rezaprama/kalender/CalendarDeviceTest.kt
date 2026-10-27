@@ -67,6 +67,9 @@ class CalendarDeviceTest {
         compose.onNodeWithText("September 2026").assertIsDisplayed()
         compose.onNodeWithContentDescription("Bulan sebelumnya").performClick()
         compose.onNodeWithText("Hijriah").performClick()
+        compose.onNodeWithText("Alat").performClick()
+        compose.onNodeWithText("Kalender").performClick()
+        compose.onNodeWithText("Hijriah").assertIsSelected()
         compose.onNodeWithTag("month-list").performScrollToNode(hasText("Hari Proklamasi Kemerdekaan"))
         compose.onNodeWithText("Hari Proklamasi Kemerdekaan").assertIsDisplayed()
         screenshot("holiday-detail")
@@ -90,6 +93,20 @@ class CalendarDeviceTest {
         compose.onNodeWithText("Hapus agenda").performClick()
         compose.onNodeWithText("Hapus", substring = false).performClick()
         compose.waitUntil(10_000) { compose.onAllNodesWithText("Rapat produk Indonesia").fetchSemanticsNodes().isEmpty() }
+    }
+
+    @Test fun unsavedDraftSurvivesActivityRecreation() {
+        launch()
+        compose.onNodeWithContentDescription("Tambah agenda").performClick()
+        compose.onNodeWithText("Judul").performTextInput("Draf sebelum rotasi")
+        scenario!!.recreate()
+        compose.onNodeWithText("Agenda baru").assertIsDisplayed()
+        compose.onNodeWithText("Draf sebelum rotasi").assertExists()
+        compose.onNodeWithTag("editor-list").performScrollToNode(hasText("Simpan di perangkat"))
+        compose.onNodeWithText("Simpan di perangkat").performClick()
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("Agenda baru").fetchSemanticsNodes().isEmpty() }
+        compose.onNodeWithText("Agenda").performClick()
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("Draf sebelum rotasi").fetchSemanticsNodes().isNotEmpty() }
     }
 
     @Test fun settingsStayBilingualAndDeviceAccessStartsDisabled() {
@@ -117,7 +134,7 @@ class CalendarDeviceTest {
         screenshot("historical-calendar")
     }
 
-    @Test fun allBundledGovernmentYearsLoadWithSources() = runBlocking {
+    @Test fun allBundledGovernmentYearsLoadWithSources() = runBlocking<Unit> {
         val repository = HolidayRepository(context)
         for (year in 2022..2027) {
             val result = repository.load(year)
@@ -135,7 +152,7 @@ class CalendarDeviceTest {
         assertThrows(IllegalArgumentException::class.java) { repository.parse(raw, 2027) }
     }
 
-    @Test fun sqliteRoundTripKeepsUnicodeAndExclusiveAllDayDates() = runBlocking {
+    @Test fun sqliteRoundTripKeepsUnicodeAndExclusiveAllDayDates() = runBlocking<Unit> {
         val date = LocalDate.of(2026, 8, 17)
         val start = date.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
         val event = AgendaEvent(title = "Rapat ' tim 🇮🇩", start = start, end = start + 86400000, allDay = true, notes = "Baris satu\nBaris dua")
@@ -155,7 +172,7 @@ class CalendarDeviceTest {
     }
 
     @Test @SdkSuppress(minSdkVersion = 29)
-    fun calendarProviderExpandsRecurrencesAndPreservesAllDayDates() = runBlocking {
+    fun calendarProviderExpandsRecurrencesAndPreservesAllDayDates() = runBlocking<Unit> {
         // Shell identity exists only in this instrumented emulator test, never in the app.
         val automation = InstrumentationRegistry.getInstrumentation().uiAutomation
         automation.adoptShellPermissionIdentity(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR)

@@ -30,6 +30,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -69,6 +71,8 @@ import java.util.Locale
 import kotlin.math.abs
 
 private val BrandRed = Color(0xffc0262d)
+private val DateSaver = Saver<LocalDate, String>(save = { it.toString() }, restore = LocalDate::parse)
+private val TimeSaver = Saver<LocalTime, String>(save = { it.toString() }, restore = LocalTime::parse)
 private val PaperColors = lightColorScheme(
     primary = BrandRed, onPrimary = Color.White, primaryContainer = Color(0xffffdad9), onPrimaryContainer = Color(0xff710e17),
     secondary = Color(0xff45454d), onSecondary = Color.White, secondaryContainer = Color(0xffe8e7e0), onSecondaryContainer = Color(0xff24242a),
@@ -166,9 +170,11 @@ private fun Glyph(resource: Int, description: String?, modifier: Modifier = Modi
 @Composable
 private fun CalendarApp(state: CalendarState, model: CalendarViewModel, open: (String) -> Unit, share: (AgendaEvent) -> Unit, external: (AgendaEvent) -> Unit) {
     var tab by rememberSaveable { mutableIntStateOf(0) }
-    var creating by remember { mutableStateOf(false) }
-    var editing by remember { mutableStateOf<AgendaEvent?>(null) }
+    var creating by rememberSaveable { mutableStateOf(false) }
+    var editingId by rememberSaveable { mutableLongStateOf(0L) }
+    val editing = state.events.firstOrNull { it.id == editingId }
     var deleting by remember { mutableStateOf<AgendaEvent?>(null) }
+    val tabState = rememberSaveableStateHolder()
     val snackbars = remember { SnackbarHostState() }
     val permission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         model.connect(granted)
@@ -190,22 +196,24 @@ private fun CalendarApp(state: CalendarState, model: CalendarViewModel, open: (S
                 }
             }
         },
-        floatingActionButton = { if (tab < 2) FloatingActionButton(onClick = { editing = null; creating = true }) { Glyph(R.drawable.plus, state.tr("Tambah agenda", "Add event")) } },
+        floatingActionButton = { if (tab < 2) FloatingActionButton(onClick = { editingId = 0; creating = true }) { Glyph(R.drawable.plus, state.tr("Tambah agenda", "Add event")) } },
         snackbarHost = { SnackbarHost(snackbars) },
     ) { insets ->
         Box(Modifier.fillMaxSize().padding(insets)) {
-            when (tab) {
-                0 -> MonthScreen(state, model, open, { editing = it; creating = true }, external)
-                1 -> AgendaScreen(state, model, { editing = it; creating = true }, external)
+            tabState.SaveableStateProvider(tab) { when (tab) {
+                0 -> MonthScreen(state, model, open, { editingId = it.id; creating = true }, external)
+                1 -> AgendaScreen(state, model, { editingId = it.id; creating = true }, external)
                 else -> ToolsScreen(state, model, open) { enabled ->
                     if (!enabled) model.connect(false)
                     else if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED) model.connect(true)
                     else permission.launch(Manifest.permission.READ_CALENDAR)
                 }
-            }
+            } }
         }
     }
-    if (creating) EventEditor(state, editing, onDismiss = { creating = false }, onSave = { event, completed -> model.save(event) { success -> completed(success); if (success) creating = false } }, onShare = share, onExternal = external, onDelete = { deleting = it })
+    if (creating && (editingId == 0L || editing != null)) key(editingId) {
+        EventEditor(state, editing, onDismiss = { creating = false }, onSave = { event, completed -> model.save(event) { success -> completed(success); if (success) creating = false } }, onShare = share, onExternal = external, onDelete = { deleting = it })
+    }
     deleting?.let { event ->
         AlertDialog(onDismissRequest = { deleting = null }, title = { Text(state.tr("Hapus agenda?", "Delete event?")) }, text = { Text(event.title) }, confirmButton = { TextButton(onClick = { model.remove(event); deleting = null; creating = false }) { Text(state.tr("Hapus", "Delete")) } }, dismissButton = { TextButton(onClick = { deleting = null }) { Text(state.tr("Batal", "Cancel")) } })
     }
@@ -228,6 +236,13 @@ private fun MonthHeader(state: CalendarState, model: CalendarViewModel) {
 
 private fun visibleEvents(state: CalendarState, date: LocalDate? = null): List<AgendaEvent> =
     (state.events + state.deviceEvents).filter { date == null || it.occursOn(date, ZoneId.of(state.zone)) }.sortedBy { it.start }
+
+@Composable
+private fun AgendaStatus(state: CalendarState) {
+    if (state.agendaLoading || state.deviceLoading) Text(state.tr("Memuat agenda…", "Loading events…"), style = MaterialTheme.typography.bodySmall)
+    if (state.agendaError) Text(state.tr("Agenda lokal belum dapat dibaca. Coba buka kembali aplikasi.", "Local events are unavailable. Try reopening the app."), color = MaterialTheme.colorScheme.error)
+    if (state.deviceError) Text(state.tr("Kalender perangkat belum dapat dibaca. Periksa penyedia kalender atau hubungkan ulang lewat Alat.", "Device calendars are unavailable. Check your calendar provider or reconnect in Tools."), color = MaterialTheme.colorScheme.error)
+}
 
 @Composable
 private fun MonthScreen(state: CalendarState, model: CalendarViewModel, open: (String) -> Unit, edit: (AgendaEvent) -> Unit, external: (AgendaEvent) -> Unit) {
@@ -314,7 +329,8 @@ private fun MonthScreen(state: CalendarState, model: CalendarViewModel, open: (S
         }
         if (!state.holidays.official && !state.loading) item { Text(state.tr("Tidak ada daftar libur terverifikasi untuk tahun ini. Ini bukan berarti tidak ada hari libur.", "No verified holiday archive for this year. This does not mean there were no holidays."), style = MaterialTheme.typography.bodyMedium) }
         item { Text(state.tr("Agendamu", "Your events"), style = MaterialTheme.typography.titleMedium, modifier = Modifier.semantics { heading() }) }
-        if (events.isEmpty()) item { Text(state.tr("Belum ada agenda pada tanggal ini.", "No events on this date."), color = MaterialTheme.colorScheme.onSurfaceVariant) }
+        item { AgendaStatus(state) }
+        if (events.isEmpty() && !state.agendaLoading && !state.deviceLoading && !state.agendaError && !state.deviceError) item { Text(state.tr("Belum ada agenda pada tanggal ini.", "No events on this date."), color = MaterialTheme.colorScheme.onSurfaceVariant) }
         items(events, key = { it.uid }) { EventCard(it, state, if (it.device) external else edit) }
     }
 }
@@ -346,7 +362,8 @@ private fun AgendaScreen(state: CalendarState, model: CalendarViewModel, edit: (
     val rows = remember(state.events, state.deviceEvents) { visibleEvents(state) }
     LazyColumn(Modifier.fillMaxSize().testTag("agenda-list"), contentPadding = PaddingValues(16.dp, 0.dp, 16.dp, 100.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
         item { MonthHeader(state, model) }
-        if (rows.isEmpty()) item { Text(state.tr("Belum ada agenda bulan ini. Tambahkan agenda, atau hubungkan kalender perangkat lewat Alat.", "No events this month. Add one, or connect device calendars in Tools."), modifier = Modifier.padding(16.dp)) }
+        item { AgendaStatus(state) }
+        if (rows.isEmpty() && !state.agendaLoading && !state.deviceLoading && !state.agendaError && !state.deviceError) item { Text(state.tr("Belum ada agenda bulan ini. Tambahkan agenda, atau hubungkan kalender perangkat lewat Alat.", "No events this month. Add one, or connect device calendars in Tools."), modifier = Modifier.padding(16.dp)) }
         items(rows, key = { it.uid }) { event ->
             val zone = if (event.allDay) ZoneOffset.UTC else ZoneId.of(state.zone)
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -440,16 +457,22 @@ private fun EventEditor(state: CalendarState, event: AgendaEvent?, onDismiss: ()
     val keyboard = LocalSoftwareKeyboardController.current
     val zone = ZoneId.of(event?.zone ?: state.zone)
     val dateZone = if (event?.allDay == true) ZoneOffset.UTC else zone
-    var title by remember { mutableStateOf(event?.title.orEmpty()) }
-    var firstDate by remember { mutableStateOf(event?.let { Instant.ofEpochMilli(it.start).atZone(dateZone).toLocalDate() } ?: state.date) }
-    var lastDate by remember { mutableStateOf(event?.let { Instant.ofEpochMilli(it.end).atZone(dateZone).toLocalDate().let { date -> if (it.allDay) date.minusDays(1) else date } } ?: state.date) }
-    var start by remember { mutableStateOf(event?.takeUnless { it.allDay }?.let { Instant.ofEpochMilli(it.start).atZone(zone).toLocalTime() } ?: LocalTime.of(9, 0)) }
-    var end by remember { mutableStateOf(event?.takeUnless { it.allDay }?.let { Instant.ofEpochMilli(it.end).atZone(zone).toLocalTime() } ?: LocalTime.of(10, 0)) }
-    var allDay by remember { mutableStateOf(event?.allDay ?: false) }
-    var location by remember { mutableStateOf(event?.location.orEmpty()) }
-    var notes by remember { mutableStateOf(event?.notes.orEmpty()) }
-    var error by remember { mutableStateOf(false) }
+    val draftUid = rememberSaveable { event?.uid ?: java.util.UUID.randomUUID().toString() }
+    var title by rememberSaveable { mutableStateOf(event?.title.orEmpty()) }
+    var firstDate by rememberSaveable(stateSaver = DateSaver) { mutableStateOf(event?.let { Instant.ofEpochMilli(it.start).atZone(dateZone).toLocalDate() } ?: state.date) }
+    var lastDate by rememberSaveable(stateSaver = DateSaver) { mutableStateOf(event?.let { Instant.ofEpochMilli(it.end).atZone(dateZone).toLocalDate().let { date -> if (it.allDay) date.minusDays(1) else date } } ?: state.date) }
+    var start by rememberSaveable(stateSaver = TimeSaver) { mutableStateOf(event?.takeUnless { it.allDay }?.let { Instant.ofEpochMilli(it.start).atZone(zone).toLocalTime() } ?: LocalTime.of(9, 0)) }
+    var end by rememberSaveable(stateSaver = TimeSaver) { mutableStateOf(event?.takeUnless { it.allDay }?.let { Instant.ofEpochMilli(it.end).atZone(zone).toLocalTime() } ?: LocalTime.of(10, 0)) }
+    var allDay by rememberSaveable { mutableStateOf(event?.allDay ?: false) }
+    var location by rememberSaveable { mutableStateOf(event?.location.orEmpty()) }
+    var notes by rememberSaveable { mutableStateOf(event?.notes.orEmpty()) }
+    var error by rememberSaveable { mutableStateOf(false) }
     var saving by remember { mutableStateOf(false) }
+    fun draft(): AgendaEvent? = runCatching {
+        val from = if (allDay) firstDate.atStartOfDay(ZoneOffset.UTC) else firstDate.atTime(start).atZone(zone)
+        val until = if (allDay) lastDate.plusDays(1).atStartOfDay(ZoneOffset.UTC) else lastDate.atTime(end).atZone(zone)
+        AgendaEvent(event?.id ?: 0, title, from.toInstant().toEpochMilli(), until.toInstant().toEpochMilli(), allDay, zone.id, location, notes, uid = draftUid)
+    }.getOrNull()
     ModalBottomSheet(onDismissRequest = { if (!saving) onDismiss() }) {
         LazyColumn(contentPadding = PaddingValues(start = 24.dp, end = 24.dp, bottom = 32.dp), verticalArrangement = Arrangement.spacedBy(14.dp), modifier = Modifier.imePadding().testTag("editor-list")) {
             item { Text(if (event == null) state.tr("Agenda baru", "New event") else state.tr("Edit agenda", "Edit event"), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold) }
@@ -462,21 +485,24 @@ private fun EventEditor(state: CalendarState, event: AgendaEvent?, onDismiss: ()
             item { Text(if (allDay) state.tr("Tanggal akhir ikut dihitung.", "End date is included.") else state.tr("Zona waktu: ", "Time zone: ") + zone.id, style = MaterialTheme.typography.bodySmall) }
             item { OutlinedTextField(location, { if (it.length <= 1000) location = it }, Modifier.fillMaxWidth(), label = { Text(state.tr("Lokasi", "Location")) }) }
             item { OutlinedTextField(notes, { if (it.length <= 10000) notes = it }, Modifier.fillMaxWidth(), label = { Text(state.tr("Catatan", "Notes")) }, minLines = 2, maxLines = 6) }
+            item { Text(state.tr("Agenda lokal tanpa pengingat otomatis. Gunakan editor kalender perangkat jika perlu pengingat.", "Local events have no automatic reminders. Use the device calendar editor if you need reminders."), style = MaterialTheme.typography.bodySmall) }
             if (error) item { Text(state.tr("Isi judul dan pastikan waktu selesai setelah waktu mulai.", "Enter a title and an end time after the start."), color = MaterialTheme.colorScheme.error) }
             item {
                 Button(enabled = title.isNotBlank() && !saving, onClick = {
-                    val candidate = runCatching {
-                        val from = if (allDay) firstDate.atStartOfDay(ZoneOffset.UTC) else firstDate.atTime(start).atZone(zone)
-                        val until = if (allDay) lastDate.plusDays(1).atStartOfDay(ZoneOffset.UTC) else lastDate.atTime(end).atZone(zone)
-                        AgendaEvent(event?.id ?: 0, title, from.toInstant().toEpochMilli(), until.toInstant().toEpochMilli(), allDay, zone.id, location, notes, uid = event?.uid ?: java.util.UUID.randomUUID().toString())
-                    }.getOrNull()
+                    val candidate = draft()
                     if (candidate == null) error = true else { keyboard?.hide(); saving = true; error = false; onSave(candidate) { saving = false } }
                 }, modifier = Modifier.fillMaxWidth()) { Text(if (saving) state.tr("Menyimpan…", "Saving…") else state.tr("Simpan di perangkat", "Save on device")) }
             }
+            item { OutlinedButton(enabled = title.isNotBlank() && !saving, onClick = {
+                val candidate = draft(); error = candidate == null
+                if (candidate != null) { keyboard?.hide(); onExternal(candidate) }
+            }, modifier = Modifier.fillMaxWidth()) { Text(state.tr("Buka editor kalender perangkat", "Open device calendar editor")) } }
+            item { OutlinedButton(enabled = title.isNotBlank() && !saving, onClick = {
+                val candidate = draft(); error = candidate == null
+                if (candidate != null) { keyboard?.hide(); onShare(candidate) }
+            }, modifier = Modifier.fillMaxWidth()) { Glyph(R.drawable.share_network, null); Spacer(Modifier.width(8.dp)); Text(state.tr("Bagikan ICS", "Share ICS")) } }
+            item { Text(state.tr("Editor perangkat dan ekspor ICS memakai isi formulir saat ini. Penyimpanan ke agenda aplikasi ini dilakukan lewat tombol Simpan di perangkat.", "The device editor and ICS export use the current form. Save on device stores it in this app's private agenda."), style = MaterialTheme.typography.bodySmall) }
             if (event != null) {
-                item { Text(state.tr("Simpan perubahan sebelum membagikan atau menyalin agenda. Tombol berikut memakai versi tersimpan.", "Save changes before sharing or copying. These actions use the saved event."), style = MaterialTheme.typography.bodySmall) }
-                item { OutlinedButton(onClick = { onShare(event) }, modifier = Modifier.fillMaxWidth()) { Glyph(R.drawable.share_network, null); Spacer(Modifier.width(8.dp)); Text(state.tr("Bagikan ICS", "Share ICS")) } }
-                item { OutlinedButton(onClick = { onExternal(event) }, modifier = Modifier.fillMaxWidth()) { Text(state.tr("Tambah ke kalender perangkat", "Add to device calendar")) } }
                 item { TextButton(onClick = { onDelete(event) }, modifier = Modifier.fillMaxWidth()) { Text(state.tr("Hapus agenda", "Delete event"), color = MaterialTheme.colorScheme.error) } }
             }
         }
