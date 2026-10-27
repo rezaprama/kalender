@@ -8,7 +8,6 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.CalendarContract
-import androidx.annotation.RequiresApi
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.test.core.app.ActivityScenario
@@ -155,7 +154,7 @@ class CalendarDeviceTest {
         } finally { store.close() }
     }
 
-    @Test @SdkSuppress(minSdkVersion = 29) @RequiresApi(29)
+    @Test @SdkSuppress(minSdkVersion = 29)
     fun calendarProviderExpandsRecurrencesAndPreservesAllDayDates() = runBlocking {
         // Shell identity exists only in this instrumented emulator test, never in the app.
         val automation = InstrumentationRegistry.getInstrumentation().uiAutomation

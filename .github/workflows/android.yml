@@ -63,7 +63,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api: [26, 35, '37.0']
+        include:
+          - api: 26
+            target: google_apis
+          - api: 35
+            target: google_apis
+          - api: '37.0'
+            target: google_apis_ps16k
     steps:
       - uses: actions/checkout@v7
         with:
@@ -86,7 +92,7 @@ jobs:
         with:
           api-level: ${{ matrix.api }}
           arch: x86_64
-          target: google_apis
+          target: ${{ matrix.target }}
           disable-animations: true
           script: bash android/scripts/device-test.sh
         env:

@@ -170,7 +170,10 @@ private fun CalendarApp(state: CalendarState, model: CalendarViewModel, open: (S
     var editing by remember { mutableStateOf<AgendaEvent?>(null) }
     var deleting by remember { mutableStateOf<AgendaEvent?>(null) }
     val snackbars = remember { SnackbarHostState() }
-    val permission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { model.connect(it) }
+    val permission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        model.connect(granted)
+        if (!granted) model.message(state.tr("Izin Kalender belum diberikan. Kamu dapat mengaktifkannya lewat setelan aplikasi.", "Calendar permission was not granted. You can enable it in app settings."))
+    }
     val context = LocalContext.current
     LaunchedEffect(state.message) { state.message?.let { snackbars.showSnackbar(it); model.message(null) } }
 
@@ -323,7 +326,15 @@ private fun EventCard(event: AgendaEvent, state: CalendarState, click: (AgendaEv
             Text(event.title, fontWeight = FontWeight.Bold)
             val zone = if (event.allDay) ZoneOffset.UTC else ZoneId.of(state.zone)
             val start = Instant.ofEpochMilli(event.start).atZone(zone)
-            Text(if (event.allDay) state.tr("Sepanjang hari", "All day") else start.format(DateTimeFormatter.ofPattern("HH:mm")) + "–" + Instant.ofEpochMilli(event.end).atZone(zone).format(DateTimeFormatter.ofPattern("HH:mm")), style = MaterialTheme.typography.bodyMedium)
+            val end = Instant.ofEpochMilli(if (event.allDay) event.end - 1 else event.end).atZone(zone)
+            val locale = Locale.forLanguageTag(state.language)
+            val range = if (event.allDay) {
+                state.tr("Sepanjang hari", "All day") + if (start.toLocalDate() == end.toLocalDate()) "" else " · " + start.format(DateTimeFormatter.ofPattern("d MMM", locale)) + "–" + end.format(DateTimeFormatter.ofPattern("d MMM yyyy", locale))
+            } else {
+                val pattern = if (start.toLocalDate() == end.toLocalDate()) "HH:mm" else "d MMM HH:mm"
+                start.format(DateTimeFormatter.ofPattern(pattern, locale)) + "–" + end.format(DateTimeFormatter.ofPattern(pattern, locale)) + " · " + when (state.zone) { "Asia/Jayapura" -> "WIT"; "Asia/Makassar" -> "WITA"; else -> "WIB" }
+            }
+            Text(range, style = MaterialTheme.typography.bodyMedium)
             if (event.location.isNotBlank()) Text(event.location, style = MaterialTheme.typography.bodyMedium)
             Text(if (event.device) state.tr("Kalender perangkat", "Device calendar") else state.tr("Tersimpan di perangkat ini", "Stored on this device"), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }

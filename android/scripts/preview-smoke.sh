@@ -17,6 +17,7 @@ sha256sum "$apk" > "$output/apk-sha256.txt"
 stat --format='%s' "$apk" > "$output/apk-bytes.txt"
 adb shell getprop ro.build.version.sdk > "$output/api.txt"
 adb shell getprop ro.product.model > "$output/device.txt"
+adb shell getconf PAGE_SIZE > "$output/page-size.txt"
 for trial in 1 2 3 4 5; do
   adb shell am force-stop com.rezaprama.kalender.preview
   adb shell am start -W -a android.intent.action.VIEW \
@@ -43,6 +44,7 @@ report = {
     'build': 'R8-optimized preview, temporary debug signing',
     'api': directory.joinpath('api.txt').read_text().strip(),
     'device': directory.joinpath('device.txt').read_text().strip(),
+    'pageSizeBytes': int(directory.joinpath('page-size.txt').read_text().strip()),
     'apkBytes': int(directory.joinpath('apk-bytes.txt').read_text().strip()),
     'coldStartTotalTimeMs': times,
     'medianMs': statistics.median(times),
