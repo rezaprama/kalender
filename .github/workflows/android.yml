@@ -66,10 +66,13 @@ jobs:
         include:
           - api: 26
             target: google_apis
+            profile: ''
           - api: 35
             target: google_apis
+            profile: pixel_7
           - api: '37.0'
             target: google_apis_ps16k
+            profile: pixel_7
     steps:
       - uses: actions/checkout@v7
         with:
@@ -93,6 +96,7 @@ jobs:
           api-level: ${{ matrix.api }}
           arch: x86_64
           target: ${{ matrix.target }}
+          profile: ${{ matrix.profile }}
           disable-animations: true
           script: bash android/scripts/device-test.sh
         env:

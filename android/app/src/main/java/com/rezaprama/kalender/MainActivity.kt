@@ -187,6 +187,7 @@ private fun CalendarApp(state: CalendarState, model: CalendarViewModel, open: (S
         topBar = {
             CenterAlignedTopAppBar(title = { Text("kalender.", fontWeight = FontWeight.ExtraBold) }, actions = {
                 TextButton(onClick = { model.select(CalendarMath.today(ZoneId.of(state.zone))); tab = 0 }) { Text(state.tr("Hari ini", "Today")) }
+                if (tab == 0) IconButton(onClick = { editingId = 0; creating = true }) { Glyph(R.drawable.plus, state.tr("Tambah agenda", "Add event")) }
             })
         },
         bottomBar = {
@@ -196,7 +197,7 @@ private fun CalendarApp(state: CalendarState, model: CalendarViewModel, open: (S
                 }
             }
         },
-        floatingActionButton = { if (tab < 2) FloatingActionButton(onClick = { editingId = 0; creating = true }) { Glyph(R.drawable.plus, state.tr("Tambah agenda", "Add event")) } },
+        floatingActionButton = { if (tab == 1) FloatingActionButton(onClick = { editingId = 0; creating = true }) { Glyph(R.drawable.plus, state.tr("Tambah agenda", "Add event")) } },
         snackbarHost = { SnackbarHost(snackbars) },
     ) { insets ->
         Box(Modifier.fillMaxSize().padding(insets)) {

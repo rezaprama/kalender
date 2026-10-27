@@ -5,7 +5,7 @@ set -euo pipefail
 # Collect inside the script, including when an instrumented test fails.
 collect() {
   mkdir -p artifacts/android-device
-  timeout 15s adb pull /sdcard/Android/data/com.rezaprama.kalender.debug/cache/screens artifacts/android-device/ || true
+  timeout 15s adb pull /sdcard/Download/kalender-test-screens artifacts/android-device/screens || true
   timeout 15s adb logcat -d -s AndroidRuntime > artifacts/android-device/crashes.txt || true
 }
 trap collect EXIT

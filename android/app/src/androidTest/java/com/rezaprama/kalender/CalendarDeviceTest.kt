@@ -5,7 +5,7 @@ import android.content.Intent
 import android.content.ContentValues
 import android.content.ContentUris
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
+import android.os.ParcelFileDescriptor
 import android.net.Uri
 import android.provider.CalendarContract
 import androidx.compose.ui.test.*
@@ -21,7 +21,6 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.io.File
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
@@ -52,10 +51,14 @@ class CalendarDeviceTest {
 
     private fun screenshot(name: String) {
         compose.waitForIdle()
-        val directory = File(context.externalCacheDir, "screens").apply { mkdirs() }
-        val bitmap = InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot()
-        File(directory, "$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
-        bitmap.recycle()
+        require(name.matches(Regex("[a-z-]+")))
+        // Gradle uninstalls the development APK after testing, deleting its cache.
+        // The shell owns this disposable emulator output so it survives that cleanup.
+        val output = InstrumentationRegistry.getInstrumentation().uiAutomation.executeShellCommand(
+            "mkdir -p /sdcard/Download/kalender-test-screens && screencap -p /sdcard/Download/kalender-test-screens/$name.png && echo captured"
+        )
+        val result = ParcelFileDescriptor.AutoCloseInputStream(output).bufferedReader().use { it.readText() }
+        assertTrue(result.contains("captured"))
     }
 
     @Test fun offlineCalendarNavigatesAndExplainsHolidaySources() {

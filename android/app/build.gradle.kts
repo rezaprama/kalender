@@ -86,4 +86,7 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
     androidTestImplementation("androidx.test:runner:1.7.0")
+    // Espresso 3.7 reflects a hidden input API removed in Android 17.
+    // The test-only 3.8 alpha uses the supported service; it is not packaged in the app.
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.8.0-alpha01")
 }
