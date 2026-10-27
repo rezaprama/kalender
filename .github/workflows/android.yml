@@ -63,7 +63,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api: [26, 35]
+        api: [26, 35, '37.0']
     steps:
       - uses: actions/checkout@v7
         with:
@@ -78,19 +78,19 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+      - uses: actions/download-artifact@v8
+        with:
+          name: kalender-android-preview
+          path: artifacts/android-preview
       - uses: ReactiveCircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api }}
           arch: x86_64
           target: google_apis
           disable-animations: true
-          script: android/gradlew -p android :app:connectedDebugAndroidTest --no-daemon
-      - name: Collect native screenshots and device logs
-        if: always()
-        run: |
-          mkdir -p artifacts/android-device
-          adb pull /sdcard/Android/data/com.rezaprama.kalender.debug/cache/screens artifacts/android-device/ || true
-          adb logcat -d -s AndroidRuntime > artifacts/android-device/crashes.txt || true
+          script: bash android/scripts/device-test.sh
+        env:
+          ANDROID_TEST_FONT_SCALE: ${{ matrix.api == '37.0' && '1.3' || '1.0' }}
       - uses: actions/upload-artifact@v7
         if: always()
         with:

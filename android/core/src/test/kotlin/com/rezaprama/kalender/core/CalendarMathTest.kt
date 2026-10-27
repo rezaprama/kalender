@@ -84,4 +84,20 @@ class CalendarMathTest {
         ics.split("\r\n").forEach { assertTrue(it, it.toByteArray(Charsets.UTF_8).size <= 75) }
         assertFalse(ics.contains('\uFFFD'))
     }
+
+    @Test fun `timed events span dates in the display zone with an exclusive end`() {
+        val start = java.time.Instant.parse("2026-08-17T16:00:00Z").toEpochMilli()
+        val event = AgendaEvent(title = "Lintas tengah malam", start = start, end = start + 7200000)
+        val date = LocalDate.of(2026, 8, 17)
+        assertTrue(event.occursOn(date, ZoneId.of("Asia/Jakarta")))
+        assertTrue(event.occursOn(date.plusDays(1), ZoneId.of("Asia/Jakarta")))
+        assertFalse(event.occursOn(date, ZoneId.of("Asia/Jayapura")))
+        assertTrue(event.occursOn(date.plusDays(1), ZoneId.of("Asia/Jayapura")))
+        assertThrows(IllegalArgumentException::class.java) { event.copy(end = start) }
+        assertThrows(IllegalArgumentException::class.java) { event.copy(allDay = true) }
+        assertThrows(IllegalArgumentException::class.java) { event.copy(title = "Nul\u0000title") }
+        val last = CalendarMath.maximum.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
+        val finalDay = AgendaEvent(title = "2100", start = last, end = last + 86400000, allDay = true)
+        assertTrue(finalDay.occursOn(CalendarMath.maximum, ZoneId.of("Asia/Jakarta")))
+    }
 }

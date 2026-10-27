@@ -8,7 +8,7 @@ Date: 27 October 2026 (WIB).
 - Pure Kotlin core: Gregorian 1900–2100, tabular Hijri, Aboge/Asapon Javanese dates, weton, workdays, event validation and RFC 5545 export. App: offline government holiday assets, private SQLite agenda, opt-in Calendar Provider reads, device-editor intents, ICS sharing, ID/EN, themes and WIB/WITA/WIT.
 - The Android package excludes HKO conversion tables. Official data remains curated once in `data/official/` and copied by Gradle. No background source-monitoring schedule changes.
 - Preview signing is temporary and separate from a future production identity. No Play Store release, local reminders, direct cloud sync, or competitor performance claim. See [Android README](../android/README.md).
-- Local web `npm run check`: 86 passing tests. Android build, lint and device-test results must be verified in the new Android workflow before calling the APK tested. Local JDK 17 Gradle startup currently fails with a Windows NIO loopback error; use the hosted SDK runner while investigating this machine-specific issue.
+- Local web `npm run check`: 86 passing tests. All eight pure Kotlin core tests also pass locally and in CI, including exhaustive Hijri/weton range checks. Full Android lint/APK/device results remain pending in [PR #12](https://github.com/rezaprama/kalender/pull/12). A Windows JDK 17 NIO issue required a process-only socket fallback to run local Gradle; no global environment changes were made.
 
 ## Dependency maintenance (27 October 2026)
 

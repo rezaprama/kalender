@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
@@ -425,6 +426,7 @@ private fun ToolsScreen(state: CalendarState, model: CalendarViewModel, open: (S
 @Composable
 private fun EventEditor(state: CalendarState, event: AgendaEvent?, onDismiss: () -> Unit, onSave: (AgendaEvent, (Boolean) -> Unit) -> Unit, onShare: (AgendaEvent) -> Unit, onExternal: (AgendaEvent) -> Unit, onDelete: (AgendaEvent) -> Unit) {
     val context = LocalContext.current
+    val keyboard = LocalSoftwareKeyboardController.current
     val zone = ZoneId.of(event?.zone ?: state.zone)
     val dateZone = if (event?.allDay == true) ZoneOffset.UTC else zone
     var title by remember { mutableStateOf(event?.title.orEmpty()) }
@@ -457,7 +459,7 @@ private fun EventEditor(state: CalendarState, event: AgendaEvent?, onDismiss: ()
                         val until = if (allDay) lastDate.plusDays(1).atStartOfDay(ZoneOffset.UTC) else lastDate.atTime(end).atZone(zone)
                         AgendaEvent(event?.id ?: 0, title, from.toInstant().toEpochMilli(), until.toInstant().toEpochMilli(), allDay, zone.id, location, notes, uid = event?.uid ?: java.util.UUID.randomUUID().toString())
                     }.getOrNull()
-                    if (candidate == null) error = true else { saving = true; error = false; onSave(candidate) { saving = false } }
+                    if (candidate == null) error = true else { keyboard?.hide(); saving = true; error = false; onSave(candidate) { saving = false } }
                 }, modifier = Modifier.fillMaxWidth()) { Text(if (saving) state.tr("Menyimpan…", "Saving…") else state.tr("Simpan di perangkat", "Save on device")) }
             }
             if (event != null) {

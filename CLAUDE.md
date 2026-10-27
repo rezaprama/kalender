@@ -15,6 +15,7 @@ Indonesian multi-calendar site, holiday dataset, public API and embed. Owner: Re
 ## Layout
 - `src/core.ts` date math (UTC-noon civil dates), exports. `src/calendars/` calendar systems. `src/render.ts` HTML. `src/api.ts` API. `src/worker.ts` routing. `src/client/` browser JS/CSS.
 - `data/official/YYYY.json` curated government-sourced years. `scripts/data.ts` loads + validates all years.
+- `android/core/` pure Kotlin date/event/ICS logic. `android/app/` native Compose app. See `android/README.md` for SDK, build, privacy and preview-signing boundaries. Android changes require native CI in addition to the web check; never claim performance or device results without a measured run.
 
 ## Non-negotiable rules
 - Follow the human-only authorship policy in `AGENTS.md`. Do not add assistant co-author trailers or promotional commit/PR credits. Shared `.claude/settings.json` disables automatic attribution.

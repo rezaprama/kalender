@@ -27,7 +27,7 @@ class HolidayRepository(private val context: Context) {
     private val cache = File(context.filesDir, "holidays")
     private val preferences = context.getSharedPreferences("holiday_versions", Context.MODE_PRIVATE)
 
-    private fun parse(raw: String, requestedYear: Int): HolidayYear {
+    internal fun parse(raw: String, requestedYear: Int): HolidayYear {
         val data = JSONObject(raw)
         require(requestedYear >= 1945 && data.getInt("year") == requestedYear && data.getString("status") == "official")
         val sources = data.getJSONArray("sources")

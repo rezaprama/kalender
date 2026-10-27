@@ -36,6 +36,8 @@ npm run e2e     # browser + accessibility; run for UI changes
 - UI changes must keep `npm run e2e` (axe-core WCAG 2.2 AA, keyboard journeys) passing in light and dark mode.
 - Commit messages: [Conventional Commits](https://www.conventionalcommits.org/) in English, e.g. `fix(data): add 2021 Idulfitri amendment`.
 
+Native Android lives in [`android/`](android/README.md). For Android behavior changes, run its core tests, Android lint, APK build, and instrumented tests; the Android workflow covers API 26, 35, and 37.0 and uploads APKs/screenshots. Keep date math in the pure Kotlin `core` module, storage/network work off the UI thread, and device calendar access opt-in. Use `LocalDate` for civil dates and explicit zones for instants; all-day events use UTC date boundaries with an exclusive end. Do not add a second holiday dataset, telemetry, or signing keys.
+
 ## Commit authorship
 
 Credit the people who contributed. AI tools may assist your work, but do not list assistants or vendors as commit authors, committers, co-authors, sign-offs, or promotional credits in commits and pull request descriptions. Preserve real human co-authors and required third-party notices.

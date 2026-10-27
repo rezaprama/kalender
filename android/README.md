@@ -67,7 +67,9 @@ Local reminders, recurring local events, widgets, ICS import, and a cloud-sync s
 
 ## Verification and performance
 
-The workflow runs exhaustive Gregorian grids and Hijri/weton tests over the supported range, Javanese reference anchors, timezone and ICS tests, Android lint, optimized APK builds, and native UI/storage tests on API 26 and 35. Device reports and native screenshots are uploaded with each run. A green run is the evidence for that commit; a written test is not proof that it passed.
+The workflow runs exhaustive Gregorian grids and Hijri/weton tests over the supported range, Javanese reference anchors, timezone and ICS tests, Android lint, optimized APK builds, and native UI/storage tests on API 26, 35, and 37.0. Calendar Provider integration is exercised with temporary recurring and all-day events on API 29+. The optimized preview is also signature-checked, installed, launched, and sampled five times for emulator startup timing. Device reports and native screenshots are uploaded with each run. A green run is the evidence for that commit; a written test is not proof that it passed.
+
+Run instrumented tests on a disposable emulator: they reset the development app's private agenda and temporarily create a test calendar. They do not target the preview or production application ID.
 
 Performance claims require measurement. APK size can be measured from the optimized preview; startup and frame performance must be benchmarked on named physical devices before comparing with other calendar apps. The initial architecture avoids startup network requests and background polling, queries only the visible month from SQLite, and keeps storage/network work off the UI thread. No claim of being faster than Google, Samsung, or Apple is made.
 
