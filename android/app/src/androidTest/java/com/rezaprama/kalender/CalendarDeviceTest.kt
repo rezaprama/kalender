@@ -54,11 +54,14 @@ class CalendarDeviceTest {
         require(name.matches(Regex("[a-z-]+")))
         // Gradle uninstalls the development APK after testing, deleting its cache.
         // The shell owns this disposable emulator output so it survives that cleanup.
-        val output = InstrumentationRegistry.getInstrumentation().uiAutomation.executeShellCommand(
-            "mkdir -p /sdcard/Download/kalender-test-screens && screencap -p /sdcard/Download/kalender-test-screens/$name.png && echo captured"
-        )
-        val result = ParcelFileDescriptor.AutoCloseInputStream(output).bufferedReader().use { it.readText() }
-        assertTrue(result.contains("captured"))
+        fun shell(command: String): String {
+            val output = InstrumentationRegistry.getInstrumentation().uiAutomation.executeShellCommand(command)
+            return ParcelFileDescriptor.AutoCloseInputStream(output).bufferedReader().use { it.readText() }
+        }
+        // UiAutomation executes one program, not a shell expression.
+        shell("mkdir -p /sdcard/Download/kalender-test-screens")
+        shell("screencap -p /sdcard/Download/kalender-test-screens/$name.png")
+        assertTrue(shell("ls -l /sdcard/Download/kalender-test-screens/$name.png").contains("$name.png"))
     }
 
     @Test fun offlineCalendarNavigatesAndExplainsHolidaySources() {

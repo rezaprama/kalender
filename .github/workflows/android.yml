@@ -81,7 +81,6 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - uses: gradle/actions/setup-gradle@v6
       - name: Enable KVM for the Android emulator
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -91,6 +90,10 @@ jobs:
         with:
           name: kalender-android-preview
           path: artifacts/android-preview
+      - uses: actions/download-artifact@v8
+        with:
+          name: kalender-android-test-apks
+          path: artifacts/android-test-apks
       - uses: ReactiveCircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api }}
@@ -107,5 +110,3 @@ jobs:
           name: android-device-api-${{ matrix.api }}
           path: |
             artifacts/android-device/
-            android/app/build/reports/androidTests/
-            android/app/build/outputs/androidTest-results/

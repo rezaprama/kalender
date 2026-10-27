@@ -30,6 +30,7 @@ done
 adb shell uiautomator dump /sdcard/kalender-preview.xml
 adb pull /sdcard/kalender-preview.xml "$output/preview-ui.xml"
 grep -q 'kalender\.' "$output/preview-ui.xml"
+grep -q 'package="com.rezaprama.kalender.preview"' "$output/preview-ui.xml"
 adb exec-out screencap -p > "$output/optimized-preview.png"
 python3 - <<'PY'
 import json, pathlib, re, statistics
