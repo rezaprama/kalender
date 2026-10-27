@@ -1,6 +1,12 @@
 # Maintenance checkpoint
 
-Date: 22 October 2026 (WIB). Branch `fix/monitor-feeds-and-docs`.
+Date: 27 October 2026 (WIB).
+
+## Dependency maintenance (27 October 2026)
+
+- [PR #11](https://github.com/rezaprama/kalender/pull/11) updates esbuild to 0.28.2. Its lockfile removes duplicate esbuild installations previously nested under tsx and Wrangler.
+- Fresh dependency auditing found vulnerable Undici 7.29.1 in Wrangler/Miniflare. The PR also updates Wrangler to 4.153.0, which supplies the patched Undici 7.30.1 without an override. TypeScript and Node-types major upgrades remain held per the owner's decision.
+- Local clean install, build, typecheck, lint, 86 tests, and 11 Worker bundle smoke checks pass. `npm audit` reports zero vulnerabilities. The required GitHub CI and Cloudflare checks remain the merge gate and authority for the merged commit.
 
 ## Independent audit (22 October 2026)
 
