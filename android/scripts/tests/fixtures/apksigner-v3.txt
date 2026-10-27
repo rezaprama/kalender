@@ -1,0 +1,18 @@
+Verifies
+Verified using v1 scheme (JAR signing): false
+Verified using v2 scheme (APK Signature Scheme v2): true
+Verified using v3 scheme (APK Signature Scheme v3): true
+Verified using v3.1 scheme (APK Signature Scheme v3.1): false
+Verified using v3.2 scheme (APK Signature Scheme v3.2): false
+Verified using v4 scheme (APK Signature Scheme v4): false
+Verified for SourceStamp: false
+Number of signers: 1
+V3.0 Signer: certificate DN: CN=Reza Prama Arviandi
+V3.0 Signer: certificate SHA-256 digest: fb7daf4717aafe6c605b8138ca95f21bc0eb49aab51e52607f91254cb16dd890
+V3.0 Signer: certificate SHA-1 digest: 75b26456d4fbefda67c1d0146ebf91f195dcc08d
+V3.0 Signer: certificate MD5 digest: fd1a57e0e284111e15bdbb66e67898a0
+V3.0 Signer: key algorithm: RSA
+V3.0 Signer: key size (bits): 4096
+V3.0 Signer: public key SHA-256 digest: 7f2eb68958825b20006ae1ee8692ed36ceffe1ae61df9e73c0329d39b206ae88
+V3.0 Signer: public key SHA-1 digest: 18791d67f6f422ac0e9190b76e53a0ab84c52e25
+V3.0 Signer: public key MD5 digest: a31a741a7e786eb671e90d452e6171dc
