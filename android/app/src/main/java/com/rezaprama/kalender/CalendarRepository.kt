@@ -111,7 +111,23 @@ class AgendaStore(context: Context) : SQLiteOpenHelper(context, "agenda.db", nul
             put("uid", event.uid); put("title", event.title.trim()); put("start", event.start); put("end", event.end)
             put("all_day", if (event.allDay) 1 else 0); put("zone", event.zone); put("location", event.location); put("notes", event.notes)
         }
-        if (event.id == 0L) writableDatabase.insertOrThrow("events", null, values)
+        if (event.id == 0L) {
+            val db = writableDatabase
+            db.beginTransaction()
+            try {
+                val inserted = db.insertWithOnConflict("events", null, values, SQLiteDatabase.CONFLICT_IGNORE)
+                val id = if (inserted != -1L) inserted else {
+                    // A recovered draft can retry after its first save committed but the process died.
+                    val existing = db.query("events", arrayOf("id"), "uid=?", arrayOf(event.uid), null, null, null).use { rows ->
+                        check(rows.moveToFirst()); rows.getLong(0)
+                    }
+                    check(db.update("events", values, "id=?", arrayOf(existing.toString())) == 1)
+                    existing
+                }
+                db.setTransactionSuccessful()
+                id
+            } finally { db.endTransaction() }
+        }
         else { check(writableDatabase.update("events", values, "id=?", arrayOf(event.id.toString())) == 1); event.id }
     }
 

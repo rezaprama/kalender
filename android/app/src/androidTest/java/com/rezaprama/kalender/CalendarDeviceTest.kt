@@ -170,6 +170,8 @@ class CalendarDeviceTest {
                 assertEquals(event.copy(id = id), loaded)
                 assertTrue(loaded.occursOn(date, ZoneId.of(zone)))
             }
+            assertEquals(id, store.save(event.copy(title = "Recovered draft")))
+            assertEquals(1, store.load(YearMonth.of(2026, 8), ZoneOffset.UTC).size)
             store.save(event.copy(id = id, title = "Revisi"))
             assertEquals("Revisi", store.load(YearMonth.of(2026, 8), ZoneOffset.UTC).single().title)
             store.remove(event.copy(id = id))
