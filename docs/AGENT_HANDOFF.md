@@ -2,6 +2,14 @@
 
 Date: 27 October 2026 (WIB).
 
+## Android preview (in progress, 27 October 2026)
+
+- Branch `codex/android-app` adds a native Kotlin/Compose app under `android/`, separate from the Worker runtime. Owner selected Indonesian calendar, private agenda, and device-calendar integration as the focus.
+- Pure Kotlin core: Gregorian 1900–2100, tabular Hijri, Aboge/Asapon Javanese dates, weton, workdays, event validation and RFC 5545 export. App: offline government holiday assets, private SQLite agenda, opt-in Calendar Provider reads, device-editor intents, ICS sharing, ID/EN, themes and WIB/WITA/WIT.
+- The Android package excludes HKO conversion tables. Official data remains curated once in `data/official/` and copied by Gradle. No background source-monitoring schedule changes.
+- Preview signing is temporary and separate from a future production identity. No Play Store release, local reminders, direct cloud sync, or competitor performance claim. See [Android README](../android/README.md).
+- Local web `npm run check`: 86 passing tests. Android build, lint and device-test results must be verified in the new Android workflow before calling the APK tested. Local JDK 17 Gradle startup currently fails with a Windows NIO loopback error; use the hosted SDK runner while investigating this machine-specific issue.
+
 ## Dependency maintenance (27 October 2026)
 
 - [PR #11](https://github.com/rezaprama/kalender/pull/11) updates esbuild to 0.28.2. Its lockfile removes duplicate esbuild installations previously nested under tsx and Wrangler.

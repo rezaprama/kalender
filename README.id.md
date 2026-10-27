@@ -36,6 +36,7 @@ Cari tanggal merah. Susun cuti panjang. Cek weton. Pakai kalender ini di aplikas
 | Ingin… | Buka ini |
 | --- | --- |
 | Cek tanggal dan susun cuti | [Kalender](https://kalender.rezaprama.com) atau [alat perencanaan](https://kalender.rezaprama.com/alat) |
+| Coba pratinjau Android native | [Kalender offline, agenda pribadi, dan integrasi perangkat](android/README.md) |
 | Tambahkan libur ke aplikasi kalender | [Unduh ICS 2026](https://kalender.rezaprama.com/api/v1/holidays?year=2026&format=ics) |
 | Buat aplikasi atau spreadsheet | [Coba API](#permintaan-api-pertamamu), [baca referensi](docs/API.md), atau [unduh CSV](https://kalender.rezaprama.com/api/v1/holidays?year=2026&format=csv) |
 | Pasang kalender di situs sendiri | [Salin kode embed](#pasang-di-situsmu) |

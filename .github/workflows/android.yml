@@ -1,0 +1,101 @@
+name: Android
+
+on:
+  pull_request:
+    paths: ['android/**', 'data/official/**', '.github/workflows/android.yml', 'LICENSE*', 'NOTICE']
+  push:
+    branches: [main]
+    paths: ['android/**', 'data/official/**', '.github/workflows/android.yml', 'LICENSE*', 'NOTICE']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Android build and date tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: android
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Test core, lint, and build installable APKs
+        run: ./gradlew :core:test :app:lintDebug :app:assembleDebug :app:assemblePreview :app:assembleDebugAndroidTest --no-daemon
+      - uses: actions/upload-artifact@v7
+        with:
+          name: kalender-android-preview
+          path: android/app/build/outputs/apk/preview/*.apk
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v7
+        with:
+          name: kalender-android-test-apks
+          path: |
+            android/app/build/outputs/apk/debug/*.apk
+            android/app/build/outputs/apk/androidTest/debug/*.apk
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: android-build-reports
+          path: |
+            android/core/build/reports/tests/
+            android/core/build/test-results/
+            android/app/build/reports/lint-results*
+
+  device:
+    name: Android device tests (API ${{ matrix.api }})
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        api: [26, 35]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Enable KVM for the Android emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - uses: ReactiveCircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api }}
+          arch: x86_64
+          target: google_apis
+          disable-animations: true
+          script: android/gradlew -p android :app:connectedDebugAndroidTest --no-daemon
+      - name: Collect native screenshots and device logs
+        if: always()
+        run: |
+          mkdir -p artifacts/android-device
+          adb pull /sdcard/Android/data/com.rezaprama.kalender.debug/cache/screens artifacts/android-device/ || true
+          adb logcat -d -s AndroidRuntime > artifacts/android-device/crashes.txt || true
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: android-device-api-${{ matrix.api }}
+          path: |
+            artifacts/android-device/
+            android/app/build/reports/androidTests/
+            android/app/build/outputs/androidTest-results/

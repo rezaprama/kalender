@@ -12,3 +12,11 @@ worker-configuration.d.ts
 src/generated/
 internal/
 .claude/settings.local.json
+android/.gradle/
+android/.kotlin/
+android/**/.gradle/
+android/**/.kotlin/
+android/**/build/
+android/local.properties
+*.jks
+*.keystore
