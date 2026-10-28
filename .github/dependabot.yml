@@ -26,12 +26,14 @@ updates:
     open-pull-requests-limit: 3
     groups:
       android-toolchain:
-        patterns: ["com.android.application", "android", "jvm", "org.jetbrains.kotlin*"]
+        patterns: ["com.android.application", "gradle-wrapper", "android", "jvm", "org.jetbrains.kotlin*"]
       androidx:
         patterns: ["androidx.*"]
     ignore:
       # AGP 9 requires a coordinated Gradle-wrapper / built-in-Kotlin migration.
       - dependency-name: com.android.application
+        update-types: ["version-update:semver-major"]
+      - dependency-name: gradle-wrapper
         update-types: ["version-update:semver-major"]
       # Keep the Android, JVM, and Compose compiler family aligned. Patch updates remain enabled.
       - dependency-name: android
