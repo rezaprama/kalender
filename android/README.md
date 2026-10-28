@@ -60,7 +60,7 @@ Core date and ICS tests also run without an Android SDK:
 ./gradlew -p core test
 ```
 
-The Gradle 8.13 distribution and wrapper JAR are checksum-pinned. The compatible toolchain is AGP 8.13.2, Kotlin 2.2.21, JDK 17, and Compose BOM 2026.03.00. [AGP compatibility](https://developer.android.com/build/releases/agp-8-13-0-release-notes).
+The Gradle 8.14.6 distribution and wrapper JAR are checksum-pinned. The compatible toolchain is AGP 8.13.2, Kotlin 2.2.21, JDK 17, and Compose BOM 2026.03.00. [AGP compatibility](https://developer.android.com/build/releases/agp-8-13-0-release-notes). The maintenance wrapper includes [Gradle's security fixes](https://docs.gradle.org/8.14.6/release-notes.html); the original 0.1.0 APK was built with Gradle 8.13 and remains unchanged.
 
 ## Privacy and permissions
 
