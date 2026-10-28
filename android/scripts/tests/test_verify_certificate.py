@@ -7,7 +7,8 @@ SPEC = importlib.util.spec_from_file_location("publisher_certificate", ROOT / "v
 MODULE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(MODULE)
 REPORT = (ROOT / "tests/fixtures/apksigner-v3.txt").read_text()
-EXPECTED = (ROOT.parent / "release-cert.sha256").read_text().strip()
+# Pin the recorded fixture, independently of the real publisher key used by a fork.
+EXPECTED = "fb7daf4717aafe6c605b8138ca95f21bc0eb49aab51e52607f91254cb16dd890"
 
 
 class PublisherCertificateTest(unittest.TestCase):
