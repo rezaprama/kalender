@@ -42,3 +42,9 @@ Signing must happen after ZIP alignment. Never edit a signed APK. See [Android's
 - Review the native screenshots and reports. Emulator timing is not a physical-device benchmark or a comparison with competitors.
 
 The `preview` variant uses a temporary CI debug key and a separate `.preview` application ID. It is for development testing. The public release uses the owner's permanent signing identity and the production ID. A Play Store submission is a separate publishing step; keep this signing identity if choosing existing-key enrollment in Play App Signing.
+
+## Toolchain maintenance
+
+The 0.1 release baseline is compile/target SDK 36, AGP 8.13.2, Gradle 8.13, and Kotlin 2.2.21 across Android/JVM/Compose compiler plugins. Patch updates remain automated. Larger upgrades require one coordinated change, including the wrapper checksum, every Kotlin plugin (also standalone `core`), the Compose BOM, SDK requirements, and all device checks.
+
+The initial update PRs demonstrate why this is coordinated: AGP 9.4.1 requires Gradle 9.6.0, while Compose UI 1.12.1 requires compileSdk 37 and AGP 9.1+. Updating only the JVM plugin leaves a different declared compiler family from Android/Compose. Dependabot holds these partial updates until the SDK 37/Gradle 9 migration is deliberately tested; the app itself is already tested on an API 37 device image.
