@@ -65,10 +65,31 @@ class CalendarDeviceTest {
     }
 
     private fun dismissEditorKeyboard() {
-        // The editor owns a Dialog window; the Activity window has no focus here.
-        androidx.test.espresso.Espresso.onView(androidx.test.espresso.matcher.ViewMatchers.isRoot())
-            .inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog())
-            .perform(androidx.test.espresso.action.ViewActions.closeSoftKeyboard())
+        if (android.os.Build.VERSION.SDK_INT >= 29) {
+            val instrumentation = InstrumentationRegistry.getInstrumentation()
+            // Inspect only this process's windows. Do not depend on Espresso's focus heuristic.
+            instrumentation.runOnMainSync {
+                val input = context.getSystemService(android.view.inputmethod.InputMethodManager::class.java)
+                android.view.inspector.WindowInspector.getGlobalWindowViews().filter { it.isShown }.forEach { root ->
+                    input.hideSoftInputFromWindow(root.windowToken, 0)
+                    root.clearFocus()
+                }
+            }
+            compose.waitUntil(5_000) {
+                var hidden = false
+                instrumentation.runOnMainSync {
+                    hidden = android.view.inspector.WindowInspector.getGlobalWindowViews().filter { it.isShown }.all { root ->
+                        val insets = androidx.core.view.ViewCompat.getRootWindowInsets(root)
+                        (insets?.getInsets(androidx.core.view.WindowInsetsCompat.Type.ime())?.bottom ?: 0) == 0
+                    }
+                }
+                hidden
+            }
+        } else {
+            androidx.test.espresso.Espresso.onView(androidx.test.espresso.matcher.ViewMatchers.isRoot())
+                .inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog())
+                .perform(androidx.test.espresso.action.ViewActions.closeSoftKeyboard())
+        }
         compose.waitForIdle()
     }
 
