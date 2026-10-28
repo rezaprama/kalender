@@ -2,10 +2,38 @@ name: Android
 
 on:
   pull_request:
-    paths: ['android/**', 'data/official/**', '.github/workflows/android.yml', 'LICENSE*', 'NOTICE']
+    paths:
+      - 'android/app/**'
+      - 'android/core/**'
+      - 'android/gradle/**'
+      - 'android/*.gradle.kts'
+      - 'android/gradle.properties'
+      - 'android/gradlew*'
+      - 'android/scripts/*.sh'
+      - 'android/scripts/*.java'
+      - 'android/scripts/*.ps1'
+      - 'android/scripts/verify_certificate.py'
+      - 'data/official/**'
+      - '.github/workflows/android*.yml'
+      - 'LICENSE*'
+      - 'NOTICE'
   push:
     branches: [main]
-    paths: ['android/**', 'data/official/**', '.github/workflows/android.yml', 'LICENSE*', 'NOTICE']
+    paths:
+      - 'android/app/**'
+      - 'android/core/**'
+      - 'android/gradle/**'
+      - 'android/*.gradle.kts'
+      - 'android/gradle.properties'
+      - 'android/gradlew*'
+      - 'android/scripts/*.sh'
+      - 'android/scripts/*.java'
+      - 'android/scripts/*.ps1'
+      - 'android/scripts/verify_certificate.py'
+      - 'data/official/**'
+      - '.github/workflows/android*.yml'
+      - 'LICENSE*'
+      - 'NOTICE'
   workflow_dispatch:
 
 permissions:

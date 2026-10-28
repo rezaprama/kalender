@@ -85,6 +85,8 @@ class CalendarDeviceTest {
         launch()
         compose.onNodeWithContentDescription("Tambah agenda").performClick()
         compose.onNodeWithText("Judul").performTextInput("Rapat produk Indonesia")
+        androidx.test.espresso.Espresso.closeSoftKeyboard()
+        compose.waitForIdle()
         compose.onNodeWithTag("editor-list").performScrollToNode(hasText("Simpan di perangkat"))
         compose.onNodeWithText("Simpan di perangkat").performClick()
         compose.waitUntil(10_000) { compose.onAllNodesWithText("Agenda baru").fetchSemanticsNodes().isEmpty() }
@@ -105,6 +107,8 @@ class CalendarDeviceTest {
         launch()
         compose.onNodeWithContentDescription("Tambah agenda").performClick()
         compose.onNodeWithText("Judul").performTextInput("Draf sebelum rotasi")
+        androidx.test.espresso.Espresso.closeSoftKeyboard()
+        compose.waitForIdle()
         scenario!!.recreate()
         compose.onNodeWithText("Agenda baru").assertIsDisplayed()
         compose.onNodeWithText("Draf sebelum rotasi").assertExists()

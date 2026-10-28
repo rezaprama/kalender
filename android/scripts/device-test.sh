@@ -10,6 +10,8 @@ collect() {
 }
 trap collect EXIT
 adb shell settings put system font_scale "${ANDROID_TEST_FONT_SCALE:-1.0}"
+# Let first-boot launcher/package services settle before rapid UI tests.
+sleep 5
 mkdir -p artifacts/android-device
 adb install -r -t artifacts/android-test-apks/debug/app-debug.apk
 adb install -r -t artifacts/android-test-apks/androidTest/debug/app-debug-androidTest.apk

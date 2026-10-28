@@ -34,6 +34,8 @@ jobs:
           ATTRIBUTION_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
       # Build, typecheck, Biome lint, dataset validation, unit/integration/docs tests.
       - run: npm run check
+      - name: Check Android publisher verification
+        run: python3 -m unittest discover -s android/scripts/tests -v
       # Bundle exactly what Cloudflare would deploy (no credentials needed) and smoke-test it.
       - run: npm run smoke
       - name: Install Chromium for browser tests

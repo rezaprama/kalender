@@ -17,6 +17,8 @@ if grep -Eq 'WRITE_CALENDAR|READ_CONTACTS|ACCESS_FINE_LOCATION|com.google.androi
   exit 1
 fi
 adb install -r "$apk"
+# Package-change broadcasts and launcher indexing run after installation.
+sleep 5
 sha256sum "$apk" > "$output/apk-sha256.txt"
 stat --format='%s' "$apk" > "$output/apk-bytes.txt"
 adb shell getprop ro.build.version.sdk > "$output/api.txt"
@@ -26,10 +28,12 @@ if ! adb shell getconf PAGE_SIZE > "$output/page-size.txt" 2>/dev/null; then
 fi
 for trial in 1 2 3 4 5; do
   adb shell am force-stop "$app_id"
+  sleep 1
   adb shell am start -W -a android.intent.action.VIEW \
     -n "$app_id/com.rezaprama.kalender.MainActivity" \
     -d kalender://date/2026-08-17 > "$output/start-$trial.txt"
   grep -q 'Status: ok' "$output/start-$trial.txt"
+  sleep 1
 done
 if [[ "${ANDROID_VERIFY_UPDATE:-false}" == 'true' ]]; then
   adb install -r "$apk" > "$output/update-install.txt"
