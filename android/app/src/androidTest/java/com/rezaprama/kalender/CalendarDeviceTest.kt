@@ -64,6 +64,14 @@ class CalendarDeviceTest {
         assertTrue(shell("ls -l /sdcard/Download/kalender-test-screens/$name.png").contains("$name.png"))
     }
 
+    private fun dismissEditorKeyboard() {
+        // The editor owns a Dialog window; the Activity window has no focus here.
+        androidx.test.espresso.Espresso.onView(androidx.test.espresso.matcher.ViewMatchers.isRoot())
+            .inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog())
+            .perform(androidx.test.espresso.action.ViewActions.closeSoftKeyboard())
+        compose.waitForIdle()
+    }
+
     @Test fun offlineCalendarNavigatesAndExplainsHolidaySources() {
         launch()
         compose.onNodeWithText("Agustus 2026").assertIsDisplayed()
@@ -85,8 +93,7 @@ class CalendarDeviceTest {
         launch()
         compose.onNodeWithContentDescription("Tambah agenda").performClick()
         compose.onNodeWithText("Judul").performTextInput("Rapat produk Indonesia")
-        androidx.test.espresso.Espresso.closeSoftKeyboard()
-        compose.waitForIdle()
+        dismissEditorKeyboard()
         compose.onNodeWithTag("editor-list").performScrollToNode(hasText("Simpan di perangkat"))
         compose.onNodeWithText("Simpan di perangkat").performClick()
         compose.waitUntil(10_000) { compose.onAllNodesWithText("Agenda baru").fetchSemanticsNodes().isEmpty() }
@@ -107,8 +114,7 @@ class CalendarDeviceTest {
         launch()
         compose.onNodeWithContentDescription("Tambah agenda").performClick()
         compose.onNodeWithText("Judul").performTextInput("Draf sebelum rotasi")
-        androidx.test.espresso.Espresso.closeSoftKeyboard()
-        compose.waitForIdle()
+        dismissEditorKeyboard()
         scenario!!.recreate()
         compose.onNodeWithText("Agenda baru").assertIsDisplayed()
         compose.onNodeWithText("Draf sebelum rotasi").assertExists()
