@@ -28,16 +28,16 @@
     "smoke": "wrangler deploy --dry-run --outdir .wrangler/dry-run && node scripts/smoke.mjs .wrangler/dry-run/worker.js"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.6.3",
-    "@cloudflare/workers-types": "^5.20261019.1",
+    "@biomejs/biome": "^2.6.4",
+    "@cloudflare/workers-types": "^5.20261029.1",
     "@phosphor-icons/core": "^2.1.1",
     "@types/node": "^24.0.0",
     "axe-core": "^4.14.0",
     "esbuild": "^0.28.2",
-    "lighthouse": "^13.0.0",
+    "lighthouse": "^13.6.0",
     "playwright": "^1.56.0",
     "tsx": "^4.20.0",
     "typescript": "^5.9.0",
-    "wrangler": "^4.153.0"
+    "wrangler": "^4.155.0"
   }
 }
